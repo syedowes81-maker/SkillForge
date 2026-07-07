@@ -13,6 +13,9 @@ class FreelancerProfile(models.Model):
 
  skills=models.CharField(max_length=255,default=0)
  bio=models.TextField(default=0)
- experience=models.IntegerField(default=0)
- hourly_rate=models.IntegerField(default=0)
+ experience=models.IntegerField(default="")
+ hourly_rate=models.IntegerField(default="")
  portfolio=models.URLField(blank=True)
+
+ def __str__(self):
+   return self.user.username

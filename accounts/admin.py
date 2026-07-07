@@ -12,5 +12,13 @@ class CustomUserAdmin(UserAdmin):
   "can_hire",
   "is_staff"
 )
+
+class FreelancerProfileAdmin(admin.ModelAdmin):
+  list_display=(
+    "user",
+    "skills",
+    "experience",
+    "hourly_rate",
+   )
 admin.site.register(User,CustomUserAdmin)
-admin.site.register(FreelancerProfile)
+admin.site.register(FreelancerProfile,FreelancerProfileAdmin)
