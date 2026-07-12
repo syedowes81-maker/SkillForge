@@ -1,26 +1,1029 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkillForge</title>
+    <title>{% block title %}SkillForge — Where Skills Meet Opportunity{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}SkillForge is the freelance marketplace where vetted talent and ambitious teams forge great work together.{% endblock %}">
 
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
-<nav class="navbar navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="#">SkillForge</a>
+    {% block extra_css %}{% endblock %}
+
+    <style>
+        /* ============================================================
+           SKILLFORGE DESIGN TOKENS
+           ============================================================ */
+        :root {
+            --ink:          #12121B;   /* near-black charcoal-navy, dark sections & headings */
+            --ink-soft:     #2B2B3A;   /* secondary dark text */
+            --paper:        #FAFAF8;   /* warm off-white page background */
+            --paper-dim:    #F1F0EC;   /* subtle section tint */
+            --steel:        #6B6E7A;   /* muted body copy */
+            --steel-light:  #9497A3;   /* faint copy / placeholders */
+            --line:         rgba(18, 18, 27, 0.08);
+
+            --forge-violet: #5B4FE9;   /* primary brand */
+            --forge-violet-deep: #3E33C4;
+            --forge-ember:  #FF6B4A;   /* accent 1 — forge fire */
+            --forge-gold:   #FFB648;   /* accent 2 — molten gold */
+
+            --gradient-brand: linear-gradient(135deg, #5B4FE9 0%, #8B7CF6 45%, #FF9466 100%);
+            --gradient-ember: linear-gradient(120deg, #FF6B4A 0%, #FFB648 100%);
+            --gradient-mesh:  radial-gradient(ellipse 60% 50% at 15% 20%, rgba(91,79,233,0.16), transparent 60%),
+                               radial-gradient(ellipse 55% 45% at 85% 15%, rgba(255,107,74,0.14), transparent 60%),
+                               radial-gradient(ellipse 60% 60% at 50% 100%, rgba(255,182,72,0.10), transparent 60%);
+
+            --shadow-soft:  0 1px 2px rgba(18,18,27,0.04), 0 8px 24px rgba(18,18,27,0.06);
+            --shadow-lift:  0 4px 8px rgba(18,18,27,0.04), 0 20px 48px rgba(91,79,233,0.14);
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 10px;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--ink-soft);
+            background: var(--paper);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .display-font {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.02em;
+        }
+
+        a { text-decoration: none; }
+
+        .text-steel { color: var(--steel) !important; }
+        .bg-paper-dim { background: var(--paper-dim); }
+
+        .container-xl { max-width: 1200px; }
+
+        section { position: relative; }
+
+        /* ============================================================
+           NAVBAR
+           ============================================================ */
+        .sf-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 14px 0;
+            background: rgba(250, 250, 248, 0.72);
+            backdrop-filter: blur(16px) saturate(160%);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
+            border-bottom: 1px solid var(--line);
+            transition: all 0.25s ease;
+        }
+
+        .sf-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.32rem;
+            color: var(--ink);
+        }
+
+        .sf-brand-mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-brand);
+            box-shadow: 0 4px 14px rgba(91,79,233,0.35);
+            flex-shrink: 0;
+        }
+
+        .sf-nav-link {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+            padding: 8px 16px !important;
+            border-radius: 100px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .sf-nav-link:hover {
+            color: var(--forge-violet-deep);
+            background: rgba(91, 79, 233, 0.07);
+        }
+
+        .btn-sf-ghost {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--ink);
+            padding: 9px 18px;
+            border-radius: 100px;
+            border: 1px solid var(--line);
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .btn-sf-ghost:hover {
+            border-color: rgba(91,79,233,0.4);
+            background: rgba(91,79,233,0.06);
+            color: var(--forge-violet-deep);
+        }
+
+        .btn-sf-primary {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 100px;
+            border: none;
+            background: var(--ink);
+            box-shadow: var(--shadow-soft);
+            transition: all 0.25s cubic-bezier(.2,.8,.2,1);
+        }
+        .btn-sf-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(18,18,27,0.28);
+            color: #fff;
+        }
+
+        .btn-sf-gradient {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #fff;
+            padding: 13px 28px;
+            border-radius: 100px;
+            border: none;
+            background: var(--gradient-brand);
+            box-shadow: 0 10px 30px rgba(91,79,233,0.35);
+            transition: all 0.25s cubic-bezier(.2,.8,.2,1);
+        }
+        .btn-sf-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 40px rgba(91,79,233,0.45);
+            color: #fff;
+        }
+
+        /* ============================================================
+           HERO
+           ============================================================ */
+        .sf-hero {
+            padding: 96px 0 60px;
+            background: var(--gradient-mesh), var(--paper);
+        }
+
+        .sf-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--forge-violet-deep);
+            background: rgba(91, 79, 233, 0.08);
+            border: 1px solid rgba(91, 79, 233, 0.18);
+            padding: 7px 14px;
+            border-radius: 100px;
+            margin-bottom: 24px;
+        }
+        .sf-eyebrow .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--forge-ember);
+            box-shadow: 0 0 0 3px rgba(255,107,74,0.2);
+        }
+
+        .sf-hero h1 {
+            font-size: clamp(2.4rem, 4.6vw, 3.8rem);
+            font-weight: 700;
+            line-height: 1.08;
+            margin-bottom: 22px;
+        }
+
+        .sf-hero h1 .accent {
+            background: var(--gradient-ember);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .sf-hero-lead {
+            font-size: 1.15rem;
+            color: var(--steel);
+            max-width: 520px;
+            margin-bottom: 34px;
+            line-height: 1.65;
+        }
+
+        .sf-hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+
+        .sf-trust-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: var(--steel-light);
+        }
+        .sf-avatar-stack { display: flex; }
+        .sf-avatar-stack span {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--paper);
+            margin-left: -10px;
+            background: var(--gradient-brand);
+            display: inline-block;
+        }
+        .sf-avatar-stack span:first-child { margin-left: 0; }
+
+        /* Hero visual */
+        .sf-hero-visual {
+            position: relative;
+            height: 480px;
+        }
+
+        .sf-glow-orb {
+            position: absolute;
+            width: 340px; height: 340px;
+            border-radius: 50%;
+            background: var(--gradient-brand);
+            filter: blur(70px);
+            opacity: 0.35;
+            top: 30px; right: 20px;
+            animation: sf-pulse 7s ease-in-out infinite;
+        }
+
+        @keyframes sf-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.32; }
+            50% { transform: scale(1.12); opacity: 0.44; }
+        }
+
+        .sf-hero-svg-wrap {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sf-glass-card {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lift);
+            padding: 14px 18px;
+            transition: transform 0.35s ease;
+        }
+        .sf-glass-card:hover { transform: translateY(-6px); }
+
+        .sf-glass-card.card-1 { top: 18px; left: -10px; animation: sf-float 6s ease-in-out infinite; }
+        .sf-glass-card.card-2 { bottom: 60px; right: -20px; animation: sf-float 6s ease-in-out infinite 1.5s; }
+        .sf-glass-card.card-3 { bottom: -6px; left: 40px; animation: sf-float 6s ease-in-out infinite 3s; }
+
+        @keyframes sf-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-14px); }
+        }
+
+        .sf-card-title { font-size: 0.82rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+        .sf-card-sub { font-size: 0.74rem; color: var(--steel-light); }
+
+        .skill-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 5px 12px;
+            border-radius: 100px;
+            background: rgba(18,18,27,0.04);
+            border: 1px solid var(--line);
+            color: var(--ink-soft);
+            transition: all 0.25s ease;
+        }
+        .skill-pill:hover {
+            border-color: transparent;
+            background: var(--gradient-ember);
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(255,107,74,0.35);
+        }
+
+        /* ============================================================
+           STATS
+           ============================================================ */
+        .sf-stats {
+            padding: 8px 0 70px;
+        }
+        .sf-stats-band {
+            background: var(--ink);
+            border-radius: var(--radius-lg);
+            padding: 52px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .sf-stats-band::before {
+            content: "";
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 50% 80% at 20% 0%, rgba(91,79,233,0.35), transparent 60%),
+                        radial-gradient(ellipse 40% 70% at 90% 100%, rgba(255,107,74,0.25), transparent 60%);
+        }
+        .sf-stat-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 3.4vw, 2.9rem);
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            position: relative;
+        }
+        .sf-stat-label {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.55);
+            position: relative;
+        }
+
+        /* ============================================================
+           SECTION HEADERS
+           ============================================================ */
+        .sf-section-head { max-width: 620px; margin: 0 auto 56px; text-align: center; }
+        .sf-kicker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--forge-ember);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .sf-section-head h2 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .sf-section-head p { color: var(--steel); font-size: 1.05rem; }
+
+        /* ============================================================
+           FEATURES
+           ============================================================ */
+        .sf-features { padding: 90px 0; }
+
+        .feature-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 32px 28px;
+            height: 100%;
+            transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::after {
+            content: "";
+            position: absolute; inset: 0;
+            background: var(--gradient-brand);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: transparent;
+            box-shadow: var(--shadow-lift);
+        }
+        .feature-card > * { position: relative; z-index: 1; }
+
+        .feature-icon {
+            width: 46px; height: 46px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(91, 79, 233, 0.08);
+            color: var(--forge-violet);
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover .feature-icon {
+            background: var(--gradient-brand);
+            color: #fff;
+            transform: rotate(-6deg) scale(1.05);
+        }
+
+        .feature-card h3 { font-size: 1.12rem; font-weight: 600; margin-bottom: 10px; }
+        .feature-card p { color: var(--steel); font-size: 0.92rem; line-height: 1.6; margin: 0; }
+
+        /* ============================================================
+           HOW IT WORKS
+           ============================================================ */
+        .sf-steps { padding: 20px 0 90px; }
+        .step-card {
+            padding: 8px 8px 8px 0;
+            height: 100%;
+        }
+        .step-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--forge-violet);
+            background: rgba(91,79,233,0.08);
+            border: 1px solid rgba(91,79,233,0.18);
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 18px;
+        }
+        .step-card h3 { font-size: 1.08rem; font-weight: 600; margin-bottom: 8px; }
+        .step-card p { color: var(--steel); font-size: 0.92rem; line-height: 1.6; }
+        .step-connector {
+            border-top: 1px dashed var(--line);
+            position: relative;
+            top: 20px;
+        }
+
+        /* ============================================================
+           TESTIMONIALS
+           ============================================================ */
+        .sf-testimonials {
+            padding: 90px 0;
+            background: var(--paper-dim);
+        }
+
+        .testimonial-card {
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: var(--radius-md);
+            padding: 30px 26px;
+            height: 100%;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lift);
+        }
+        .testimonial-stars { color: var(--forge-gold); font-size: 0.85rem; margin-bottom: 14px; letter-spacing: 2px; }
+        .testimonial-card p.quote {
+            font-size: 0.98rem;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            margin-bottom: 22px;
+        }
+        .testimonial-person { display: flex; align-items: center; gap: 12px; }
+        .testimonial-avatar {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: var(--gradient-brand);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 600; font-size: 0.88rem;
+            font-family: 'Space Grotesk', sans-serif;
+            flex-shrink: 0;
+        }
+        .testimonial-name { font-weight: 600; font-size: 0.9rem; color: var(--ink); }
+        .testimonial-role { font-size: 0.78rem; color: var(--steel-light); }
+
+        /* ============================================================
+           CTA BAND
+           ============================================================ */
+        .sf-cta { padding: 90px 0; }
+        .sf-cta-band {
+            background: var(--gradient-brand);
+            border-radius: var(--radius-lg);
+            padding: 64px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .sf-cta-band::before {
+            content: "";
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 50% 80% at 90% 100%, rgba(255,182,72,0.4), transparent 60%);
+        }
+        .sf-cta-band h2 {
+            color: #fff;
+            font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .sf-cta-band p {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.05rem;
+            max-width: 520px;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+        .sf-cta-band .cta-actions { position: relative; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+        .btn-sf-white {
+            font-weight: 600;
+            padding: 13px 28px;
+            border-radius: 100px;
+            border: none;
+            background: #fff;
+            color: var(--forge-violet-deep);
+            transition: all 0.25s ease;
+        }
+        .btn-sf-white:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(0,0,0,0.2); color: var(--forge-violet-deep); }
+
+        .btn-sf-outline-white {
+            font-weight: 600;
+            padding: 13px 28px;
+            border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: transparent;
+            color: #fff;
+            transition: all 0.25s ease;
+        }
+        .btn-sf-outline-white:hover { background: rgba(255,255,255,0.12); border-color: #fff; color: #fff; }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .sf-footer {
+            background: var(--ink);
+            color: rgba(255,255,255,0.65);
+            padding: 64px 0 28px;
+        }
+        .sf-footer h3, .sf-footer .sf-brand { color: #fff; }
+        .sf-footer-brand-desc { color: rgba(255,255,255,0.5); font-size: 0.9rem; max-width: 280px; line-height: 1.6; margin-top: 14px; }
+        .sf-footer h6 {
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 18px;
+        }
+        .sf-footer ul { list-style: none; padding: 0; margin: 0; }
+        .sf-footer ul li { margin-bottom: 12px; }
+        .sf-footer ul li a {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+        .sf-footer ul li a:hover { color: #fff; }
+
+        .sf-footer-socials { display: flex; gap: 10px; margin-top: 20px; }
+        .sf-footer-socials a {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            transition: all 0.2s ease;
+        }
+        .sf-footer-socials a:hover { background: var(--gradient-brand); border-color: transparent; transform: translateY(-3px); }
+
+        .sf-footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 48px;
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.4);
+        }
+        .sf-footer-bottom a { color: rgba(255,255,255,0.4); margin-left: 18px; }
+        .sf-footer-bottom a:hover { color: #fff; }
+
+        /* ============================================================
+           UTILITIES / RESPONSIVE / A11Y
+           ============================================================ */
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--forge-violet);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+            html { scroll-behavior: auto; }
+        }
+
+        @media (max-width: 991.98px) {
+            .sf-hero-visual { height: 340px; margin-top: 40px; }
+            .sf-hero { padding-top: 48px; }
+            .sf-hero-lead { max-width: 100%; }
+        }
+
+        @media (max-width: 767.98px) {
+            .sf-stats-band { padding: 40px 22px; }
+            .sf-cta-band { padding: 48px 24px; }
+            .sf-footer-bottom { flex-direction: column; text-align: center; }
+            .sf-footer-bottom a { margin: 0 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="navbar navbar-expand-lg sf-navbar">
+    <div class="container container-xl">
+        <a class="sf-brand" href="{% url 'home' %}" onclick="return true;">
+            <span class="sf-brand-mark">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 20L12 4L20 20" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.5 12H15.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                </svg>
+            </span>
+            SkillForge
+        </a>
+
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#sfNavContent" aria-controls="sfNavContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="sfNavContent">
+            <ul class="navbar-nav mx-auto my-3 my-lg-0 gap-lg-1">
+                <li class="nav-item"><a class="nav-link sf-nav-link" href="#explore">Explore Talent</a></li>
+                <li class="nav-item"><a class="nav-link sf-nav-link" href="#how-it-works">How It Works</a></li>
+                <li class="nav-item"><a class="nav-link sf-nav-link" href="#features">For Clients</a></li>
+                <li class="nav-item"><a class="nav-link sf-nav-link" href="#testimonials">Success Stories</a></li>
+            </ul>
+            <div class="d-flex gap-2 flex-column flex-lg-row">
+                <a href="#" class="btn-sf-ghost text-center">Sign In</a>
+                <a href="#" class="btn-sf-primary text-center">Get Started Free</a>
+            </div>
+        </div>
     </div>
 </nav>
 
-<div class="container mt-5">
+{% block content %}
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="sf-hero">
+    <div class="container container-xl">
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-6">
+                <span class="sf-eyebrow"><span class="dot"></span> Now live · 12,000+ vetted professionals</span>
+                <h1>Where Skills Meet <span class="accent">Opportunity.</span></h1>
+                <p class="sf-hero-lead">
+                    SkillForge connects ambitious teams with the world's best independent talent.
+                    Post a project, get matched in hours, and ship work you're proud of — no
+                    guesswork, no wasted budget.
+                </p>
+                <div class="sf-hero-actions">
+                    <a href="#" class="btn-sf-gradient">Hire Top Talent <i class="bi bi-arrow-right ms-1"></i></a>
+                    <a href="#" class="btn-sf-ghost d-inline-flex align-items-center">Find Work</a>
+                </div>
+                <div class="sf-trust-row">
+                    <div class="sf-avatar-stack">
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                    <span>Trusted by 3,400+ growing companies worldwide</span>
+                </div>
+            </div>
 
-    {% block content %}
-    {% endblock %}
+            <div class="col-lg-6">
+                <div class="sf-hero-visual">
+                    <div class="sf-glow-orb"></div>
 
-</div>
+                    <div class="sf-hero-svg-wrap">
+                        <svg width="100%" height="100%" viewBox="0 0 480 420" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:440px;">
+                            <defs>
+                                <linearGradient id="sfGrad1" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#5B4FE9"/>
+                                    <stop offset="100%" stop-color="#8B7CF6"/>
+                                </linearGradient>
+                                <linearGradient id="sfGrad2" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#FF6B4A"/>
+                                    <stop offset="100%" stop-color="#FFB648"/>
+                                </linearGradient>
+                            </defs>
+                            <circle cx="240" cy="210" r="150" fill="url(#sfGrad1)" opacity="0.08"/>
+                            <rect x="120" y="90" width="160" height="160" rx="28" fill="url(#sfGrad1)" opacity="0.9" transform="rotate(-8 200 170)"/>
+                            <rect x="210" y="150" width="150" height="150" rx="26" fill="url(#sfGrad2)" opacity="0.92" transform="rotate(10 285 225)"/>
+                            <circle cx="150" cy="290" r="46" fill="#12121B" opacity="0.9"/>
+                            <path d="M132 290 L146 304 L172 276" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="360" cy="120" r="8" fill="#FFB648"/>
+                            <circle cx="95" cy="150" r="6" fill="#FF6B4A"/>
+                            <circle cx="330" cy="300" r="5" fill="#5B4FE9"/>
+                        </svg>
+                    </div>
 
+                    <div class="sf-glass-card card-1">
+                        <div class="sf-card-title"><i class="bi bi-patch-check-fill text-primary"></i> Verified Match</div>
+                        <div class="sf-card-sub">Senior Product Designer</div>
+                    </div>
+
+                    <div class="sf-glass-card card-2">
+                        <div class="d-flex gap-2">
+                            <span class="skill-pill">React</span>
+                            <span class="skill-pill">Figma</span>
+                        </div>
+                    </div>
+
+                    <div class="sf-glass-card card-3">
+                        <div class="sf-card-title">$48K paid out</div>
+                        <div class="sf-card-sub">This week, on SkillForge</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     STATS
+     ============================================================ -->
+<section class="sf-stats">
+    <div class="container container-xl">
+        <div class="sf-stats-band">
+            <div class="row text-center g-4">
+                <div class="col-6 col-lg-3">
+                    <div class="sf-stat-num">12K+</div>
+                    <div class="sf-stat-label mono">Vetted freelancers</div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="sf-stat-num">$86M+</div>
+                    <div class="sf-stat-label mono">Paid to talent</div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="sf-stat-num">3,400+</div>
+                    <div class="sf-stat-label mono">Companies hiring</div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="sf-stat-num">98%</div>
+                    <div class="sf-stat-label mono">Client satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     FEATURES
+     ============================================================ -->
+<section class="sf-features" id="features">
+    <div class="container container-xl">
+        <div class="sf-section-head">
+            <span class="sf-kicker">Why SkillForge</span>
+            <h2>Built for how great work actually happens</h2>
+            <p>Every tool you need to hire, collaborate, and get paid — without the friction of traditional freelance platforms.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-patch-check"></i></div>
+                    <h3>Rigorous Vetting</h3>
+                    <p>Every professional passes a skills-based review before joining, so you only see talent that can actually deliver.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
+                    <h3>Escrow-Protected Payments</h3>
+                    <p>Funds are held securely and released on milestones, so both sides are protected from day one.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-lightning-charge"></i></div>
+                    <h3>Matched in Hours</h3>
+                    <p>Our matching engine surfaces the right specialists for your brief fast — no scrolling through hundreds of profiles.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-chat-dots"></i></div>
+                    <h3>Built-in Workspace</h3>
+                    <p>Messaging, files, and milestones live in one place, so nothing important gets lost in email threads.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                    <h3>Transparent Pricing</h3>
+                    <p>No hidden fees, no bidding wars. Clear rates upfront so budgets stay predictable on every project.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-globe2"></i></div>
+                    <h3>Global Talent Pool</h3>
+                    <p>Access specialists across 90+ countries and every major discipline, from engineering to brand design.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section class="sf-steps" id="how-it-works">
+    <div class="container container-xl">
+        <div class="sf-section-head">
+            <span class="sf-kicker">The Process</span>
+            <h2>From brief to delivered work in three steps</h2>
+            <p>A straightforward path, whether you're hiring your first freelancer or scaling a distributed team.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-num">01</div>
+                    <h3>Post your project</h3>
+                    <p>Describe the scope, budget, and timeline. Takes less than five minutes to publish.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-num">02</div>
+                    <h3>Review your matches</h3>
+                    <p>Get a shortlist of vetted specialists within hours, complete with portfolios and rates.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-num">03</div>
+                    <h3>Collaborate & pay securely</h3>
+                    <p>Work inside SkillForge's workspace and release payment as milestones are completed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section class="sf-testimonials" id="testimonials">
+    <div class="container container-xl">
+        <div class="sf-section-head">
+            <span class="sf-kicker">Success Stories</span>
+            <h2>Loved by teams and freelancers alike</h2>
+            <p>Real outcomes from people building their business on SkillForge.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="quote">"We filled a senior engineering role in four days. The quality of talent on SkillForge is genuinely a step above other platforms we've tried."</p>
+                    <div class="testimonial-person">
+                        <div class="testimonial-avatar">RA</div>
+                        <div>
+                            <div class="testimonial-name">Riya Agarwal</div>
+                            <div class="testimonial-role">Head of Product, Nimbus</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="quote">"As a freelance designer, escrow payments changed everything. I finally stopped worrying about chasing invoices and focused on the work."</p>
+                    <div class="testimonial-person">
+                        <div class="testimonial-avatar">DM</div>
+                        <div>
+                            <div class="testimonial-name">Daniel Moreau</div>
+                            <div class="testimonial-role">Independent Product Designer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="quote">"The built-in workspace kept our entire contractor team aligned. It genuinely feels like an internal tool, not a marketplace bolt-on."</p>
+                    <div class="testimonial-person">
+                        <div class="testimonial-avatar">SK</div>
+                        <div>
+                            <div class="testimonial-name">Sara Kim</div>
+                            <div class="testimonial-role">Operations Lead, Fieldstone</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CTA
+     ============================================================ -->
+<section class="sf-cta">
+    <div class="container container-xl">
+        <div class="sf-cta-band">
+            <h2>Ready to forge your next great hire?</h2>
+            <p>Join thousands of companies and freelancers already building their best work on SkillForge.</p>
+            <div class="cta-actions">
+                <a href="#" class="btn-sf-white">Get Started — It's Free</a>
+                <a href="#" class="btn-sf-outline-white">Talk to Sales</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="sf-footer">
+    <div class="container container-xl">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <a class="sf-brand" href="{% url 'home' %}" onclick="return true;">
+                    <span class="sf-brand-mark">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 20L12 4L20 20" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8.5 12H15.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    SkillForge
+                </a>
+                <p class="sf-footer-brand-desc">The marketplace where skilled professionals and ambitious teams forge great work together.</p>
+                <div class="sf-footer-socials">
+                    <a href="#" aria-label="Twitter / X"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <h6>Platform</h6>
+                <ul>
+                    <li><a href="#explore">Explore Talent</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#features">For Clients</a></li>
+                    <li><a href="#">Pricing</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <h6>Company</h6>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <h6>Resources</h6>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Community</a></li>
+                    <li><a href="#">Success Stories</a></li>
+                    <li><a href="#">Trust & Safety</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <h6>Legal</h6>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="sf-footer-bottom">
+            <span>© {% now "Y" %} SkillForge. All rights reserved.</span>
+            <div>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+                <a href="#">Sitemap</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block extra_js %}{% endblock %}
 </body>
 </html>
