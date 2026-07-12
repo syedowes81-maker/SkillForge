@@ -13,12 +13,12 @@ def register(request):
             user.set_password(form.cleaned_data["password"])
             user.save()
 
-            return redirect("/register/")
+            return redirect("login")
 
     else:
         form = RegistrationForm()
 
-    return render(request, "register.html", {"form": form})
+    return render(request, "accounts/register.html", {"form": form})
 
 
 def login_view(request):
@@ -39,14 +39,14 @@ def login_view(request):
                 login(request, user)
                 return redirect("/dashboard/")
 
-        return render(request, "login.html", {"form": form})
+        return render(request, "accounts/login.html", {"form": form})
 
     form = LoginForm()
-    return render(request, "login.html", {"form": form})
+    return render(request, "accounts/login.html", {"form": form})
 
 @login_required
 def dashboard(request):
-  return render(request,"dashboard.html")
+  return render(request,"accounts/dashboard.html")
 
 def logout_view(request):
   logout(request)
