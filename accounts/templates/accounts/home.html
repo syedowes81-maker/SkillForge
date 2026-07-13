@@ -2,22 +2,34 @@
 
 {% block content %}
 
-<div class="text-center mt-5">
+<section class="hero text-center">
 
-    <h1 class="display-4">Welcome to SkillForge</h1>
+    <h1>
+        Build Your Career.<br>
+        Hire Top Talent.
+    </h1>
 
-    <p class="lead">
-        Connect Freelancers with Clients
+    <p class="mt-3">
+        Where Skills Meet Opportunity.
     </p>
 
-    <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
-        Get Started
-    </a>
+    <p class="text-secondary">
+        Connect skilled freelancers with trusted clients
+        and build amazing projects together.
+    </p>
 
-    <a href="{% url 'login' %}" class="btn btn-outline-dark btn-lg">
-        Login
-    </a>
+    <div class="mt-4">
 
-</div>
+        <a href="/register/" class="btn btn-primary me-3">
+            🚀 Get Started
+        </a>
+
+        <a href="#" class="btn btn-dark">
+            🔍 Explore Talent
+        </a>
+
+    </div>
+
+</section>
 
 {% endblock %}
