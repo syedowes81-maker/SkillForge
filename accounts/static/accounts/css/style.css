@@ -84,3 +84,19 @@ footer {
     text-align: center;
     color: #64748b;
 }
+.floating-cards{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.freelancer-card{
+    background:white;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    transition:0.3s ease;
+}
+
+.freelancer-card:hover{
+    transform:translateY(-8px);
+}
