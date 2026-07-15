@@ -1,68 +1,282 @@
 {% extends "accounts/base.html" %}
+{% load static %}
 
 {% block content %}
 
-<section class="hero py-5">
+<!-- ============ HERO ============ -->
+<section class="sf-hero">
+  <div class="container sf-hero__grid">
 
-    <div class="row align-items-center">
+    <div class="sf-hero__copy">
+      <span class="sf-eyebrow">Freelance Marketplace</span>
 
-        <div class="col-lg-6">
+      <h1 class="sf-hero__title">
+        <span>Build Your Career.</span>
+        <span class="accent">Hire Top Talent.</span>
+      </h1>
 
-            <h1 class="display-3 fw-bold">
-                Create. <br>
-                Collaborate.
-                Grow.
-            </h1>
+      <p class="sf-hero__subtitle">Where Skills Meet Opportunity.</p>
 
-            <p class="lead text-secondary mt-4">
-                Where Skills Meet Opportunity.
-            </p>
+      <div class="sf-hero__actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'dashboard' %}" class="btn btn--primary">Go to Dashboard</a>
+        {% else %}
+          <a href="{% url 'register' %}" class="btn btn--primary">Get Started</a>
+        {% endif %}
+        <a href="#how-it-works" class="btn btn--ghost">Explore</a>
+      </div>
 
-            <div class="mt-4">
-
-                <a href="/register/" class="btn btn-primary btn-lg me-3">
-                    Get Started
-                </a>
-
-                <a href="#" class="btn btn-outline-dark btn-lg">
-                    Explore Talent
-                </a>
-
-            </div>
-
+      <div class="sf-hero__meta">
+        <div class="sf-avatar-stack">
+          <span></span><span></span><span></span><span></span>
         </div>
-
-        <div class="col-lg-8 mx-auto text-center">
-
-            <div class="floating-cards">
-
-                <div class="card freelancer-card p-3 mb-3">
-                    <h5>👨‍💻 Python Developer</h5>
-                    <p class="mb-0 text-secondary">
-                        ⭐ 4.9 • ₹1200/hr
-                    </p>
-                </div>
-
-                <div class="card freelancer-card p-3 mb-3">
-                    <h5>🎨 UI/UX Designer</h5>
-                    <p class="mb-0 text-secondary">
-                        ⭐ 4.8 • ₹900/hr
-                    </p>
-                </div>
-
-                <div class="card freelancer-card p-3">
-                    <h5>🤖 AI Engineer</h5>
-                    <p class="mb-0 text-secondary">
-                        Available Now
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
-
+        <p><strong>12,000+</strong> freelancers already building their careers on SkillForge.</p>
+      </div>
     </div>
 
+    <div class="sf-mock">
+      <div class="sf-mock__panel">
+        <div class="sf-mock__topbar">
+          <div class="sf-mock__dots"><span></span><span></span><span></span></div>
+          <span class="sf-mock__title">Hiring Workspace</span>
+        </div>
+
+        <div class="sf-mock__body">
+          <div class="sf-mock__rail">
+            <i class="active"></i>
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
+
+          <div class="sf-mock__main">
+            <div class="sf-mock__row">
+              <span class="sf-mock__avatar"></span>
+              <div class="sf-mock__rowtext">
+                <b>Brand Identity for Nova Labs</b>
+                <small>Design &middot; In progress</small>
+              </div>
+              <span class="sf-mock__bar"><span style="width:72%"></span></span>
+            </div>
+            <div class="sf-mock__row">
+              <span class="sf-mock__avatar"></span>
+              <div class="sf-mock__rowtext">
+                <b>API Integration Sprint</b>
+                <small>Development &middot; Review</small>
+              </div>
+              <span class="sf-mock__bar"><span style="width:45%"></span></span>
+            </div>
+            <div class="sf-mock__row">
+              <span class="sf-mock__avatar"></span>
+              <div class="sf-mock__rowtext">
+                <b>Product Launch Copy</b>
+                <small>Writing &middot; New proposal</small>
+              </div>
+              <span class="sf-mock__bar"><span style="width:20%"></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating proposal card -->
+      <div class="sf-float sf-float--proposal">
+        <div class="sf-float__head">
+          <span class="sf-mock__avatar" style="background:linear-gradient(135deg,#93c5fd,#1d4ed8);"></span>
+          <div>
+            <div class="sf-float__name">Maya Chen</div>
+            <div class="sf-float__role">Product Designer</div>
+          </div>
+        </div>
+        <div class="sf-float__stars">★★★★★ &nbsp;4.9 &middot; $65/hr</div>
+      </div>
+
+      <!-- Floating earnings/analytics card -->
+      <div class="sf-float sf-float--earnings">
+        <div class="sf-float__label">Earnings this month</div>
+        <div class="sf-float__value">$18,240</div>
+        <div class="sf-float__delta">↑ 24%</div>
+        <svg class="sf-spark" viewBox="0 0 140 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 24C14 20 18 8 30 10C42 12 46 22 58 20C70 18 74 6 86 8C98 10 102 20 114 16C122 13 128 6 138 4" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Floating message card -->
+      <div class="sf-float sf-float--message">
+        <div class="sf-float__head">
+          <span class="sf-mock__avatar" style="background:linear-gradient(135deg,#a7f3d0,#0f9d58);"></span>
+          <span class="sf-float__name" style="font-size:12px;">Client message</span>
+        </div>
+        <p class="sf-float__msg">"Contract signed — kicking off Monday."</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ TRUST BAR ============ -->
+<section class="sf-trust">
+  <div class="container sf-trust__inner">
+    <span class="sf-trust__label">Trusted by teams building with SkillForge</span>
+    <div class="sf-trust__marks">
+      <span>NOVA</span>
+      <span>ARC&nbsp;STUDIO</span>
+      <span>FLUXWORKS</span>
+      <span>ORBITAL</span>
+      <span>HAVEN</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="sf-section" id="how-it-works">
+  <div class="container">
+    <div class="sf-section__head">
+      <span class="sf-eyebrow">How it Works</span>
+      <h2>From first message to final payment, in three steps.</h2>
+      <p>No lengthy onboarding, no guesswork — just a clear path from posting a project to getting work done.</p>
+    </div>
+
+    <div class="sf-steps">
+      <div class="sf-step">
+        <div class="sf-step__num">01</div>
+        <h3>Post or browse projects</h3>
+        <p>Clients describe what they need; freelancers browse open work that matches their skills.</p>
+      </div>
+      <div class="sf-step">
+        <div class="sf-step__num">02</div>
+        <h3>Match and agree on terms</h3>
+        <p>Review proposals, compare rates and portfolios, and lock in scope before work begins.</p>
+      </div>
+      <div class="sf-step">
+        <div class="sf-step__num">03</div>
+        <h3>Deliver and get paid</h3>
+        <p>Track progress in one workspace and release payment securely once the work is approved.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURE SPLITS ============ -->
+<section class="sf-section sf-section--tight" id="talent">
+  <div class="container">
+
+    <div class="sf-feature">
+      <div class="sf-feature__copy">
+        <span class="sf-eyebrow">For Clients</span>
+        <h3>Hire the right person, not just an available one.</h3>
+        <p>Filter by skill, rate, and past work to find freelancers who fit the project — then keep every conversation and file in one place.</p>
+        <ul class="sf-checklist">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Verified freelancer profiles with reviewed work history
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Built-in messaging tied to each project
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Payments released only when work is approved
+          </li>
+        </ul>
+      </div>
+
+      <div class="sf-feature__visual">
+        <div class="sf-visual__header">
+          <b>Top matches for you</b>
+          <span class="sf-visual__pill">Design</span>
+        </div>
+        <div class="sf-mini-row">
+          <span class="sf-mini-avatar"></span>
+          <div class="sf-mini-row__text">
+            <b>Elena Ruiz</b>
+            <span>UI/UX Designer &middot; 4.9 rating</span>
+          </div>
+          <span class="sf-mini-row__amount">$58/hr</span>
+        </div>
+        <div class="sf-mini-row">
+          <span class="sf-mini-avatar"></span>
+          <div class="sf-mini-row__text">
+            <b>James Park</b>
+            <span>Brand Designer &middot; 4.8 rating</span>
+          </div>
+          <span class="sf-mini-row__amount">$72/hr</span>
+        </div>
+        <div class="sf-mini-row">
+          <span class="sf-mini-avatar"></span>
+          <div class="sf-mini-row__text">
+            <b>Sara Ahmed</b>
+            <span>Product Designer &middot; 5.0 rating</span>
+          </div>
+          <span class="sf-mini-row__amount">$65/hr</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sf-feature sf-feature--reverse" id="work">
+      <div class="sf-feature__copy">
+        <span class="sf-eyebrow">For Freelancers</span>
+        <h3>See exactly where your income stands.</h3>
+        <p>Track active contracts, pending proposals, and earnings in a single dashboard built for independent work — no spreadsheets required.</p>
+        <ul class="sf-checklist">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Real-time view of earnings and outstanding invoices
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Proposal tracking from sent to signed
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            One profile, visible to every client on the platform
+          </li>
+        </ul>
+      </div>
+
+      <div class="sf-feature__visual sf-chart-visual">
+        <div class="sf-visual__header">
+          <b>Earnings overview</b>
+          <span class="sf-visual__pill">Last 30 days</span>
+        </div>
+        <div class="sf-chart-visual__stat">
+          <b>$18,240</b>
+          <span>↑ 24% vs last month</span>
+        </div>
+        <svg viewBox="0 0 400 120" width="100%" height="120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 100C30 90 45 40 75 45C105 50 115 90 145 85C175 80 190 30 220 35C250 40 260 75 290 65C320 55 335 15 365 20C380 22 390 30 400 35"
+                stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M0 100C30 90 45 40 75 45C105 50 115 90 145 85C175 80 190 30 220 35C250 40 260 75 290 65C320 55 335 15 365 20C380 22 390 30 400 35V120H0V100Z"
+                fill="url(#sf-chart-grad)"/>
+          <defs>
+            <linearGradient id="sf-chart-grad" x1="0" y1="0" x2="0" y2="120" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#2563eb" stop-opacity="0.18"/>
+              <stop offset="1" stop-color="#2563eb" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="container">
+  <div class="sf-cta">
+    <div class="sf-cta__inner">
+      <h2>Your next project — or your next hire — starts here.</h2>
+      <p>Join a marketplace built around clear scope, verified work, and secure payments.</p>
+      <div class="sf-cta__actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'dashboard' %}" class="btn btn--primary">Go to Dashboard</a>
+        {% else %}
+          <a href="{% url 'register' %}" class="btn btn--primary">Get Started</a>
+          <a href="{% url 'login' %}" class="btn btn--ghost">Log In</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </section>
 
 {% endblock %}

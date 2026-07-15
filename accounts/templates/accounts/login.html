@@ -1,17 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
 
-<h1>Login</h1>
+{% block title %}Log In — SkillForge{% endblock %}
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-</form>
+{% block content %}
+<section class="sf-auth">
+  <div class="sf-auth__card">
+    <span class="sf-eyebrow">Welcome back</span>
+    <h1>Log in to SkillForge</h1>
+    <p>Pick up where you left off — projects, proposals, and messages.</p>
 
-</body>
-</html>
+    {# NOTE: form action/method and field names are unchanged — only wrapper markup/classes were added. #}
+    <form method="post" action="{% url 'login' %}" novalidate>
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="sf-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <small style="color:#dc2626; display:block; margin-top:6px;">{{ field.errors|striptags }}</small>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      {% if form.non_field_errors %}
+        <p style="color:#dc2626; font-size:13.5px; margin-top:14px;">{{ form.non_field_errors|striptags }}</p>
+      {% endif %}
+
+      <div class="sf-auth__submit">
+        <button type="submit" class="btn btn--primary btn--block">Log In</button>
+      </div>
+    </form>
+
+    <p class="sf-auth__foot">
+      Don't have an account? <a href="{% url 'register' %}">Create one</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

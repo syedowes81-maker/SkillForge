@@ -1,34 +1,41 @@
 {% extends "accounts/base.html" %}
+{% load static %}
+
+{% block title %}Create Account — SkillForge{% endblock %}
 
 {% block content %}
+<section class="sf-auth">
+  <div class="sf-auth__card">
+    <span class="sf-eyebrow">Get started</span>
+    <h1>Create your account</h1>
+    <p>Join as a freelancer or a client — you can always adjust this later.</p>
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
+    {# NOTE: form action/method and field names are unchanged — only wrapper markup/classes were added. #}
+    <form method="post" action="{% url 'register' %}" novalidate>
+      {% csrf_token %}
 
-        <div class="card shadow">
-
-            <div class="card-header text-center">
-                <h3>Register</h3>
-            </div>
-
-            <div class="card-body">
-
-                <form method="POST">
-                    {% csrf_token %}
-
-                    {{ form.as_p }}
-
-                    <button type="submit" class="btn btn-primary w-100">
-                        Register
-                    </button>
-
-                </form>
-
-            </div>
-
+      {% for field in form %}
+        <div class="sf-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <small style="color:#dc2626; display:block; margin-top:6px;">{{ field.errors|striptags }}</small>
+          {% endif %}
         </div>
+      {% endfor %}
 
-    </div>
-</div>
+      {% if form.non_field_errors %}
+        <p style="color:#dc2626; font-size:13.5px; margin-top:14px;">{{ form.non_field_errors|striptags }}</p>
+      {% endif %}
 
+      <div class="sf-auth__submit">
+        <button type="submit" class="btn btn--primary btn--block">Create Account</button>
+      </div>
+    </form>
+
+    <p class="sf-auth__foot">
+      Already have an account? <a href="{% url 'login' %}">Log in</a>
+    </p>
+  </div>
+</section>
 {% endblock %}
