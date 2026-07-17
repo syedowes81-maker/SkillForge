@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
 def register(request):
     if request.method == "POST":
@@ -54,3 +55,8 @@ def logout_view(request):
 
 def home(request):
  return render(request,"accounts/home.html")
+
+@login_required
+def profile(request):
+  profile=request.user.freelancerprofile
+  return render(request,"accounts/profile.html",{"profile":profile})

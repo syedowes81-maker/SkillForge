@@ -1,41 +1,649 @@
-{% extends "base.html" %}
+{% extends "accounts/base.html" %}
 {% load static %}
 
-{% block title %}Log In — SkillForge{% endblock %}
-
 {% block content %}
-<section class="sf-auth">
-  <div class="sf-auth__card">
-    <span class="sf-eyebrow">Welcome back</span>
-    <h1>Log in to SkillForge</h1>
-    <p>Pick up where you left off — projects, proposals, and messages.</p>
+<div class="sf-auth" id="sfAuth" data-mode="login">
 
-    {# NOTE: form action/method and field names are unchanged — only wrapper markup/classes were added. #}
-    <form method="post" action="{% url 'login' %}" novalidate>
-      {% csrf_token %}
+  <div class="sf-auth__stage">
 
-      {% for field in form %}
-        <div class="sf-field">
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
-          {% if field.errors %}
-            <small style="color:#dc2626; display:block; margin-top:6px;">{{ field.errors|striptags }}</small>
-          {% endif %}
+    <!-- ============ LEFT — VISUAL PANEL ============ -->
+    <div class="sf-visual" id="sfVisual" aria-hidden="true">
+      <div class="sf-visual__glow"></div>
+
+      <div class="sf-visual__grid"></div>
+
+      <div class="sf-visual__content">
+        <div class="sf-visual__mark">
+          <span class="sf-visual__mark-dot"></span>
+          SkillForge
         </div>
-      {% endfor %}
-
-      {% if form.non_field_errors %}
-        <p style="color:#dc2626; font-size:13.5px; margin-top:14px;">{{ form.non_field_errors|striptags }}</p>
-      {% endif %}
-
-      <div class="sf-auth__submit">
-        <button type="submit" class="btn btn--primary btn--block">Log In</button>
+        <h2 class="sf-visual__headline">
+          Where independent<br/>work finds its clients.
+        </h2>
+        <p class="sf-visual__sub">
+          Proposals, payments and projects — held together in one calm, connected workspace.
+        </p>
       </div>
-    </form>
 
-    <p class="sf-auth__foot">
-      Don't have an account? <a href="{% url 'register' %}">Create one</a>
-    </p>
+      <!-- Floating object cluster (signature element) -->
+      <div class="sf-cluster" id="sfCluster">
+        <svg class="sf-cluster__lines" viewBox="0 0 560 560" preserveAspectRatio="none">
+          <line x1="120" y1="150" x2="330" y2="230" class="sf-line" />
+          <line x1="330" y1="230" x2="440" y2="120" class="sf-line" />
+          <line x1="330" y1="230" x2="260" y2="400" class="sf-line" />
+          <line x1="260" y1="400" x2="440" y2="440" class="sf-line" />
+        </svg>
+
+        <!-- Proposal card -->
+        <div class="sf-float sf-float--card1">
+          <div class="sf-card-tile">
+            <div class="sf-card-tile__row">
+              <div class="sf-avatar"></div>
+              <div class="sf-card-tile__meta">
+                <span class="sf-bar sf-bar--w60"></span>
+                <span class="sf-bar sf-bar--w40 sf-bar--dim"></span>
+              </div>
+            </div>
+            <span class="sf-pill">Proposal sent</span>
+          </div>
+        </div>
+
+        <!-- Earnings chart -->
+        <div class="sf-float sf-float--card2">
+          <div class="sf-card-tile sf-card-tile--chart">
+            <span class="sf-bar sf-bar--w50 sf-bar--dim"></span>
+            <svg viewBox="0 0 120 46" class="sf-chart">
+              <polyline points="0,36 20,30 40,32 60,18 80,22 100,8 120,12" class="sf-chart__line" />
+              <polyline points="0,36 20,30 40,32 60,18 80,22 100,8 120,12 120,46 0,46" class="sf-chart__fill" />
+            </svg>
+            <span class="sf-chart__value">$4,280</span>
+          </div>
+        </div>
+
+        <!-- Code snippet -->
+        <div class="sf-float sf-float--card3">
+          <div class="sf-card-tile sf-card-tile--code">
+            <div class="sf-code-dots"><span></span><span></span><span></span></div>
+            <span class="sf-code-line sf-code-line--w70"></span>
+            <span class="sf-code-line sf-code-line--w45"></span>
+            <span class="sf-code-line sf-code-line--w60"></span>
+          </div>
+        </div>
+
+        <!-- Message bubble -->
+        <div class="sf-float sf-float--card4">
+          <div class="sf-card-tile sf-card-tile--msg">
+            <span class="sf-bar sf-bar--w70"></span>
+            <span class="sf-bar sf-bar--w50 sf-bar--dim"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ RIGHT — AUTH PANEL ============ -->
+    <div class="sf-panel">
+
+      <div class="sf-tabs" role="tablist">
+        <button type="button" class="sf-tab is-active" data-target="login" role="tab" aria-selected="true">
+          Log in
+        </button>
+        <button type="button" class="sf-tab" data-target="register" role="tab" aria-selected="false">
+          Create account
+        </button>
+        <span class="sf-tabs__indicator" id="sfIndicator"></span>
+      </div>
+
+      <div class="sf-forms" id="sfForms">
+        <div class="sf-track" id="sfTrack">
+
+          <!-- ---------------- LOGIN ---------------- -->
+          <section class="sf-form" id="sfLoginPane">
+            <header class="sf-form__head">
+              <h1>Welcome back</h1>
+              <p>Log in to keep your work moving.</p>
+            </header>
+
+            <button type="button" class="sf-oauth">
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/>
+                <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.81.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/>
+                <path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.83.98 4.03l2.97-2.33z"/>
+                <path fill="#EA4335" d="M9 3.58c1.32 0 2.51.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97l2.97 2.33C4.66 5.17 6.65 3.58 9 3.58z"/>
+              </svg>
+              Continue with Google
+            </button>
+
+            <div class="sf-divider"><span>or</span></div>
+
+            <form method="post" action="{% url 'login' %}" class="sf-fields" novalidate>
+              {% csrf_token %}
+
+              <label class="sf-field">
+                <span class="sf-field__label">Email</span>
+                <div class="sf-field__control">
+                  <svg class="sf-field__icon" viewBox="0 0 20 20" fill="none"><path d="M3 5.5h14a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4"/><path d="m3 6 7 5 7-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+                </div>
+              </label>
+
+              <label class="sf-field">
+                <span class="sf-field__label">Password</span>
+                <div class="sf-field__control">
+                  <svg class="sf-field__icon" viewBox="0 0 20 20" fill="none"><rect x="4" y="8.5" width="12" height="8" rx="1.6" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 8.5V6a3.5 3.5 0 0 1 7 0v2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+                  <button type="button" class="sf-field__toggle" data-toggle-password aria-label="Show password">
+                    <svg viewBox="0 0 20 20" fill="none"><path d="M1.5 10S4.5 4.5 10 4.5 18.5 10 18.5 10 15.5 15.5 10 15.5 1.5 10 1.5 10Z" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="10" r="2.3" stroke="currentColor" stroke-width="1.3"/></svg>
+                  </button>
+                </div>
+              </label>
+
+              <div class="sf-row">
+                <label class="sf-check">
+                  <input type="checkbox" name="remember" />
+                  <span class="sf-check__box"></span>
+                  Remember me
+                </label>
+                <a href="{% url 'password_reset' %}" class="sf-link">Forgot password?</a>
+              </div>
+
+              <button type="submit" class="sf-submit">Log in</button>
+            </form>
+
+            <p class="sf-switch">
+              Don't have an account?
+              <button type="button" class="sf-switch__link" data-target="register">Create one</button>
+            </p>
+          </section>
+
+          <!-- ---------------- REGISTER ---------------- -->
+          <section class="sf-form" id="sfRegisterPane">
+            <header class="sf-form__head">
+              <h1>Create your account</h1>
+              <p>Set up SkillForge in under a minute.</p>
+            </header>
+
+            <button type="button" class="sf-oauth">
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/>
+                <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.81.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/>
+                <path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.83.98 4.03l2.97-2.33z"/>
+                <path fill="#EA4335" d="M9 3.58c1.32 0 2.51.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97l2.97 2.33C4.66 5.17 6.65 3.58 9 3.58z"/>
+              </svg>
+              Continue with Google
+            </button>
+
+            <div class="sf-divider"><span>or</span></div>
+
+            <form method="post" action="{% url 'register' %}" class="sf-fields" novalidate>
+              {% csrf_token %}
+
+              <label class="sf-field">
+                <span class="sf-field__label">Username</span>
+                <div class="sf-field__control">
+                  <svg class="sf-field__icon" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="6.8" r="3.2" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 16c1.1-3 3.7-4.5 6.5-4.5s5.4 1.5 6.5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  <input type="text" name="username" placeholder="yourname" autocomplete="username" required />
+                </div>
+              </label>
+
+              <label class="sf-field">
+                <span class="sf-field__label">Email</span>
+                <div class="sf-field__control">
+                  <svg class="sf-field__icon" viewBox="0 0 20 20" fill="none"><path d="M3 5.5h14a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.4"/><path d="m3 6 7 5 7-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+                </div>
+              </label>
+
+              <label class="sf-field">
+                <span class="sf-field__label">Password</span>
+                <div class="sf-field__control">
+                  <svg class="sf-field__icon" viewBox="0 0 20 20" fill="none"><rect x="4" y="8.5" width="12" height="8" rx="1.6" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 8.5V6a3.5 3.5 0 0 1 7 0v2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  <input type="password" name="password" placeholder="••••••••" autocomplete="new-password" required />
+                  <button type="button" class="sf-field__toggle" data-toggle-password aria-label="Show password">
+                    <svg viewBox="0 0 20 20" fill="none"><path d="M1.5 10S4.5 4.5 10 4.5 18.5 10 18.5 10 15.5 15.5 10 15.5 1.5 10 1.5 10Z" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="10" r="2.3" stroke="currentColor" stroke-width="1.3"/></svg>
+                  </button>
+                </div>
+              </label>
+
+              <label class="sf-field">
+                <span class="sf-field__label">Confirm password</span>
+                <div class="sf-field__control">
+                  <svg class="sf-field__icon" viewBox="0 0 20 20" fill="none"><rect x="4" y="8.5" width="12" height="8" rx="1.6" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 8.5V6a3.5 3.5 0 0 1 7 0v2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  <input type="password" name="confirm_password" placeholder="••••••••" autocomplete="new-password" required />
+                  <button type="button" class="sf-field__toggle" data-toggle-password aria-label="Show password">
+                    <svg viewBox="0 0 20 20" fill="none"><path d="M1.5 10S4.5 4.5 10 4.5 18.5 10 18.5 10 15.5 15.5 10 15.5 1.5 10 1.5 10Z" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="10" r="2.3" stroke="currentColor" stroke-width="1.3"/></svg>
+                  </button>
+                </div>
+              </label>
+
+              <button type="submit" class="sf-submit">Create account</button>
+            </form>
+
+            <p class="sf-switch">
+              Already have an account?
+              <button type="button" class="sf-switch__link" data-target="login">Log in</button>
+            </p>
+          </section>
+
+        </div>
+      </div>
+
+    </div>
   </div>
-</section>
+</div>
+
+<style>
+  :root{
+    --sf-bg:#0F1115;
+    --sf-surface:#15181E;
+    --sf-surface-inset:#1B1F27;
+    --sf-border:#262B34;
+    --sf-border-soft:rgba(255,255,255,0.06);
+    --sf-text:#EDEFF3;
+    --sf-text-dim:#8A8F9C;
+    --sf-text-faint:#565C68;
+    --sf-accent:#5B8DEF;
+    --sf-accent-dim:rgba(91,141,239,0.14);
+    --sf-radius-lg:20px;
+    --sf-radius-md:12px;
+    --sf-radius-sm:8px;
+    --sf-font-head:'Sora', sans-serif;
+    --sf-font-body:'Inter', sans-serif;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  .sf-auth{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 18% 20%, rgba(91,141,239,0.07), transparent 45%),
+      radial-gradient(circle at 82% 78%, rgba(91,141,239,0.05), transparent 40%),
+      var(--sf-bg);
+    font-family:var(--sf-font-body);
+    color:var(--sf-text);
+    padding:32px 20px;
+    box-sizing:border-box;
+  }
+  .sf-auth *{ box-sizing:border-box; }
+
+  .sf-auth__stage{
+    width:100%;
+    max-width:1120px;
+    min-height:660px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    background:var(--sf-surface);
+    border:1px solid var(--sf-border-soft);
+    border-radius:var(--sf-radius-lg);
+    box-shadow:
+      0 40px 100px -30px rgba(0,0,0,0.65),
+      0 0 0 1px rgba(255,255,255,0.02) inset;
+    overflow:hidden;
+    backdrop-filter:blur(20px);
+  }
+
+  /* ============ VISUAL PANEL ============ */
+  .sf-visual{
+    position:relative;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(91,141,239,0.16), transparent 55%),
+      linear-gradient(165deg, #14171E 0%, #0D0F13 100%);
+    border-right:1px solid var(--sf-border-soft);
+    padding:56px 48px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow:hidden;
+  }
+  .sf-visual__glow{
+    position:absolute;
+    width:420px; height:420px;
+    right:-140px; top:-120px;
+    background:radial-gradient(circle, rgba(91,141,239,0.22), transparent 70%);
+    filter:blur(10px);
+    pointer-events:none;
+  }
+  .sf-visual__grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:36px 36px;
+    -webkit-mask-image:radial-gradient(circle at 35% 30%, black 0%, transparent 70%);
+    mask-image:radial-gradient(circle at 35% 30%, black 0%, transparent 70%);
+    pointer-events:none;
+  }
+
+  .sf-visual__content{ position:relative; z-index:2; max-width:340px; }
+  .sf-visual__mark{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--sf-font-head);
+    font-weight:600; font-size:15px; letter-spacing:0.01em;
+    color:var(--sf-text); margin-bottom:40px;
+  }
+  .sf-visual__mark-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--sf-accent);
+    box-shadow:0 0 12px rgba(91,141,239,0.7);
+  }
+  .sf-visual__headline{
+    font-family:var(--sf-font-head);
+    font-weight:600;
+    font-size:29px;
+    line-height:1.32;
+    letter-spacing:-0.01em;
+    margin:0 0 14px;
+    color:var(--sf-text);
+  }
+  .sf-visual__sub{
+    font-size:14.5px;
+    line-height:1.6;
+    color:var(--sf-text-dim);
+    margin:0;
+  }
+
+  /* Floating cluster */
+  .sf-cluster{
+    position:relative; z-index:2;
+    height:280px;
+    margin-top:20px;
+  }
+  .sf-cluster__lines{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    overflow:visible;
+  }
+  .sf-line{
+    stroke:rgba(91,141,239,0.28);
+    stroke-width:1;
+    stroke-dasharray:3 4;
+  }
+
+  .sf-float{ position:absolute; will-change:transform; }
+  .sf-float--card1{ left:0;   top:6px;  animation:sfFloat1 7s ease-in-out infinite; }
+  .sf-float--card2{ left:180px; top:66px; animation:sfFloat2 8.5s ease-in-out infinite; }
+  .sf-float--card3{ left:34px; top:176px; animation:sfFloat3 9s ease-in-out infinite; }
+  .sf-float--card4{ left:214px; top:206px; animation:sfFloat4 7.6s ease-in-out infinite; }
+
+  @keyframes sfFloat1{ 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-10px) rotate(-1deg);} }
+  @keyframes sfFloat2{ 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(9px) rotate(1deg);} }
+  @keyframes sfFloat3{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  @keyframes sfFloat4{ 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(11px) rotate(-0.8deg);} }
+
+  .sf-card-tile{
+    width:158px;
+    background:rgba(255,255,255,0.045);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    padding:14px;
+    backdrop-filter:blur(14px);
+    box-shadow:0 20px 40px -18px rgba(0,0,0,0.55);
+  }
+  .sf-card-tile__row{ display:flex; align-items:center; gap:9px; margin-bottom:12px; }
+  .sf-avatar{
+    width:26px; height:26px; border-radius:50%;
+    background:linear-gradient(135deg, #5B8DEF, #3E63B8);
+    flex-shrink:0;
+  }
+  .sf-card-tile__meta{ display:flex; flex-direction:column; gap:6px; flex:1; }
+  .sf-bar{ display:block; height:6px; border-radius:4px; background:rgba(255,255,255,0.32); }
+  .sf-bar--w40{ width:40%; } .sf-bar--w50{ width:50%; } .sf-bar--w60{ width:60%; } .sf-bar--w70{ width:70%; }
+  .sf-bar--dim{ background:rgba(255,255,255,0.14); }
+  .sf-pill{
+    display:inline-block; font-size:10.5px; font-weight:500;
+    color:var(--sf-accent); background:var(--sf-accent-dim);
+    padding:4px 9px; border-radius:20px;
+  }
+
+  .sf-card-tile--chart{ width:148px; }
+  .sf-chart{ width:100%; height:40px; margin:8px 0 6px; }
+  .sf-chart__line{ fill:none; stroke:var(--sf-accent); stroke-width:2; }
+  .sf-chart__fill{ fill:rgba(91,141,239,0.14); stroke:none; }
+  .sf-chart__value{ font-family:var(--sf-font-head); font-size:14px; font-weight:600; color:var(--sf-text); }
+
+  .sf-card-tile--code{ width:150px; }
+  .sf-code-dots{ display:flex; gap:5px; margin-bottom:11px; }
+  .sf-code-dots span{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.18); }
+  .sf-code-line{ display:block; height:5px; border-radius:3px; background:rgba(91,141,239,0.4); margin-bottom:7px; }
+  .sf-code-line--w70{ width:70%; } .sf-code-line--w45{ width:45%; background:rgba(255,255,255,0.16); } .sf-code-line--w60{ width:60%; }
+
+  .sf-card-tile--msg{ width:140px; display:flex; flex-direction:column; gap:7px; }
+
+  /* ============ AUTH PANEL ============ */
+  .sf-panel{
+    padding:56px 56px 44px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .sf-tabs{
+    position:relative;
+    display:flex;
+    background:var(--sf-surface-inset);
+    border:1px solid var(--sf-border);
+    border-radius:12px;
+    padding:4px;
+    margin-bottom:36px;
+    width:fit-content;
+  }
+  .sf-tab{
+    position:relative; z-index:2;
+    font-family:var(--sf-font-body);
+    font-size:13.5px; font-weight:500;
+    padding:9px 20px;
+    background:transparent; border:none;
+    color:var(--sf-text-dim);
+    cursor:pointer;
+    border-radius:9px;
+    transition:color .35s ease;
+  }
+  .sf-tab.is-active{ color:var(--sf-text); }
+  .sf-tabs__indicator{
+    position:absolute; top:4px; left:4px;
+    height:calc(100% - 8px);
+    width:calc(50% - 4px);
+    background:rgba(91,141,239,0.16);
+    border:1px solid rgba(91,141,239,0.3);
+    border-radius:9px;
+    transition:transform .45s cubic-bezier(.65,0,.35,1);
+  }
+  .sf-auth[data-mode="register"] .sf-tabs__indicator{ transform:translateX(100%); }
+
+  .sf-forms{
+    overflow:hidden;
+    transition:height .45s cubic-bezier(.65,0,.35,1);
+  }
+  .sf-track{
+    display:flex;
+    width:200%;
+    transition:transform .5s cubic-bezier(.65,0,.35,1);
+  }
+  .sf-auth[data-mode="register"] .sf-track{ transform:translateX(-50%); }
+  .sf-form{ width:50%; flex-shrink:0; padding-right:8px; }
+
+  .sf-form__head h1{
+    font-family:var(--sf-font-head);
+    font-size:25px; font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0 0 6px;
+  }
+  .sf-form__head p{
+    font-size:14px; color:var(--sf-text-dim); margin:0 0 26px;
+  }
+
+  .sf-oauth{
+    width:100%;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--sf-border);
+    color:var(--sf-text);
+    font-family:var(--sf-font-body);
+    font-size:13.5px; font-weight:500;
+    padding:12px 16px;
+    border-radius:var(--sf-radius-md);
+    cursor:pointer;
+    transition:background .2s ease, border-color .2s ease;
+  }
+  .sf-oauth:hover{ background:rgba(255,255,255,0.06); border-color:#333944; }
+
+  .sf-divider{
+    display:flex; align-items:center; gap:12px;
+    margin:22px 0; color:var(--sf-text-faint); font-size:12px;
+  }
+  .sf-divider::before, .sf-divider::after{
+    content:""; flex:1; height:1px; background:var(--sf-border);
+  }
+
+  .sf-fields{ display:flex; flex-direction:column; gap:16px; }
+  .sf-field{ display:flex; flex-direction:column; gap:7px; }
+  .sf-field__label{ font-size:12.5px; font-weight:500; color:var(--sf-text-dim); }
+  .sf-field__control{
+    position:relative;
+    display:flex; align-items:center;
+    background:var(--sf-surface-inset);
+    border:1px solid var(--sf-border);
+    border-radius:var(--sf-radius-md);
+    padding:0 14px;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .sf-field__control:focus-within{
+    border-color:var(--sf-accent);
+    box-shadow:0 0 0 3px rgba(91,141,239,0.16);
+  }
+  .sf-field__icon{ width:16px; height:16px; color:var(--sf-text-faint); flex-shrink:0; margin-right:10px; }
+  .sf-field__control input{
+    flex:1; min-width:0;
+    background:transparent; border:none; outline:none;
+    color:var(--sf-text);
+    font-family:var(--sf-font-body); font-size:14px;
+    padding:12px 0;
+  }
+  .sf-field__control input::placeholder{ color:var(--sf-text-faint); }
+  .sf-field__toggle{
+    background:transparent; border:none; cursor:pointer;
+    color:var(--sf-text-faint); padding:4px; display:flex;
+  }
+  .sf-field__toggle:hover{ color:var(--sf-text-dim); }
+  .sf-field__toggle svg{ width:17px; height:17px; }
+
+  .sf-row{ display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
+  .sf-check{
+    display:flex; align-items:center; gap:8px;
+    font-size:13px; color:var(--sf-text-dim); cursor:pointer; user-select:none;
+  }
+  .sf-check input{ display:none; }
+  .sf-check__box{
+    width:16px; height:16px; border-radius:5px;
+    border:1px solid var(--sf-border); background:var(--sf-surface-inset);
+    position:relative; transition:background .2s ease, border-color .2s ease;
+  }
+  .sf-check input:checked + .sf-check__box{ background:var(--sf-accent); border-color:var(--sf-accent); }
+  .sf-check input:checked + .sf-check__box::after{
+    content:""; position:absolute; left:4px; top:1px;
+    width:4px; height:8px;
+    border:solid #fff; border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  .sf-link{ font-size:13px; color:var(--sf-accent); text-decoration:none; }
+  .sf-link:hover{ text-decoration:underline; }
+
+  .sf-submit{
+    margin-top:6px;
+    width:100%;
+    background:var(--sf-accent);
+    color:#fff;
+    border:none;
+    font-family:var(--sf-font-body); font-size:14px; font-weight:600;
+    padding:13px; border-radius:var(--sf-radius-md);
+    cursor:pointer;
+    transition:filter .2s ease, transform .15s ease;
+  }
+  .sf-submit:hover{ filter:brightness(1.08); }
+  .sf-submit:active{ transform:scale(0.99); }
+
+  .sf-switch{
+    text-align:center; font-size:13.5px; color:var(--sf-text-dim);
+    margin:22px 0 0;
+  }
+  .sf-switch__link{
+    background:none; border:none; color:var(--sf-accent);
+    font-size:13.5px; font-weight:500; cursor:pointer; padding:0;
+  }
+  .sf-switch__link:hover{ text-decoration:underline; }
+
+  @media (max-width: 880px){
+    .sf-auth__stage{ grid-template-columns:1fr; max-width:460px; }
+    .sf-visual{ display:none; }
+    .sf-panel{ padding:40px 28px 32px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .sf-float, .sf-tabs__indicator, .sf-track, .sf-forms{ animation:none !important; transition:none !important; }
+  }
+</style>
+
+<script>
+(function(){
+  var auth = document.getElementById('sfAuth');
+  var tabs = auth.querySelectorAll('.sf-tab');
+  var switches = auth.querySelectorAll('[data-target]');
+  var formsWrap = document.getElementById('sfForms');
+  var loginPane = document.getElementById('sfLoginPane');
+  var registerPane = document.getElementById('sfRegisterPane');
+
+  function setHeight(mode){
+    var pane = mode === 'login' ? loginPane : registerPane;
+    formsWrap.style.height = pane.offsetHeight + 'px';
+  }
+
+  function setMode(mode){
+    auth.setAttribute('data-mode', mode);
+    tabs.forEach(function(t){
+      var active = t.getAttribute('data-target') === mode;
+      t.classList.toggle('is-active', active);
+      t.setAttribute('aria-selected', active);
+    });
+    setHeight(mode);
+  }
+
+  switches.forEach(function(el){
+    el.addEventListener('click', function(){
+      setMode(el.getAttribute('data-target'));
+    });
+  });
+
+  window.addEventListener('resize', function(){
+    setHeight(auth.getAttribute('data-mode'));
+  });
+
+  // initial height (after fonts/layout settle)
+  requestAnimationFrame(function(){ setHeight('login'); });
+  window.addEventListener('load', function(){ setHeight(auth.getAttribute('data-mode')); });
+
+  // password show/hide
+  auth.querySelectorAll('[data-toggle-password]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var input = btn.previousElementSibling;
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  });
+
+  // subtle parallax on the visual cluster
+  var visual = document.getElementById('sfVisual');
+  var cluster = document.getElementById('sfCluster');
+  if (visual && cluster && window.matchMedia('(prefers-reduced-motion: no-preference)').matches){
+    visual.addEventListener('mousemove', function(e){
+      var rect = visual.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      cluster.style.transform = 'translate(' + (x * 10) + 'px,' + (y * 10) + 'px)';
+    });
+    visual.addEventListener('mouseleave', function(){
+      cluster.style.transform = 'translate(0,0)';
+    });
+  }
+})();
+</script>
 {% endblock %}

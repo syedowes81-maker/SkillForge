@@ -1,0 +1,17 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h2>{{ request.user.username }}</h2>
+
+<p><strong>Bio:</strong> {{ profile.bio }}</p>
+
+<p><strong>Skills:</strong> {{ profile.skills }}</p>
+
+<p><strong>Experience:</strong> {{ profile.experience }} years</p>
+
+<p><strong>Hourly Rate:</strong> ₹{{ profile.hourly_rate }}</p>
+
+<p><strong>Location:</strong> {{ profile.location }}</p>
+
+{% endblock %}
