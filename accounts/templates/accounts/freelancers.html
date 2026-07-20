@@ -1,0 +1,47 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h1>Browse Freelancers</h1>
+<form method="GET" style="margin-bottom:20px;">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Search by skill..."
+        value="{{ query }}">
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+<hr>
+
+{% for freelancer in freelancers %}
+
+<div style="padding:20px; border:1px solid #ddd; margin-bottom:20px; border-radius:10px;">
+
+    <h3>{{ freelancer.user.username }}</h3>
+
+    <p>{{ freelancer.bio }}</p>
+
+    <p><strong>Skills:</strong> {{ freelancer.skills }}</p>
+
+    <p><strong>Experience:</strong> {{ freelancer.experience }}</p>
+
+    <p><strong>Rate:</strong> ₹{{ freelancer.hourly_rate }}/hr</p>
+  
+    <a href="{% url 'freelancer_detail' freelancer.id %}">
+    View Profile
+</a>
+</div>
+
+{% empty %}
+
+<p>No freelancers found.</p>
+
+{% endfor %}
+
+{% endblock %}

@@ -4,7 +4,8 @@ from .forms import RegistrationForm, LoginForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-
+from .models import FreelancerProfile
+from django.shortcuts import get_object_or_404
 def register(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
@@ -60,3 +61,32 @@ def home(request):
 def profile(request):
   profile=request.user.freelancerprofile
   return render(request,"accounts/profile.html",{"profile":profile})
+
+def freelancers(request):
+
+    query = request.GET.get("q")
+
+    freelancers = FreelancerProfile.objects.all()
+
+    if query:
+        freelancers = freelancers.filter(skills__icontains=query)
+
+    return render(
+        request,
+        "accounts/freelancers.html",
+        {
+            "freelancers": freelancers,
+            "query": query,
+        }
+    )
+
+def freelancer_detail(request, id):
+    freelancer = get_object_or_404(FreelancerProfile, id=id)
+
+    return render(
+        request,
+        "accounts/freelancer_detail.html",
+        {
+            "freelancer": freelancer,
+        },
+    )

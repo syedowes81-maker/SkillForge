@@ -1,0 +1,25 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h1>{{ freelancer.user.username }}</h1>
+
+<hr>
+
+<p><strong>Bio:</strong> {{ freelancer.bio }}</p>
+
+<p><strong>Skills:</strong> {{ freelancer.skills }}</p>
+
+<p><strong>Experience:</strong> {{ freelancer.experience }}</p>
+
+<p><strong>Hourly Rate:</strong> ₹{{ freelancer.hourly_rate }}/hr</p>
+
+<br><br>
+
+<button>
+ Hire Me
+</button>
+
+<a href="/freelancers/">← Back</a>
+
+{% endblock %}

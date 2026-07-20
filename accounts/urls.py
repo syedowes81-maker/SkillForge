@@ -8,4 +8,6 @@ urlpatterns=[
    path("dashboard/",views.dashboard,name="dashboard"),
    path("logout/",views.logout_view,name="logout"),
    path("profile/",views.profile,name="profile"),
+   path("freelancers/",views.freelancers,name="freelancers"),
+   path("freelancers/<int:id>/",views.freelancer_detail,name="freelancer_detail"),
 ]
