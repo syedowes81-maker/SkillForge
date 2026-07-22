@@ -32,3 +32,10 @@ def browse_jobs(request):
     return render(request, "jobs/browse_jobs.html", {
         "jobs": jobs
     })
+
+def job_detail(request, id):
+    job = Job.objects.get(id=id)
+
+    return render(request, "jobs/job_detail.html", {
+        "job": job
+    })
