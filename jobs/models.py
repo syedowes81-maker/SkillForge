@@ -11,3 +11,12 @@ class Job(models.Model):
 
     def _str_(self):
         return self.title
+
+class Application(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    freelancer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    cover_letter = models.TextField()
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    def _str_(self):
+        return f"{self.freelancer.username} -> {self.job.title}"
