@@ -1,0 +1,21 @@
+<h1>Browse Jobs</h1>
+
+{% for job in jobs %}
+
+<div style="border:1px solid #ccc; padding:15px; margin:15px;">
+
+    <h2>{{ job.title }}</h2>
+
+    <p>{{ job.description }}</p>
+
+    <strong>Budget:</strong> ₹{{ job.budget }}<br>
+
+    <strong>Location:</strong> {{ job.location }}
+
+</div>
+
+{% empty %}
+
+<p>No jobs available.</p>
+
+{% endfor %}
