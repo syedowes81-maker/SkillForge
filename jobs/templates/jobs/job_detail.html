@@ -7,3 +7,7 @@
 <p><strong>Location:</strong> {{ job.location }}</p>
 
 <p><strong>Posted by:</strong> {{ job.client.username }}</p>
+
+<a href="{% url 'apply_job' job.id %}">
+    <button>Apply Now</button>
+</a>

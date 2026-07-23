@@ -1,6 +1,6 @@
 from django import forms
 from .models import Job
-
+from .models import Application
 
 class JobForm(forms.ModelForm):
     class Meta:
@@ -11,3 +11,7 @@ class JobForm(forms.ModelForm):
             "budget",
             "location",
         ]
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ["cover_letter"]

@@ -9,7 +9,7 @@ class Job(models.Model):
     location = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.title
 
 class Application(models.Model):
@@ -20,3 +20,12 @@ class Application(models.Model):
 
     def _str_(self):
         return f"{self.freelancer.username} -> {self.job.title}"
+
+class Application(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    freelancer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    cover_letter = models.TextField()
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.freelancer.username} applied for {self.job.title}"
