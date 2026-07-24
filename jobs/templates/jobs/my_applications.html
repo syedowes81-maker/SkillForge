@@ -1,0 +1,25 @@
+<h1>My Applications</h1>
+
+{% if applications %}
+
+    {% for application in applications %}
+
+        <div style="border:1px solid #ccc; padding:15px; margin:15px;">
+
+            <h2>{{ application.job.title }}</h2>
+
+            <p><strong>Budget:</strong> ₹{{ application.job.budget }}</p>
+
+            <p><strong>Location:</strong> {{ application.job.location }}</p>
+
+            <p><strong>Applied:</strong> {{ application.applied_at }}</p>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>You haven't applied for any jobs yet.</p>
+
+{% endif %}

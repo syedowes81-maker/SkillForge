@@ -4,6 +4,8 @@ from .forms import JobForm
 from .models import Job
 from .models import Application
 from .forms import ApplicationForm
+from django.contrib.auth.decorators import login_required
+from .models import Application
 
 @login_required
 def post_job(request):
@@ -63,4 +65,14 @@ def apply_job(request, id):
     return render(request, "jobs/apply_job.html", {
         "form": form,
         "job": job
+    })
+
+@login_required
+def my_applications(request):
+    applications = Application.objects.filter(
+        freelancer=request.user
+    ).order_by("-applied_at")
+
+    return render(request, "jobs/my_applications.html", {
+        "applications": applications
     })
