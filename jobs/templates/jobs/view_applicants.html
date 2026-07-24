@@ -1,0 +1,25 @@
+<h1>Applicants for {{ job.title }}</h1>
+
+{% if applications %}
+
+    {% for application in applications %}
+
+        <div style="border:1px solid #ccc; padding:15px; margin:15px;">
+
+            <h3>{{ application.freelancer.username }}</h3>
+
+            <p><strong>Cover Letter:</strong></p>
+
+            <p>{{ application.cover_letter }}</p>
+
+            <p><strong>Applied:</strong> {{ application.applied_at }}</p>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No applicants yet.</p>
+
+{% endif %}

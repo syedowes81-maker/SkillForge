@@ -76,3 +76,18 @@ def my_applications(request):
     return render(request, "jobs/my_applications.html", {
         "applications": applications
     })
+
+@login_required
+def view_applicants(request, id):
+    job = Job.objects.get(id=id)
+
+    # Optional safety check: only the client who posted the job can view applicants
+    if job.client != request.user:
+        return redirect("browse_jobs")
+
+    applications = Application.objects.filter(job=job).order_by("-applied_at")
+
+    return render(request, "jobs/view_applicants.html", {
+        "job": job,
+        "applications": applications
+    })
