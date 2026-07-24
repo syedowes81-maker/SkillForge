@@ -18,14 +18,17 @@ class Application(models.Model):
     cover_letter = models.TextField()
     applied_at = models.DateTimeField(auto_now_add=True)
 
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Accepted", "Accepted"),
+        ("Rejected", "Rejected"),
+    ]
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default="Pending"
+    )
+
     def _str_(self):
         return f"{self.freelancer.username} -> {self.job.title}"
-
-class Application(models.Model):
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
-    freelancer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    cover_letter = models.TextField()
-    applied_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.freelancer.username} applied for {self.job.title}"
