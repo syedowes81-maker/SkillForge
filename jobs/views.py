@@ -104,3 +104,11 @@ def update_application_status(request, id, status):
         application.save()
 
     return redirect("view_applicants", id=application.job.id)
+
+@login_required
+def my_jobs(request):
+    jobs = Job.objects.filter(client=request.user).order_by("-created_at")
+
+    return render(request, "jobs/my_jobs.html", {
+        "jobs": jobs
+    })
