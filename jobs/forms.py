@@ -10,6 +10,7 @@ class JobForm(forms.ModelForm):
             "description",
             "budget",
             "location",
+            "category",
         ]
 class ApplicationForm(forms.ModelForm):
     class Meta:
