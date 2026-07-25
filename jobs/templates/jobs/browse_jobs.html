@@ -1,3 +1,13 @@
+<form method="GET">
+    <input
+        type="text"
+        name="q"
+        placeholder="Search jobs..."
+        value="{{ query }}"
+    >
+    <button type="submit">Search</button>
+</form>
+
 <h1>Browse Jobs</h1>
 
 {% for job in jobs %}

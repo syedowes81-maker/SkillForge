@@ -28,13 +28,19 @@ def post_job(request):
     })
 
 from .models import Job
-
-
 def browse_jobs(request):
-    jobs = Job.objects.all().order_by("-created_at")
+    query = request.GET.get("q", "")
+
+    if query:
+        jobs = Job.objects.filter(
+            title__icontains=query
+        ).order_by("-created_at")
+    else:
+        jobs = Job.objects.all().order_by("-created_at")
 
     return render(request, "jobs/browse_jobs.html", {
-        "jobs": jobs
+        "jobs": jobs,
+        "query": query
     })
 
 def job_detail(request, id):
@@ -62,7 +68,7 @@ def apply_job(request, id):
     else:
         form = ApplicationForm()
 
-    return render(request, "jobs/apply_job.html", {
+    return render(request, "jobs/apply_job.html",{
         "form": form,
         "job": job
     })
