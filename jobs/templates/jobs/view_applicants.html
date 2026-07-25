@@ -15,6 +15,15 @@
             <p><strong>Applied:</strong> {{ application.applied_at }}</p>
 
             <p><strong>Status:</strong> {{ application.status }}</p>
+            <a href="{% url 'update_application_status' application.id 'Accepted' %}">
+    <button>Accept</button>
+</a>
+
+<a href="{% url 'update_application_status' application.id 'Rejected' %}">
+    <button>Reject</button>
+</a>
+
+
         </div>
 
     {% endfor %}

@@ -91,3 +91,16 @@ def view_applicants(request, id):
         "job": job,
         "applications": applications
     })
+
+@login_required
+def update_application_status(request, id, status):
+    application = Application.objects.get(id=id)
+
+    if application.job.client != request.user:
+        return redirect("browse_jobs")
+
+    if status in ["Accepted", "Rejected"]:
+        application.status = status
+        application.save()
+
+    return redirect("view_applicants", id=application.job.id)
