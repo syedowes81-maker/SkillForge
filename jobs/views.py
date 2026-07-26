@@ -139,3 +139,14 @@ def edit_job(request, id):
     return render(request, "jobs/edit_job.html", {
         "form": form
     })
+
+@login_required
+def delete_job(request, id):
+    job = Job.objects.get(id=id)
+
+    if job.client != request.user:
+        return redirect("my_jobs")
+
+    job.delete()
+
+    return redirect("my_jobs")
