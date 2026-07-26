@@ -118,3 +118,24 @@ def my_jobs(request):
     return render(request, "jobs/my_jobs.html", {
         "jobs": jobs
     })
+
+@login_required
+def edit_job(request, id):
+    job = Job.objects.get(id=id)
+
+    if job.client != request.user:
+        return redirect("my_jobs")
+
+    if request.method == "POST":
+        form = JobForm(request.POST, instance=job)
+
+        if form.is_valid():
+            form.save()
+            return redirect("my_jobs")
+
+    else:
+        form = JobForm(instance=job)
+
+    return render(request, "jobs/edit_job.html", {
+        "form": form
+    })
