@@ -25,3 +25,17 @@ class RegistrationForm(forms.ModelForm):
 class LoginForm(forms.Form):
   username=forms.CharField(max_length=150)
   password=forms.CharField(widget=forms.PasswordInput)
+
+from .models import FreelancerProfile
+
+class FreelancerProfileForm(forms.ModelForm):
+    class Meta:
+        model = FreelancerProfile
+        fields = [
+            "skills",
+            "bio",
+            "experience",
+            "hourly_rate",
+            "location",
+            "portfolio",
+        ]

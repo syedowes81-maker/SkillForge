@@ -6,6 +6,9 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from .models import FreelancerProfile
 from django.shortcuts import get_object_or_404
+from .forms import FreelancerProfileForm
+from django.contrib.auth.decorators import login_required
+
 def register(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
@@ -14,6 +17,7 @@ def register(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data["password"])
             user.save()
+            FreelancerProfile.objects.create(user=user)
 
             return redirect("login")
 
@@ -90,3 +94,21 @@ def freelancer_detail(request, id):
             "freelancer": freelancer,
         },
     )
+
+@login_required
+def edit_profile(request):
+    profile = request.user.freelancerprofile
+
+    if request.method == "POST":
+        form = FreelancerProfileForm(request.POST, instance=profile)
+
+        if form.is_valid():
+            form.save()
+            return redirect("profile")
+
+    else:
+        form = FreelancerProfileForm(instance=profile)
+
+    return render(request, "accounts/edit_profile.html", {
+        "form": form
+    })
