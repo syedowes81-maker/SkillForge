@@ -38,4 +38,5 @@ class FreelancerProfileForm(forms.ModelForm):
             "hourly_rate",
             "location",
             "portfolio",
+            "profile_picture",
         ]

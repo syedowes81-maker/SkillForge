@@ -100,7 +100,11 @@ def edit_profile(request):
     profile = request.user.freelancerprofile
 
     if request.method == "POST":
-        form = FreelancerProfileForm(request.POST, instance=profile)
+        form = FreelancerProfileForm(
+            request.POST,
+            request.FILES,
+            instance=profile
+        )
 
         if form.is_valid():
             form.save()
