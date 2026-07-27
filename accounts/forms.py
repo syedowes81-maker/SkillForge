@@ -39,4 +39,5 @@ class FreelancerProfileForm(forms.ModelForm):
             "location",
             "portfolio",
             "profile_picture",
+            "resume",
         ]

@@ -17,6 +17,11 @@ class FreelancerProfile(models.Model):
  hourly_rate=models.DecimalField(max_digits=8,decimal_places=2,default=0)
  location=models.CharField(max_length=100,blank=True)
  profile_picture=models.ImageField(upload_to="profiles/",blank=True,null=True)
+ resume = models.FileField(
+     upload_to="resumes/",
+     blank=True,
+     null=True
+)
  portfolio=models.URLField(blank=True)
 
  def __str__(self):

@@ -4,6 +4,11 @@
 
 <h2>{{ request.user.username }}</h2>
 
+{% if profile.profile_picture %}
+    <img src="{{ profile.profile_picture.url }}" width="150" height="150">
+    <br><br>
+{% endif %}
+
 <p><strong>Bio:</strong> {{ profile.bio }}</p>
 
 <p><strong>Skills:</strong> {{ profile.skills }}</p>
@@ -13,5 +18,29 @@
 <p><strong>Hourly Rate:</strong> ₹{{ profile.hourly_rate }}</p>
 
 <p><strong>Location:</strong> {{ profile.location }}</p>
+
+<p><strong>Portfolio:</strong>
+    {% if profile.portfolio %}
+        <a href="{{ profile.portfolio }}" target="_blank">
+            {{ profile.portfolio }}
+        </a>
+    {% else %}
+        Not added
+    {% endif %}
+</p>
+
+<p><strong>Resume:</strong>
+    {% if profile.resume %}
+        <a href="{{ profile.resume.url }}" target="_blank">
+            Download Resume
+        </a>
+    {% else %}
+        No resume uploaded
+    {% endif %}
+</p>
+
+<a href="{% url 'edit_profile' %}">
+    <button>Edit Profile</button>
+</a>
 
 {% endblock %}

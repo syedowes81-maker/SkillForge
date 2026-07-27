@@ -1,15 +1,10 @@
 <h1>Edit Profile</h1>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-
     {{ form.as_p }}
-
-    <button type="submit">
-        Save Profile
-    </button>
+    <button type="submit">Save Profile</button>
 </form>
-
 <br>
 
 <a href="{% url 'profile' %}">
