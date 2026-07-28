@@ -6,6 +6,7 @@ from .models import Application
 from .forms import ApplicationForm
 from django.contrib.auth.decorators import login_required
 from .models import Application
+from .models import Job,Application,SavedJob
 
 @login_required
 def post_job(request):
@@ -150,3 +151,14 @@ def delete_job(request, id):
     job.delete()
 
     return redirect("my_jobs")
+
+@login_required
+def save_job(request, id):
+    job = Job.objects.get(id=id)
+
+    SavedJob.objects.get_or_create(
+        freelancer=request.user,
+        job=job
+    )
+
+    return redirect("job_detail", id=job.id)

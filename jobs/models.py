@@ -48,3 +48,19 @@ class Application(models.Model):
 
     def _str_(self):
         return f"{self.freelancer.username} -> {self.job.title}"
+
+class SavedJob(models.Model):
+    freelancer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    job = models.ForeignKey(
+        Job,
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = ("freelancer", "job")
+
+    def _str_(self):
+        return f"{self.freelancer.username} saved {self.job.title}"
