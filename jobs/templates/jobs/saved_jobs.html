@@ -1,0 +1,21 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h2>My Saved Jobs</h2>
+
+{% if saved %}
+    <ul>
+    {% for item in saved %}
+        <li>
+            <a href="{% url 'job_detail' item.job.id %}">
+                {{ item.job.title }}
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No saved jobs yet.</p>
+{% endif %}
+
+{% endblock %}

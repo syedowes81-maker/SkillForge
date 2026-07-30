@@ -162,3 +162,17 @@ def save_job(request, id):
     )
 
     return redirect("job_detail", id=job.id)
+
+@login_required
+def saved_jobs(request):
+    saved = SavedJob.objects.filter(
+        freelancer=request.user
+    )
+
+    return render(
+        request,
+        "jobs/saved_jobs.html",
+        {
+            "saved": saved
+        }
+    )
