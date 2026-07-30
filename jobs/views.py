@@ -176,3 +176,19 @@ def saved_jobs(request):
             "saved": saved
         }
     )
+def browse_jobs(request):
+    query = request.GET.get("q")
+
+    jobs = Job.objects.all()
+
+    if query:
+        jobs = jobs.filter(title__icontains=query)
+
+    return render(
+        request,
+        "jobs/browse_jobs.html",
+        {
+            "jobs": jobs,
+            "query": query,
+        },
+    )
