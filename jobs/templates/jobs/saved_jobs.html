@@ -5,17 +5,34 @@
 <h2>My Saved Jobs</h2>
 
 {% if saved %}
-    <ul>
+
     {% for item in saved %}
-        <li>
+
+    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+
+        <h3>
             <a href="{% url 'job_detail' item.job.id %}">
                 {{ item.job.title }}
             </a>
-        </li>
+        </h3>
+
+        <p>
+            <strong>Remove URL:</strong>
+            {% url 'unsave_job' item.job.id %}
+        </p>
+
+        <a href="{% url 'unsave_job' item.job.id %}">
+            <button>❌ Remove</button>
+        </a>
+
+    </div>
+
     {% endfor %}
-    </ul>
+
 {% else %}
+
     <p>No saved jobs yet.</p>
+
 {% endif %}
 
 {% endblock %}

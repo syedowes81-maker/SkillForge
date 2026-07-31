@@ -176,6 +176,17 @@ def saved_jobs(request):
             "saved": saved
         }
     )
+@login_required
+def unsave_job(request, id):
+    job = Job.objects.get(id=id)
+
+    SavedJob.objects.filter(
+        freelancer=request.user,
+        job=job
+    ).delete()
+
+    return redirect("saved_jobs")
+
 def browse_jobs(request):
     query = request.GET.get("q")
 
