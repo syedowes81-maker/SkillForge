@@ -11,4 +11,5 @@ urlpatterns=[
    path("profile/edit/",views.edit_profile,name="edit_profile"),
    path("freelancers/",views.freelancers,name="freelancers"),
    path("freelancers/<int:id>/",views.freelancer_detail,name="freelancer_detail"),
+   path("freelancers/<int:id>/review/",views.add_review,name="add_review"),
 ]

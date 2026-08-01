@@ -8,6 +8,9 @@ from .models import FreelancerProfile
 from django.shortcuts import get_object_or_404
 from .forms import FreelancerProfileForm
 from django.contrib.auth.decorators import login_required
+from .models import FreelancerProfile, Review
+from .forms import FreelancerProfileForm, ReviewForm
+
 
 def register(request):
     if request.method == "POST":
@@ -116,3 +119,30 @@ def edit_profile(request):
     return render(request, "accounts/edit_profile.html", {
         "form": form
     })
+
+@login_required
+def add_review(request, id):
+    freelancer = get_object_or_404(FreelancerProfile, id=id)
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.freelancer = freelancer
+            review.client = request.user
+            review.save()
+
+            return redirect("freelancer_detail", id=freelancer.id)
+
+    else:
+        form = ReviewForm()
+
+    return render(
+        request,
+        "accounts/add_review.html",
+        {
+            "form": form,
+            "freelancer": freelancer,
+        },
+    )

@@ -41,3 +41,9 @@ class FreelancerProfileForm(forms.ModelForm):
             "profile_picture",
             "resume",
         ]
+from .models import Review
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ["rating", "comment"]
