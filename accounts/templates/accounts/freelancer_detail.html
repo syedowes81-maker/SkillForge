@@ -23,3 +23,31 @@
 <a href="/freelancers/">← Back</a>
 
 {% endblock %}
+
+<hr>
+
+<h2>Reviews</h2>
+
+{% if reviews %}
+
+    {% for review in reviews %}
+
+        <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+
+            <strong>{{ review.client.username }}</strong><br>
+
+            ⭐ Rating: {{ review.rating }}/5
+
+            <p>{{ review.comment }}</p>
+
+            <small>{{ review.created_at }}</small>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+<p>No reviews yet.</p>
+
+{% endif %}

@@ -90,14 +90,18 @@ def freelancers(request):
 def freelancer_detail(request, id):
     freelancer = get_object_or_404(FreelancerProfile, id=id)
 
+    reviews = Review.objects.filter(
+        freelancer=freelancer
+    ).order_by("-created_at")
+
     return render(
         request,
         "accounts/freelancer_detail.html",
         {
             "freelancer": freelancer,
+            "reviews": reviews,
         },
     )
-
 @login_required
 def edit_profile(request):
     profile = request.user.freelancerprofile
