@@ -46,7 +46,7 @@ class Application(models.Model):
         default="Pending"
     )
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.freelancer.username} -> {self.job.title}"
 
 class SavedJob(models.Model):
@@ -62,5 +62,5 @@ class SavedJob(models.Model):
     class Meta:
         unique_together = ("freelancer", "job")
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.freelancer.username} saved {self.job.title}"
