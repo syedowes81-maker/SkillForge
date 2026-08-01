@@ -14,12 +14,13 @@
 
 <div style="border:1px solid #ccc; padding:15px; margin:15px;">
 
-    <h2>
+<h2>
     <a href="{% url 'job_detail' job.id %}">
         {{ job.title }}
     </a>
 </h2>
 
+<p><strong>Posted by:</strong> {{ job.client.username }}</p>
     <p>{{ job.description }}</p>
 
     <strong>Budget:</strong> ₹{{ job.budget }}<br>
