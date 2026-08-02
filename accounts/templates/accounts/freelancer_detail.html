@@ -3,7 +3,11 @@
 {% block content %}
 
 <h1>{{ freelancer.user.username }}</h1>
-
+{% if average_rating %}
+<p><strong>⭐ Average Rating:</strong> {{ average_rating|floatformat:1 }}/5</p>
+{% else %}
+<p><strong>⭐ Average Rating:</strong> No ratings yet</p>
+{% endif %}
 <hr>
 
 <p><strong>Bio:</strong> {{ freelancer.bio }}</p>

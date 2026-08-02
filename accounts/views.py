@@ -10,7 +10,7 @@ from .forms import FreelancerProfileForm
 from django.contrib.auth.decorators import login_required
 from .models import FreelancerProfile, Review
 from .forms import FreelancerProfileForm, ReviewForm
-
+from django.db.models import Avg
 
 def register(request):
     if request.method == "POST":
@@ -93,13 +93,16 @@ def freelancer_detail(request, id):
     reviews = Review.objects.filter(
         freelancer=freelancer
     ).order_by("-created_at")
-
+    average_rating = reviews.aggregate(
+    Avg("rating")
+)["rating__avg"]
     return render(
         request,
         "accounts/freelancer_detail.html",
         {
             "freelancer": freelancer,
             "reviews": reviews,
+            "average_rating":average_rating,
         },
     )
 @login_required
