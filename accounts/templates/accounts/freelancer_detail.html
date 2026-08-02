@@ -14,15 +14,11 @@
 
 <p><strong>Hourly Rate:</strong> ₹{{ freelancer.hourly_rate }}/hr</p>
 
-<br><br>
+<button>Hire Me</button>
 
-<button>
- Hire Me
-</button>
-
-<a href="/freelancers/">← Back</a>
-
-{% endblock %}
+<a href="{% url 'add_review' freelancer.id %}">
+    <button>⭐ Leave Review</button>
+</a>
 
 <hr>
 
@@ -48,6 +44,12 @@
 
 {% else %}
 
-<p>No reviews yet.</p>
+    <p>No reviews yet.</p>
 
 {% endif %}
+
+<br>
+
+<a href="/freelancers/">← Back</a>
+
+{% endblock %}

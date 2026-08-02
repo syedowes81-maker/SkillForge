@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, MaxValueValidator
 class User(AbstractUser):
  phone_number = models.CharField(max_length=15,blank=True)
  can_freelance=models.BooleanField(default=False)
@@ -39,8 +40,12 @@ class Review(models.Model):
         on_delete=models.CASCADE
     )
 
-    rating = models.PositiveSmallIntegerField()
-
+    rating = models.PositiveSmallIntegerField(
+    validators=[
+        MinValueValidator(1),
+        MaxValueValidator(5),
+    ]
+)
     comment = models.TextField()
 
     created_at = models.DateTimeField(auto_now_add=True)
