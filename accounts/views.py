@@ -131,6 +131,14 @@ def edit_profile(request):
 def add_review(request, id):
     freelancer = get_object_or_404(FreelancerProfile, id=id)
 
+    existing_review = Review.objects.filter(
+        freelancer=freelancer,
+        client=request.user
+    ).first()
+
+    if existing_review:
+        return redirect("freelancer_detail", id=freelancer.id)
+
     if request.method == "POST":
         form = ReviewForm(request.POST)
 
