@@ -3,18 +3,20 @@
 {% block content %}
 
 <h1>{{ freelancer.user.username }}</h1>
+
 {% if average_rating %}
-<p><strong>⭐ Average Rating:</strong> {{ average_rating|floatformat:1 }}/5</p>
+<p><strong>⭐ Average Rating:</strong> {{ average_rating|floatformat:1 }}/5 ({{ review_count }} reviews)</p>
 {% else %}
 <p><strong>⭐ Average Rating:</strong> No ratings yet</p>
 {% endif %}
+
 <hr>
 
 <p><strong>Bio:</strong> {{ freelancer.bio }}</p>
 
 <p><strong>Skills:</strong> {{ freelancer.skills }}</p>
 
-<p><strong>Experience:</strong> {{ freelancer.experience }}</p>
+<p><strong>Experience:</strong> {{ freelancer.experience }} years</p>
 
 <p><strong>Hourly Rate:</strong> ₹{{ freelancer.hourly_rate }}/hr</p>
 
@@ -42,9 +44,18 @@
 
             <small>{{ review.created_at }}</small>
 
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No reviews yet.</p>
+
+{% endif %}
 
 <br>
 
-<a href="/freelancers/">← Back</a>
+<a href="{% url 'freelancers' %}">← Back to Freelancers</a>
 
 {% endblock %}
