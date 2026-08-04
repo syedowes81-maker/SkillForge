@@ -1,0 +1,29 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h2>Notifications</h2>
+
+{% if notifications %}
+
+    {% for notification in notifications %}
+
+        <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+
+            {{ notification.message }}
+
+            <br>
+
+            <small>{{ notification.created_at }}</small>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No notifications yet.</p>
+
+{% endif %}
+
+{% endblock %}

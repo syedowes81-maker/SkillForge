@@ -52,3 +52,24 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.client.username} -> {self.freelancer.user.username}"
+
+class Notification(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    message = models.CharField(
+        max_length=255
+    )
+
+    is_read = models.BooleanField(
+        default=False
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def _str_(self):
+        return self.message

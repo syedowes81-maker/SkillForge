@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from .models import FreelancerProfile, Review
 from .forms import FreelancerProfileForm, ReviewForm
 from django.db.models import Avg
+from .models import FreelancerProfile, Review, Notification
 
 def register(request):
     if request.method == "POST":
@@ -160,4 +161,17 @@ def add_review(request, id):
             "form": form,
             "freelancer": freelancer,
         },
+    )
+@login_required
+def notifications(request):
+    notifications = Notification.objects.filter(
+        user=request.user
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "accounts/notifications.html",
+        {
+            "notifications": notifications
+        }
     )
