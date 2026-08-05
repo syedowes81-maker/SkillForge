@@ -197,11 +197,15 @@ def unsave_job(request, id):
 
 def browse_jobs(request):
     query = request.GET.get("q")
+    category = request.GET.get("category")
 
     jobs = Job.objects.all()
 
     if query:
         jobs = jobs.filter(title__icontains=query)
+
+    if category:
+        jobs = jobs.filter(category=category)
 
     return render(
         request,
@@ -209,5 +213,7 @@ def browse_jobs(request):
         {
             "jobs": jobs,
             "query": query,
+            "category": category,
+            "categories": Job.CATEGORY_CHOICES,
         },
     )
