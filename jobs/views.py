@@ -113,6 +113,10 @@ def update_application_status(request, id, status):
     if status in ["Accepted", "Rejected"]:
         application.status = status
         application.save()
+        Notification.objects.create(
+        user=application.freelancer,
+        message=f"Your application for '{application.job.title}' was {status}."
+)
 
     return redirect("view_applicants", id=application.job.id)
 
