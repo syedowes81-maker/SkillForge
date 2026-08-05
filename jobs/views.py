@@ -7,6 +7,7 @@ from .forms import ApplicationForm
 from django.contrib.auth.decorators import login_required
 from .models import Application
 from .models import Job,Application,SavedJob
+from accounts.models import Notification
 
 @login_required
 def post_job(request):
@@ -63,7 +64,10 @@ def apply_job(request, id):
             application.job = job
             application.freelancer = request.user
             application.save()
-
+            Notification.objects.create(
+            user=job.client,
+            message=f"{request.user.username} applied for your job '{job.title}'"
+)
             return redirect("browse_jobs")
 
     else:
