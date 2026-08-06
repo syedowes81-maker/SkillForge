@@ -12,6 +12,7 @@ from .models import FreelancerProfile, Review
 from .forms import FreelancerProfileForm, ReviewForm
 from django.db.models import Avg
 from .models import FreelancerProfile, Review, Notification
+from jobs.models import Job,Application
 
 def register(request):
     if request.method == "POST":
@@ -56,8 +57,22 @@ def login_view(request):
 
 @login_required
 def dashboard(request):
-  return render(request,"accounts/dashboard.html")
+ jobs_posted = Job.objects.filter(
+        client=request.user
+    ).count()
 
+    applications_received = Application.objects.filter(
+        job__client=request.user
+    ).count()
+
+    return render(
+        request,
+        "accounts/dashboard.html",
+        {
+            "jobs_posted": jobs_posted,
+            "applications_received": applications_received,
+        },
+    )
 def logout_view(request):
   logout(request)
   return redirect("/login/")

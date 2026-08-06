@@ -1,21 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-</head>
-<body>
+{% extends "accounts/base.html" %}
 
-<h1>Welcome to SkillForge!</h1>
-<p><a href="{% url 'saved_jobs' %}">📌 My Saved Jobs</a></p>
+{% block content %}
 
-<p><a href="{% url 'browse_jobs' %}">💼 Browse Jobs</a></p>
-
-<p><a href="{% url 'post_job' %}">➕ Post Job</a></p>
-<h2>Hello, {{ request.user.username }}</h2>
+<h1>Welcome, {{ user.username }}</h1>
 
 <p>You are successfully logged in.</p>
 
-<a href="/logout/">Logout</a>
+<hr>
 
-</body>
-</html>
+<h2>Dashboard Overview</h2>
+
+<div style="border:1px solid #ccc; padding:15px; margin:15px;">
+
+    <p><strong>📄 Jobs Posted:</strong> {{ jobs_posted }}</p>
+
+    <p><strong>👥 Applications Received:</strong> {{ applications_received }}</p>
+
+</div>
+
+<hr>
+
+<a href="{% url 'saved_jobs' %}">
+    <button>My Saved Jobs</button>
+</a>
+
+<a href="{% url 'browse_jobs' %}">
+    <button>Browse Jobs</button>
+</a>
+
+<a href="{% url 'post_job' %}">
+    <button>Post Job</button>
+</a>
+
+<a href="{% url 'notifications' %}">
+    <button>Notifications</button>
+</a>
+
+<br><br>
+
+<a href="{% url 'logout' %}">
+    <button>Logout</button>
+</a>
+
+{% endblock %}
