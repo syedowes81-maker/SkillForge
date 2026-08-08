@@ -8,11 +8,12 @@ from .models import FreelancerProfile
 from django.shortcuts import get_object_or_404
 from .forms import FreelancerProfileForm
 from django.contrib.auth.decorators import login_required
-from .models import FreelancerProfile, Review
+from .models import FreelancerProfile, Review, Message
 from .forms import FreelancerProfileForm, ReviewForm
 from django.db.models import Avg
 from .models import FreelancerProfile, Review, Notification
 from jobs.models import Job,Application
+from django.contrib.auth.models import User
 
 def register(request):
     if request.method == "POST":
@@ -189,5 +190,28 @@ def notifications(request):
         "accounts/notifications.html",
         {
             "notifications": notifications
+        }
+    )
+@login_required
+def send_message(request, id):
+    receiver = get_object_or_404(User, id=id)
+
+    if request.method == "POST":
+        content = request.POST.get("content")
+
+        if content:
+            Message.objects.create(
+                sender=request.user,
+                receiver=receiver,
+                content=content
+            )
+
+        return redirect("messages")
+
+    return render(
+        request,
+        "accounts/send_message.html",
+        {
+            "receiver": receiver,
         }
     )

@@ -12,5 +12,6 @@ urlpatterns=[
    path("freelancers/",views.freelancers,name="freelancers"),
    path("freelancers/<int:id>/",views.freelancer_detail,name="freelancer_detail"),
    path("freelancers/<int:id>/review/",views.add_review,name="add_review"),
+   path("messages/send/<int:id>/",views.send_message,name="send_message"),
    path("notifications/", views.notifications, name="notifications"),
 ]
