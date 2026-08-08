@@ -57,7 +57,7 @@ def login_view(request):
 
 @login_required
 def dashboard(request):
- jobs_posted = Job.objects.filter(
+    jobs_posted = Job.objects.filter(
         client=request.user
     ).count()
 
@@ -73,6 +73,7 @@ def dashboard(request):
             "applications_received": applications_received,
         },
     )
+
 def logout_view(request):
   logout(request)
   return redirect("/login/")
