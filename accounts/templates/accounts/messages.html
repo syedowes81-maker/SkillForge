@@ -1,0 +1,40 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h2>Messages</h2>
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+
+            <p>
+                <strong>From:</strong>
+                {{ message.sender.username }}
+            </p>
+
+            <p>
+                {{ message.content }}
+            </p>
+
+            <small>
+                {{ message.created_at }}
+            </small>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No messages yet.</p>
+
+{% endif %}
+
+<a href="{% url 'dashboard' %}">
+    ← Back to Dashboard
+</a>
+
+{% endblock %}

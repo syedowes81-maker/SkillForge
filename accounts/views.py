@@ -215,3 +215,17 @@ def send_message(request, id):
             "receiver": receiver,
         }
     )
+
+@login_required
+def messages_view(request):
+    messages = Message.objects.filter(
+        receiver=request.user
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "accounts/messages.html",
+        {
+            "messages": messages,
+        },
+    )

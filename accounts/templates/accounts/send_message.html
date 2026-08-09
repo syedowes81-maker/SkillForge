@@ -1,0 +1,35 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h2>Send Message</h2>
+
+<p>
+    To: <strong>{{ receiver.username }}</strong>
+</p>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <textarea
+        name="content"
+        rows="6"
+        cols="50"
+        placeholder="Write your message..."
+        required
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit">Send Message</button>
+
+</form>
+
+<br>
+
+<a href="{% url 'messages' %}">
+    ← Back to Messages
+</a>
+
+{% endblock %}
