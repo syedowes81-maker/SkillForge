@@ -11,9 +11,8 @@ from django.contrib.auth.decorators import login_required
 from .models import FreelancerProfile, Review, Message
 from .forms import FreelancerProfileForm, ReviewForm
 from django.db.models import Avg
-from .models import FreelancerProfile, Review, Notification
+from .models import User, FreelancerProfile, Review, Notification, Message
 from jobs.models import Job,Application
-from django.contrib.auth.models import User
 
 def register(request):
     if request.method == "POST":

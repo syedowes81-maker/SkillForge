@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.conf import settings
+
 class User(AbstractUser):
  phone_number = models.CharField(max_length=15,blank=True)
  can_freelance=models.BooleanField(default=False)
@@ -73,15 +75,16 @@ class Notification(models.Model):
 
     def _str_(self):
         return self.message
+
 class Message(models.Model):
     sender = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="sent_messages"
     )
 
     receiver = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="received_messages"
     )
