@@ -2,7 +2,13 @@
 
 {% block content %}
 
-<h2>Messages</h2>{% if messages %}
+<h2>
+    Messages
+    {% if unread_count %}
+        ({{ unread_count }} unread)
+    {% endif %}
+</h2>
+{% if messages %}
 
 {% for message in messages %}
 

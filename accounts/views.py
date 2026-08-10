@@ -221,6 +221,11 @@ def messages_view(request):
         receiver=request.user
     ).order_by("-created_at")
 
+    unread_count = Message.objects.filter(
+        receiver=request.user,
+        is_read=False
+    ).count()
+
     for message in messages:
         message.is_read = True
         message.save()
@@ -230,9 +235,9 @@ def messages_view(request):
         "accounts/messages.html",
         {
             "messages": messages,
+            "unread_count": unread_count,
         },
     )
-
 @login_required
 def conversation(request, id):
     other_user = get_object_or_404(User, id=id)
