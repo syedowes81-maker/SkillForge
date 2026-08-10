@@ -237,6 +237,18 @@ def messages_view(request):
 def conversation(request, id):
     other_user = get_object_or_404(User, id=id)
 
+    if request.method == "POST":
+        content = request.POST.get("content")
+
+        if content:
+            Message.objects.create(
+                sender=request.user,
+                receiver=other_user,
+                content=content
+            )
+
+        return redirect("conversation", id=other_user.id)
+
     messages = Message.objects.filter(
         sender=request.user,
         receiver=other_user
