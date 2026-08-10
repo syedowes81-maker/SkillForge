@@ -1,0 +1,49 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h2>Conversation with {{ other_user.username }}</h2>
+
+<hr>
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div style="border:1px solid #ccc; padding:12px; margin:10px 0;">
+
+            <strong>
+                {{ message.sender.username }}
+            </strong>
+
+            <p>
+                {{ message.content }}
+            </p>
+
+            <small>
+                {{ message.created_at }}
+            </small>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No messages in this conversation yet.</p>
+
+{% endif %}
+
+<br>
+
+<a href="{% url 'send_message' other_user.id %}">
+    Send Message
+</a>
+
+<br><br>
+
+<a href="{% url 'messages' %}">
+    ← Back to Messages
+</a>
+
+{% endblock %}

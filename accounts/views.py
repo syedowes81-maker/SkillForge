@@ -232,3 +232,26 @@ def messages_view(request):
             "messages": messages,
         },
     )
+
+@login_required
+def conversation(request, id):
+    other_user = get_object_or_404(User, id=id)
+
+    messages = Message.objects.filter(
+        sender=request.user,
+        receiver=other_user
+    ) | Message.objects.filter(
+        sender=other_user,
+        receiver=request.user
+    )
+
+    messages = messages.order_by("created_at")
+
+    return render(
+        request,
+        "accounts/conversation.html",
+        {
+            "other_user": other_user,
+            "messages": messages,
+        },
+    )

@@ -28,7 +28,11 @@
                 <strong>● Unread</strong>
             {% endif %}
         </p>
-
+        <p>
+    <a href="{% url 'conversation' message.sender.id %}">
+        View Conversation
+    </a>
+</p>
     </div>
 
 {% endfor %}
