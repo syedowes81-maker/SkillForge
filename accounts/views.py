@@ -221,6 +221,10 @@ def messages_view(request):
         receiver=request.user
     ).order_by("-created_at")
 
+    for message in messages:
+        message.is_read = True
+        message.save()
+
     return render(
         request,
         "accounts/messages.html",
