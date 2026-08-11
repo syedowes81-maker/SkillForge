@@ -1,35 +1,43 @@
-<h1>Applicants for {{ job.title }}</h1>
+<h1>Applicants for {{ job.title }}</h1>{% if applications %}
 
-{% if applications %}
+{% for application in applications %}
 
-    {% for application in applications %}
+    <div style="border:1px solid #ccc; padding:15px; margin:15px;">
 
-        <div style="border:1px solid #ccc; padding:15px; margin:15px;">
+        <h3>{{ application.freelancer.username }}</h3>
 
-            <h3>{{ application.freelancer.username }}</h3>
+        <p><strong>Cover Letter:</strong></p>
 
-            <p><strong>Cover Letter:</strong></p>
+        <p>{{ application.cover_letter }}</p>
 
-            <p>{{ application.cover_letter }}</p>
+        <p>
+            <strong>Applied:</strong>
+            {{ application.applied_at }}
+        </p>
 
-            <p><strong>Applied:</strong> {{ application.applied_at }}</p>
+        <p>
+            <strong>Status:</strong>
+            {{ application.status }}
+        </p>
 
-            <p><strong>Status:</strong> {{ application.status }}</p>
-            <a href="{% url 'update_application_status' application.id 'Accepted' %}">
-    <button>Accept</button>
-</a>
+        <a href="{% url 'update_application_status' application.id 'Accepted' %}">
+            <button type="button">Accept</button>
+        </a>
 
-<a href="{% url 'update_application_status' application.id 'Rejected' %}">
-    <button>Reject</button>
-</a>
+        <a href="{% url 'update_application_status' application.id 'Rejected' %}">
+            <button type="button">Reject</button>
+        </a>
 
+        <a href="{% url 'send_message' application.freelancer.id %}">
+            <button type="button">Message Applicant</button>
+        </a>
 
-        </div>
+    </div>
 
-    {% endfor %}
+{% endfor %}
 
 {% else %}
 
-    <p>No applicants yet.</p>
+<p>No applicants yet.</p>
 
 {% endif %}
