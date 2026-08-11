@@ -21,6 +21,11 @@
 <p><strong>Hourly Rate:</strong> ₹{{ freelancer.hourly_rate }}/hr</p>
 
 <button>Hire Me</button>
+<a href="{% url 'send_message' freelancer.user.id %}">
+    <button type="button">
+        Message
+    </button>
+</a>
 
 <a href="{% url 'add_review' freelancer.id %}">
     <button>⭐ Leave Review</button>
