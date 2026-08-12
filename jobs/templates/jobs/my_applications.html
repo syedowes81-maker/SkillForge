@@ -14,8 +14,30 @@
 
             <p><strong>Applied:</strong> {{ application.applied_at }}</p>
             
-            <p><strong>Status:</strong> {{ application.status }}</p>
+            <p>
+    <strong>Status:</strong>
 
+    {% if application.status == "Pending" %}
+        <span style="color:orange; font-weight:bold;">
+            Pending
+        </span>
+
+    {% elif application.status == "Accepted" %}
+        <span style="color:green; font-weight:bold;">
+            Accepted
+        </span>
+
+    {% elif application.status == "Rejected" %}
+        <span style="color:red; font-weight:bold;">
+            Rejected
+        </span>
+
+    {% else %}
+        <span>
+            {{ application.status }}
+        </span>
+    {% endif %}
+</p>
         </div>
 
     {% endfor %}
