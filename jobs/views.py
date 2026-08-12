@@ -156,9 +156,13 @@ def delete_job(request, id):
     if job.client != request.user:
         return redirect("my_jobs")
 
-    job.delete()
+    if request.method == "POST":
+        job.delete()
+        return redirect("my_jobs")
 
-    return redirect("my_jobs")
+    return render(request, "jobs/delete_job.html", {
+        "job": job
+    })
 
 @login_required
 def save_job(request, id):

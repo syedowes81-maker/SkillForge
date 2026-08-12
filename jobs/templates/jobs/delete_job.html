@@ -1,0 +1,18 @@
+<h1>Delete Job</h1>
+
+<p>
+    Are you sure you want to delete
+    <strong>{{ job.title }}</strong>?
+</p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <button type="submit">
+        Yes, Delete
+    </button>
+
+    <a href="{% url 'my_jobs' %}">
+        Cancel
+    </a>
+</form>
