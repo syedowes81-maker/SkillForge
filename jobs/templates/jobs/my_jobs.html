@@ -11,6 +11,10 @@
             <p><strong>Location:</strong> {{ job.location }}</p>
             <p><strong>Posted:</strong> {{ job.created_at }}</p>
 
+<p>
+    <strong>Applicants:</strong>
+    {{ job.application_set.count }}
+</p>
             <a href="{% url 'job_detail' job.id %}">
                 View Job
             </a>
