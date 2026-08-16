@@ -64,3 +64,13 @@
 <a href="{% url 'freelancers' %}">← Back to Freelancers</a>
 
 {% endblock %}
+
+<p><strong>Hourly Rate:</strong> ₹{{ freelancer.hourly_rate }}/hr</p>
+
+{% if freelancer.resume %}
+<p>
+    <a href="{{ freelancer.resume.url }}">
+        <button>📄 Download Resume</button>
+    </a>
+</p>
+{% endif %}
