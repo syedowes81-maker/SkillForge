@@ -29,21 +29,6 @@ def post_job(request):
         "form": form
     })
 
-from .models import Job
-def browse_jobs(request):
-    query = request.GET.get("q", "")
-
-    if query:
-        jobs = Job.objects.filter(
-            title__icontains=query
-        ).order_by("-created_at")
-    else:
-        jobs = Job.objects.all().order_by("-created_at")
-
-    return render(request, "jobs/browse_jobs.html", {
-        "jobs": jobs,
-        "query": query
-    })
 
 def job_detail(request, id):
     job = Job.objects.get(id=id)
