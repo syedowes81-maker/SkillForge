@@ -15,6 +15,12 @@
     <strong>Applicants:</strong>
     {{ job.application_set.count }}
 </p>
+<p>
+    <strong>Saved:</strong>
+    {{ job.savedjob_set.count }}
+</p>
+
+
             <a href="{% url 'job_detail' job.id %}">
                 View Job
             </a>
