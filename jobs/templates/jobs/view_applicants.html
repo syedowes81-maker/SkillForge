@@ -11,8 +11,11 @@
         <p>{{ application.cover_letter }}</p>
 
         <p>
-            <strong>Applied:</strong>
-            {{ application.applied_at }}
+        <p>
+    <strong>Applied:</strong>
+    {{ application.applied_at|date:"d M Y, h:i A" }}
+</p>
+
         </p>
 
         <p>
