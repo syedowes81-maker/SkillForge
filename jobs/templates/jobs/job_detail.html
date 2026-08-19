@@ -6,7 +6,10 @@
 
 <p><strong>Budget:</strong> ₹{{ job.budget }}</p>
 
-<p><strong>Location:</strong> {{ job.location }}</p>
+<p>
+    <strong>Posted:</strong>
+    {{ job.created_at|date:"d M Y, h:i A" }}
+</p>
 
 <a href="{% url 'apply_job' job.id %}">
     <button>Apply Now</button>

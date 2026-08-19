@@ -2,8 +2,7 @@
 
 {% block content %}
 
-<h2>My Saved Jobs</h2>
-
+<h2>My Saved Jobs ({{ saved|length }})</h2>
 {% if saved %}
 
     {% for item in saved %}
@@ -17,10 +16,11 @@
         </h3>
 
         <p>
-            <strong>Remove URL:</strong>
-            {% url 'unsave_job' item.job.id %}
-        </p>
+ <p><strong>Budget:</strong> ₹{{ item.job.budget }}</p>
 
+<p><strong>Location:</strong> {{ item.job.location }}</p>
+
+<p><strong>Posted by:</strong> {{ item.job.client.username }}</p>
         <a href="{% url 'unsave_job' item.job.id %}">
             <button>❌ Remove</button>
         </a>
