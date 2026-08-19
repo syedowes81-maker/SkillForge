@@ -1,19 +1,27 @@
 <h1>{{ job.title }}</h1>
+
 <p><strong>Posted by:</strong> {{ job.client.username }}</p>
+
 <p>{{ job.description }}</p>
 
 <p><strong>Budget:</strong> ₹{{ job.budget }}</p>
 
 <p><strong>Location:</strong> {{ job.location }}</p>
 
-<p><strong>Posted by:</strong> {{ job.client.username }}</p>
-
 <a href="{% url 'apply_job' job.id %}">
     <button>Apply Now</button>
+</a>
+
 <a href="{% url 'save_job' job.id %}">
-    <button>⭐Save Job</button>
+    <button>⭐ Save Job</button>
 </a>
 
 <a href="{% url 'view_applicants' job.id %}">
     <button>View Applicants</button>
+</a>
+
+<br><br>
+
+<a href="{% url 'browse_jobs' %}">
+    <button>← Back to Browse Jobs</button>
 </a>
