@@ -79,4 +79,30 @@
 
 {% endfor %}
 
+{% if jobs.has_other_pages %}
+
+    <div style="margin:20px;">
+
+        {% if jobs.has_previous %}
+            <a href="?page={{ jobs.previous_page_number }}&q={{ query|urlencode }}&category={{ category|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}">
+                <button>← Previous</button>
+            </a>
+        {% endif %}
+
+        <span style="margin:0 15px;">
+            Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
+        </span>
+
+        {% if jobs.has_next %}
+            <a href="?page={{ jobs.next_page_number }}&q={{ query|urlencode }}&category={{ category|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}">
+                <button>Next →</button>
+            </a>
+        {% endif %}
+
+    </div>
+
+{% endif %}
+
+
+
 {% endblock %}

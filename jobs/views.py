@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Application
 from .models import Job,Application,SavedJob
 from accounts.models import Notification
+from django.core.paginator import Paginator
 
 @login_required
 def post_job(request):
@@ -211,11 +212,17 @@ def browse_jobs(request):
     # Newest jobs first
     jobs = jobs.order_by("-created_at")
 
+    # Pagination: 5 jobs per page
+    paginator = Paginator(jobs, 5)
+
+    page_number = request.GET.get("page")
+    jobs_page = paginator.get_page(page_number)
+
     return render(
         request,
         "jobs/browse_jobs.html",
         {
-            "jobs": jobs,
+            "jobs": jobs_page,
             "query": query,
             "category": category,
             "min_budget": min_budget,
