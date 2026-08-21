@@ -187,19 +187,28 @@ def unsave_job(request, id):
 def browse_jobs(request):
     query = request.GET.get("q")
     category = request.GET.get("category")
+    min_budget = request.GET.get("min_budget")
     max_budget = request.GET.get("max_budget")
 
     jobs = Job.objects.all()
 
+    # Search by job title
     if query:
         jobs = jobs.filter(title__icontains=query)
 
+    # Filter by category
     if category:
         jobs = jobs.filter(category=category)
 
+    # Filter by minimum budget
+    if min_budget:
+        jobs = jobs.filter(budget__gte=min_budget)
+
+    # Filter by maximum budget
     if max_budget:
         jobs = jobs.filter(budget__lte=max_budget)
 
+    # Newest jobs first
     jobs = jobs.order_by("-created_at")
 
     return render(
@@ -209,6 +218,7 @@ def browse_jobs(request):
             "jobs": jobs,
             "query": query,
             "category": category,
+            "min_budget": min_budget,
             "max_budget": max_budget,
             "categories": Job.CATEGORY_CHOICES,
         },
