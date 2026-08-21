@@ -187,6 +187,7 @@ def unsave_job(request, id):
 def browse_jobs(request):
     query = request.GET.get("q")
     category = request.GET.get("category")
+    max_budget = request.GET.get("max_budget")
 
     jobs = Job.objects.all()
 
@@ -196,6 +197,11 @@ def browse_jobs(request):
     if category:
         jobs = jobs.filter(category=category)
 
+    if max_budget:
+        jobs = jobs.filter(budget__lte=max_budget)
+
+    jobs = jobs.order_by("-created_at")
+
     return render(
         request,
         "jobs/browse_jobs.html",
@@ -203,6 +209,7 @@ def browse_jobs(request):
             "jobs": jobs,
             "query": query,
             "category": category,
+            "max_budget": max_budget,
             "categories": Job.CATEGORY_CHOICES,
         },
     )
