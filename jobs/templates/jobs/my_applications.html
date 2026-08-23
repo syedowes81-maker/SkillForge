@@ -1,4 +1,37 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
 <h1>My Applications</h1>
+
+<form method="GET">
+
+    <select name="status">
+
+        <option value="">All Applications</option>
+
+        <option value="Pending"
+            {% if status == "Pending" %}selected{% endif %}>
+            Pending
+        </option>
+
+        <option value="Accepted"
+            {% if status == "Accepted" %}selected{% endif %}>
+            Accepted
+        </option>
+
+        <option value="Rejected"
+            {% if status == "Rejected" %}selected{% endif %}>
+            Rejected
+        </option>
+
+    </select>
+
+    <button type="submit">Filter</button>
+
+</form>
+
+<br>
 
 {% if applications %}
 
@@ -8,42 +41,38 @@
 
             <h2>{{ application.job.title }}</h2>
 
-            <p><strong>Budget:</strong> ₹{{ application.job.budget }}</p>
-
-            <p><strong>Location:</strong> {{ application.job.location }}</p>
-
-            <p><strong>Applied:</strong> {{ application.applied_at }}</p>
-            
             <p>
-    <strong>Status:</strong>
+                <strong>Budget:</strong>
+                ₹{{ application.job.budget }}
+            </p>
 
-    {% if application.status == "Pending" %}
-        <span style="color:orange; font-weight:bold;">
-            Pending
-        </span>
+            <p>
+                <strong>Location:</strong>
+                {{ application.job.location }}
+            </p>
 
-    {% elif application.status == "Accepted" %}
-        <span style="color:green; font-weight:bold;">
-            Accepted
-        </span>
+            <p>
+                <strong>Applied:</strong>
+                {{ application.applied_at }}
+            </p>
 
-    {% elif application.status == "Rejected" %}
-        <span style="color:red; font-weight:bold;">
-            Rejected
-        </span>
+            <p>
+                <strong>Status:</strong>
+                {{ application.status }}
+            </p>
 
-    {% else %}
-        <span>
-            {{ application.status }}
-        </span>
-    {% endif %}
-</p>
+            <a href="{% url 'job_detail' application.job.id %}">
+                View Job
+            </a>
+
         </div>
 
     {% endfor %}
 
 {% else %}
 
-    <p>You haven't applied for any jobs yet.</p>
+    <p>No applications found.</p>
 
 {% endif %}
+
+{% endblock %}

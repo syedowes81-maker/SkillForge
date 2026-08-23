@@ -81,14 +81,28 @@ def apply_job(request, id):
 
 
 @login_required
+@login_required
 def my_applications(request):
+
+    status = request.GET.get("status")
+
     applications = Application.objects.filter(
         freelancer=request.user
     ).order_by("-applied_at")
 
-    return render(request, "jobs/my_applications.html", {
-        "applications": applications
-    })
+    if status in ["Pending", "Accepted", "Rejected"]:
+        applications = applications.filter(status=status)
+
+    return render(
+        request,
+        "jobs/my_applications.html",
+        {
+            "applications": applications,
+            "status": status,
+        }
+    )
+
+
 
 @login_required
 def view_applicants(request, id):
