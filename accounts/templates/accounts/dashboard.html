@@ -10,15 +10,54 @@
 
 <h2>Dashboard Overview</h2>
 
+<h3>Jobs</h3>
+
 <div style="border:1px solid #ccc; padding:15px; margin:15px;">
 
-    <p><strong>📄 Jobs Posted:</strong> {{ jobs_posted }}</p>
+    <p>
+        <strong>📄 Jobs Posted:</strong>
+        {{ jobs_posted }}
+    </p>
 
-    <p><strong>👥 Applications Received:</strong> {{ applications_received }}</p>
-    <p><strong>💾 Saved Jobs:</strong> {{ saved_jobs }}</p>
+    <p>
+        <strong>🟢 Open Jobs:</strong>
+        {{ open_jobs }}
+    </p>
 
-<p><strong>💬 Unread Messages:</strong> {{ unread_messages }}</p>
+    <p>
+        <strong>🔴 Closed Jobs:</strong>
+        {{ closed_jobs }}
+    </p>
+
 </div>
+
+<h3>Applications</h3>
+
+<div style="border:1px solid #ccc; padding:15px; margin:15px;">
+
+    <p>
+        <strong>👥 Total Applications:</strong>
+        {{ applications_received }}
+    </p>
+
+    <p>
+        <strong>🟡 Pending:</strong>
+        {{ pending_applications }}
+    </p>
+
+    <p>
+        <strong>🟢 Accepted:</strong>
+        {{ accepted_applications }}
+    </p>
+
+    <p>
+        <strong>🔴 Rejected:</strong>
+        {{ rejected_applications }}
+    </p>
+
+</div>
+
+
 
 <hr>
 

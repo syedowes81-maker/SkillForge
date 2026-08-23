@@ -14,6 +14,7 @@ from django.db.models import Avg
 from .models import User, FreelancerProfile, Review, Notification, Message
 from jobs.models import Job,Application
 
+
 def register(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
@@ -57,20 +58,55 @@ def login_view(request):
 
 @login_required
 def dashboard(request):
+
+    # Jobs posted by this client
     jobs_posted = Job.objects.filter(
         client=request.user
-    ).count()
+    )
 
+    # Applications received for this client's jobs
     applications_received = Application.objects.filter(
         job__client=request.user
+    )
+
+    # Job statistics
+    total_jobs = jobs_posted.count()
+
+    open_jobs = jobs_posted.filter(
+        status="Open"
+    ).count()
+
+    closed_jobs = jobs_posted.filter(
+        status="Closed"
+    ).count()
+
+    # Application statistics
+    total_applications = applications_received.count()
+
+    pending_applications = applications_received.filter(
+        status="Pending"
+    ).count()
+
+    accepted_applications = applications_received.filter(
+        status="Accepted"
+    ).count()
+
+    rejected_applications = applications_received.filter(
+        status="Rejected"
     ).count()
 
     return render(
         request,
         "accounts/dashboard.html",
         {
-            "jobs_posted": jobs_posted,
-            "applications_received": applications_received,
+            "jobs_posted": total_jobs,
+            "open_jobs": open_jobs,
+            "closed_jobs": closed_jobs,
+
+            "applications_received": total_applications,
+            "pending_applications": pending_applications,
+            "accepted_applications": accepted_applications,
+            "rejected_applications": rejected_applications,
         },
     )
 
