@@ -4,6 +4,20 @@
 
     {% for job in jobs %}
 
+<p>
+    <strong>Status:</strong>
+    {{ job.status }}
+</p>
+
+<a href="{% url 'toggle_job_status' job.id %}">
+    {% if job.status == "Open" %}
+        <button>🔒 Close Job</button>
+    {% else %}
+        <button>🔓 Reopen Job</button>
+    {% endif %}
+</a>
+
+
         <div style="border:1px solid #ccc; padding:15px; margin:15px;">
             <h2>{{ job.title }}</h2>
 

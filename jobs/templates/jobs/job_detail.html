@@ -1,30 +1,63 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
 <h1>{{ job.title }}</h1>
 
-<p><strong>Posted by:</strong> {{ job.client.username }}</p>
+<p>
+    <strong>Posted by:</strong>
+    {{ job.client.username }}
+</p>
 
 <p>{{ job.description }}</p>
 
-<p><strong>Budget:</strong> ₹{{ job.budget }}</p>
-
 <p>
-    <strong>Posted:</strong>
-    {{ job.created_at|date:"d M Y, h:i A" }}
+    <strong>Budget:</strong>
+    ₹{{ job.budget }}
 </p>
 
-<a href="{% url 'apply_job' job.id %}">
-    <button>Apply Now</button>
-</a>
+<p>
+    <strong>Location:</strong>
+    {{ job.location }}
+</p>
+
+<p>
+    <strong>Status:</strong>
+    {{ job.status }}
+</p>
+
+<hr>
+
+{% if job.status == "Open" %}
+
+    <a href="{% url 'apply_job' job.id %}">
+        <button>Apply Now</button>
+    </a>
+
+{% else %}
+
+    <p>
+        <strong>⚠️ This job is closed and is no longer accepting applications.</strong>
+    </p>
+
+{% endif %}
 
 <a href="{% url 'save_job' job.id %}">
     <button>⭐ Save Job</button>
 </a>
 
-<a href="{% url 'view_applicants' job.id %}">
-    <button>View Applicants</button>
-</a>
+{% if job.client == user %}
+
+    <a href="{% url 'view_applicants' job.id %}">
+        <button>View Applicants</button>
+    </a>
+
+{% endif %}
 
 <br><br>
 
 <a href="{% url 'browse_jobs' %}">
     <button>← Back to Browse Jobs</button>
 </a>
+
+{% endblock %}

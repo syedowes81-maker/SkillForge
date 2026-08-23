@@ -40,29 +40,45 @@ def job_detail(request, id):
 
 @login_required
 def apply_job(request, id):
+
     job = Job.objects.get(id=id)
 
+    # Closed jobs cannot receive applications
+    if job.status == "Closed":
+        return redirect("job_detail", id=job.id)
+
+    # Prevent the client from applying to their own job
+    if job.client == request.user:
+        return redirect("job_detail", id=job.id)
+
+    # Prevent duplicate applications
+    if Application.objects.filter(
+        job=job,
+        freelancer=request.user
+    ).exists():
+        return redirect("my_applications")
+
     if request.method == "POST":
-        form = ApplicationForm(request.POST)
 
-        if form.is_valid():
-            application = form.save(commit=False)
-            application.job = job
-            application.freelancer = request.user
-            application.save()
-            Notification.objects.create(
-            user=job.client,
-            message=f"{request.user.username} applied for your job '{job.title}'"
-)
-            return redirect("browse_jobs")
+        cover_letter = request.POST.get("cover_letter")
 
-    else:
-        form = ApplicationForm()
+        if cover_letter:
+            Application.objects.create(
+                job=job,
+                freelancer=request.user,
+                cover_letter=cover_letter
+            )
 
-    return render(request, "jobs/apply_job.html",{
-        "form": form,
-        "job": job
-    })
+            return redirect("my_applications")
+
+    return render(
+        request,
+        "jobs/apply_job.html",
+        {
+            "job": job
+        }
+    )
+
 
 @login_required
 def my_applications(request):
@@ -149,6 +165,23 @@ def delete_job(request, id):
     return render(request, "jobs/delete_job.html", {
         "job": job
     })
+
+@login_required
+def toggle_job_status(request, id):
+    job = Job.objects.get(id=id)
+
+    # Only the client who posted the job can change its status
+    if job.client != request.user:
+        return redirect("my_jobs")
+
+    if job.status == "Open":
+        job.status = "Closed"
+    else:
+        job.status = "Open"
+
+    job.save()
+
+    return redirect("my_jobs")
 
 @login_required
 def save_job(request, id):
