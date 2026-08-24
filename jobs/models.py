@@ -74,6 +74,13 @@ class Application(models.Model):
         choices=STATUS_CHOICES,
         default="Pending"
     )
+    class Meta:
+      constraints = [
+        models.UniqueConstraint(
+            fields=["job", "freelancer"],
+            name="unique_job_application"
+        )
+    ]
 
     def __str__(self):
         return f"{self.freelancer.username} -> {self.job.title}"

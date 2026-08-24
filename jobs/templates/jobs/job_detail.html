@@ -48,16 +48,20 @@
 
 {% if job.client == user %}
 
-    <a href="{% url 'view_applicants' job.id %}">
-        <button>View Applicants</button>
+    <p>
+        <strong>📌 This is your job.</strong>
+    </p>
+
+{% elif job.status == "Open" %}
+
+    <a href="{% url 'apply_job' job.id %}">
+        <button>Apply Now</button>
     </a>
 
+{% else %}
+
+    <p>
+        <strong>⚠️ This job is closed and is no longer accepting applications.</strong>
+    </p>
+
 {% endif %}
-
-<br><br>
-
-<a href="{% url 'browse_jobs' %}">
-    <button>← Back to Browse Jobs</button>
-</a>
-
-{% endblock %}
