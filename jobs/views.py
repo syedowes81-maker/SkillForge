@@ -184,19 +184,18 @@ def delete_job(request, id):
 def toggle_job_status(request, id):
     job = Job.objects.get(id=id)
 
-    # Only the client who posted the job can change its status
     if job.client != request.user:
         return redirect("my_jobs")
 
-    if job.status == "Open":
-        job.status = "Closed"
-    else:
-        job.status = "Open"
+    if request.method == "POST":
+        if job.status == "Open":
+            job.status = "Closed"
+        else:
+            job.status = "Open"
 
-    job.save()
+        job.save()
 
     return redirect("my_jobs")
-
 @login_required
 def save_job(request, id):
     job = Job.objects.get(id=id)
