@@ -60,7 +60,13 @@
                 <strong>Status:</strong>
                 {{ application.status }}
             </p>
+            {% if application.status == "Pending" %}
 
+    <a href="{% url 'withdraw_application' application.id %}">
+        <button>❌ Withdraw Application</button>
+    </a>
+
+{% endif %}
             <a href="{% url 'job_detail' application.job.id %}">
                 View Job
             </a>

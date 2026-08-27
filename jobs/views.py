@@ -282,3 +282,19 @@ def browse_jobs(request):
             "categories": Job.CATEGORY_CHOICES,
         },
     )
+
+@login_required
+def withdraw_application(request, id):
+
+    application = Application.objects.get(id=id)
+
+    # Only the freelancer who submitted the application
+    # can withdraw it
+    if application.freelancer != request.user:
+        return redirect("my_applications")
+
+    # Only pending applications can be withdrawn
+    if application.status == "Pending":
+        application.delete()
+
+    return redirect("my_applications")
