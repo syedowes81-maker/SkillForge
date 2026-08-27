@@ -4,29 +4,14 @@
 
 <h1>Browse Jobs</h1>
 
-<p>
-    <strong>{{ jobs|length }}</strong> job{{ jobs|length|pluralize }} available
-</p>
 <form method="GET">
 
-  <input
-    type="number"
-    name="min_budget"
-    placeholder="Minimum budget"
-    value="{{ max_budget }}"
-    min="0"
-    step="0.01"
->
-
-
-  <input
-    type="number"
-    name="max_budget"
-    placeholder="Maximum budget"
-    value="{{ max_budget }}"
-    min="0"
-    step="0.01"
->
+    <input
+        type="text"
+        name="q"
+        placeholder="Search jobs..."
+        value="{{ query }}"
+    >
 
     <select name="category">
 
@@ -45,6 +30,51 @@
 
     </select>
 
+    <input
+        type="number"
+        name="min_budget"
+        placeholder="Minimum budget"
+        value="{{ min_budget }}"
+        min="0"
+        step="0.01"
+    >
+
+    <input
+        type="number"
+        name="max_budget"
+        placeholder="Maximum budget"
+        value="{{ max_budget }}"
+        min="0"
+        step="0.01"
+    >
+
+    <label for="sort">Sort by:</label>
+
+    <select name="sort" id="sort">
+
+        <option
+            value="newest"
+            {% if sort == "newest" %}selected{% endif %}
+        >
+            Newest
+        </option>
+
+        <option
+            value="budget_low"
+            {% if sort == "budget_low" %}selected{% endif %}
+        >
+            Budget: Low to High
+        </option>
+
+        <option
+            value="budget_high"
+            {% if sort == "budget_high" %}selected{% endif %}
+        >
+            Budget: High to Low
+        </option>
+
+    </select>
+
     <button type="submit">Search</button>
 
 </form>
@@ -53,56 +83,71 @@
 
 {% for job in jobs %}
 
-<div style="border:1px solid #ccc; padding:15px; margin:15px;">
+    <div style="border:1px solid #ccc; padding:15px; margin:15px;">
 
-    <h2>
-        <a href="{% url 'job_detail' job.id %}">
-            {{ job.title }}
-        </a>
-    </h2>
+        <h2>
+            <a href="{% url 'job_detail' job.id %}">
+                {{ job.title }}
+            </a>
+        </h2>
 
-    <p>{{ job.description }}</p>
+        <p>{{ job.description }}</p>
 
-    <strong>Category:</strong> {{ job.category }}<br>
+        <strong>Category:</strong>
+        {{ job.category }}
+        <br>
 
-    <strong>Budget:</strong> ₹{{ job.budget }}<br>
+        <strong>Budget:</strong>
+        ₹{{ job.budget }}
+        <br>
 
-<strong>Location:</strong> {{ job.location }}<br>
+        <strong>Location:</strong>
+        {{ job.location }}
+        <br>
 
-<strong>Posted by:</strong> {{ job.client.username }}
+        <strong>Status:</strong>
+        {{ job.status }}
 
-</div>
+    </div>
 
 {% empty %}
 
-<p>No jobs available.</p>
+    <p>No jobs available.</p>
 
 {% endfor %}
+
 
 {% if jobs.has_other_pages %}
 
     <div style="margin:20px;">
 
         {% if jobs.has_previous %}
-            <a href="?page={{ jobs.previous_page_number }}&q={{ query|urlencode }}&category={{ category|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}">
+
+            <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.previous_page_number }}">
                 <button>← Previous</button>
             </a>
+
         {% endif %}
 
+
         <span style="margin:0 15px;">
-            Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
+
+            Page {{ jobs.number }}
+            of {{ jobs.paginator.num_pages }}
+
         </span>
 
+
         {% if jobs.has_next %}
-            <a href="?page={{ jobs.next_page_number }}&q={{ query|urlencode }}&category={{ category|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}">
+
+            <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.next_page_number }}">
                 <button>Next →</button>
             </a>
+
         {% endif %}
 
     </div>
 
 {% endif %}
-
-
 
 {% endblock %}

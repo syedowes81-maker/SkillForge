@@ -81,7 +81,6 @@ def apply_job(request, id):
 
 
 @login_required
-@login_required
 def my_applications(request):
 
     status = request.GET.get("status")
@@ -236,6 +235,7 @@ def browse_jobs(request):
     category = request.GET.get("category")
     min_budget = request.GET.get("min_budget")
     max_budget = request.GET.get("max_budget")
+    sort = request.GET.get("sort", "newest")
 
     jobs = Job.objects.all()
 
@@ -255,10 +255,15 @@ def browse_jobs(request):
     if max_budget:
         jobs = jobs.filter(budget__lte=max_budget)
 
-    # Newest jobs first
-    jobs = jobs.order_by("-created_at")
+    # Sorting
+    if sort == "budget_low":
+        jobs = jobs.order_by("budget")
+    elif sort == "budget_high":
+        jobs = jobs.order_by("-budget")
+    else:
+        jobs = jobs.order_by("-created_at")
 
-    # Pagination: 5 jobs per page
+    # Pagination
     paginator = Paginator(jobs, 5)
 
     page_number = request.GET.get("page")
@@ -273,6 +278,7 @@ def browse_jobs(request):
             "category": category,
             "min_budget": min_budget,
             "max_budget": max_budget,
+            "sort": sort,
             "categories": Job.CATEGORY_CHOICES,
         },
     )
