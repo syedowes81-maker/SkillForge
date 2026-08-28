@@ -1,47 +1,82 @@
-<h1>Applicants for {{ job.title }}</h1>{% if applications %}
+{% extends "accounts/base.html" %}
 
-{% for application in applications %}
+{% block content %}
 
-    <div style="border:1px solid #ccc; padding:15px; margin:15px;">
+<h1>Applicants for {{ job.title }}</h1>
 
-        <h3>{{ application.freelancer.username }}</h3>
+{% if applications %}
 
-        <p><strong>Cover Letter:</strong></p>
+    {% for application in applications %}
 
-        <p>{{ application.cover_letter }}</p>
+        <div style="border:1px solid #ccc; padding:15px; margin:15px;">
 
-        <p>
-        <p>
-    <strong>Applied:</strong>
-    {{ application.applied_at|date:"d M Y, h:i A" }}
-</p>
+            <h3>
+                👤 {{ application.freelancer.username }}
+            </h3>
 
-        </p>
+            <p>
+                <strong>Applied:</strong>
+                {{ application.applied_at|date:"d M Y, h:i A" }}
+            </p>
 
-        <p>
-            <strong>Status:</strong>
-            {{ application.status }}
-        </p>
+            <p>
+                <strong>Status:</strong>
+                {{ application.status }}
+            </p>
 
-        <a href="{% url 'update_application_status' application.id 'Accepted' %}">
-            <button type="button">Accept</button>
-        </a>
+            <hr>
 
-        <a href="{% url 'update_application_status' application.id 'Rejected' %}">
-            <button type="button">Reject</button>
-        </a>
+            <p>
+                <strong>Cover Letter:</strong>
+            </p>
 
-        <a href="{% url 'send_message' application.freelancer.id %}">
-            <button type="button">Message Applicant</button>
-        </a>
+            <p>
+                {{ application.cover_letter }}
+            </p>
 
-    </div>
+            <hr>
 
-{% endfor %}
+            {% if application.status == "Pending" %}
+
+                <a href="{% url 'update_application_status' application.id 'Accepted' %}">
+                    <button type="button">
+                        ✅ Accept
+                    </button>
+                </a>
+
+                <a href="{% url 'update_application_status' application.id 'Rejected' %}">
+                    <button type="button">
+                        ❌ Reject
+                    </button>
+                </a>
+
+            {% elif application.status == "Accepted" %}
+
+                <p>
+                    <strong>✅ This applicant has been accepted.</strong>
+                </p>
+
+            {% elif application.status == "Rejected" %}
+
+                <p>
+                    <strong>❌ This applicant has been rejected.</strong>
+                </p>
+
+            {% endif %}
+
+            <a href="{% url 'send_message' application.freelancer.id %}">
+                <button type="button">
+                    💬 Message Applicant
+                </button>
+            </a>
+
+        </div>
+
+    {% endfor %}
 
 {% else %}
 
-<p>No applicants yet.</p>
+    <p>No applicants yet.</p>
 
 {% endif %}
 
@@ -50,3 +85,5 @@
 <a href="{% url 'my_jobs' %}">
     <button>← Back to My Jobs</button>
 </a>
+
+{% endblock %}
