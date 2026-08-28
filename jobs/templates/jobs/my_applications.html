@@ -62,6 +62,13 @@
             </p>
             {% if application.status == "Pending" %}
 
+{% if application.status == "Pending" %}
+
+    <a href="{% url 'withdraw_application' application.id %}">
+        <button>❌ Withdraw Application</button>
+    </a>
+
+{% endif %}
     <a href="{% url 'withdraw_application' application.id %}">
         <button>❌ Withdraw Application</button>
     </a>
