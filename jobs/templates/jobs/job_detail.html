@@ -22,29 +22,16 @@
 </p>
 
 <p>
+    <strong>Category:</strong>
+    {{ job.category }}
+</p>
+
+<p>
     <strong>Status:</strong>
     {{ job.status }}
 </p>
 
 <hr>
-
-{% if job.status == "Open" %}
-
-    <a href="{% url 'apply_job' job.id %}">
-        <button>Apply Now</button>
-    </a>
-
-{% else %}
-
-    <p>
-        <strong>⚠️ This job is closed and is no longer accepting applications.</strong>
-    </p>
-
-{% endif %}
-
-<a href="{% url 'save_job' job.id %}">
-    <button>⭐ Save Job</button>
-</a>
 
 {% if job.client == user %}
 
@@ -61,7 +48,25 @@
 {% else %}
 
     <p>
-        <strong>⚠️ This job is closed and is no longer accepting applications.</strong>
+        <strong>
+            ⚠️ This job is closed and is no longer accepting applications.
+        </strong>
     </p>
 
 {% endif %}
+
+<a href="{% url 'save_job' job.id %}">
+    <button>⭐ Save Job</button>
+</a>
+
+<a href="{% url 'view_applicants' job.id %}">
+    <button>View Applicants</button>
+</a>
+
+<br><br>
+
+<a href="{% url 'browse_jobs' %}">
+    ← Back to Jobs
+</a>
+
+{% endblock %}
