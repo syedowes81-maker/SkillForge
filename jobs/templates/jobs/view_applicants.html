@@ -69,7 +69,11 @@
                     💬 Message Applicant
                 </button>
             </a>
-
+          <a href="{% url 'freelancer_detail' application.freelancer.freelancerprofile.id %}">
+    <button type="button">
+        👀 View Profile
+    </button>
+</a>
         </div>
 
     {% endfor %}
