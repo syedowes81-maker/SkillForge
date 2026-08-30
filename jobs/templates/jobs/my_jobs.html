@@ -1,61 +1,106 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
 <h1>My Posted Jobs</h1>
 
 {% if jobs %}
 
     {% for job in jobs %}
 
-<p>
-    <strong>Status:</strong>
-    {{ job.status }}
-</p>
+        <div style="border:1px solid #ccc; padding:20px; margin:20px 0;">
 
-<a href="{% url 'toggle_job_status' job.id %}">
-    {% if job.status == "Open" %}
-        <button>🔒 Close Job</button>
-    {% else %}
-        <button>🔓 Reopen Job</button>
-    {% endif %}
-</a>
+            <h2>
+                {{ job.title }}
+            </h2>
 
+            <p>
+                <strong>Status:</strong>
 
-        <div style="border:1px solid #ccc; padding:15px; margin:15px;">
-            <h2>{{ job.title }}</h2>
+                {% if job.status == "Open" %}
+                    🟢 Open
+                {% else %}
+                    🔴 Closed
+                {% endif %}
+            </p>
 
-            <p><strong>Budget:</strong> ₹{{ job.budget }}</p>
-            <p><strong>Location:</strong> {{ job.location }}</p>
-            <p><strong>Posted:</strong> {{ job.created_at }}</p>
+            <p>
+                <strong>Budget:</strong>
+                ₹{{ job.budget }}
+            </p>
 
-<p>
-    <strong>Applicants:</strong>
-    {{ job.application_set.count }}
-</p>
-<p>
-    <strong>Saved:</strong>
-    {{ job.savedjob_set.count }}
-</p>
+            <p>
+                <strong>Location:</strong>
+                {{ job.location }}
+            </p>
 
+            <p>
+                <strong>Posted:</strong>
+                {{ job.created_at|date:"d M Y, h:i A" }}
+            </p>
+
+            <hr>
+
+            <p>
+                <strong>👥 Applicants:</strong>
+                {{ job.application_set.count }}
+            </p>
+
+            <p>
+                <strong>⭐ Saved:</strong>
+                {{ job.savedjob_set.count }}
+            </p>
+
+            <hr>
+
+            {% if job.status == "Open" %}
+
+                <form method="POST"
+                      action="{% url 'toggle_job_status' job.id %}"
+                      style="display:inline;">
+
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        🔒 Close Job
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <form method="POST"
+                      action="{% url 'toggle_job_status' job.id %}"
+                      style="display:inline;">
+
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        🔓 Reopen Job
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+            <br><br>
 
             <a href="{% url 'job_detail' job.id %}">
-                View Job
+                <button type="button">👀 View Job</button>
             </a>
-
-            <br>
- 
-            <a href="{% url 'edit_job' job.id %}">
-    Edit Job
-</a>
-
-<br>
-
-            <br>
-
-<a href="{% url 'delete_job' job.id %}">
-    Delete Job
-</a>
 
             <a href="{% url 'view_applicants' job.id %}">
-                View Applicants
+                <button type="button">👥 View Applicants</button>
             </a>
+
+            <a href="{% url 'edit_job' job.id %}">
+                <button type="button">✏️ Edit Job</button>
+            </a>
+
+            <a href="{% url 'delete_job' job.id %}">
+                <button type="button">🗑️ Delete Job</button>
+            </a>
+
         </div>
 
     {% endfor %}
@@ -65,3 +110,5 @@
     <p>You haven't posted any jobs yet.</p>
 
 {% endif %}
+
+{% endblock %}
