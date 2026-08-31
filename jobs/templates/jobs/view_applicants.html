@@ -36,20 +36,31 @@
 
             <hr>
 
-            {% if application.status == "Pending" %}
+     {% if application.status == "Pending" %}
 
-                <a href="{% url 'update_application_status' application.id 'Accepted' %}">
-                    <button type="button">
-                        ✅ Accept
-                    </button>
-                </a>
+    <form method="POST"
+          action="{% url 'update_application_status' application.id 'Accepted' %}"
+          style="display:inline;">
 
-                <a href="{% url 'update_application_status' application.id 'Rejected' %}">
-                    <button type="button">
-                        ❌ Reject
-                    </button>
-                </a>
+        {% csrf_token %}
 
+        <button type="submit">
+            ✅ Accept
+        </button>
+
+    </form>
+
+    <form method="POST"
+          action="{% url 'update_application_status' application.id 'Rejected' %}"
+          style="display:inline;">
+
+        {% csrf_token %}
+
+        <button type="submit">
+            ❌ Reject
+        </button>
+
+    </form>
             {% elif application.status == "Accepted" %}
 
                 <p>

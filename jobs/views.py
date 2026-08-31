@@ -133,21 +133,62 @@ def view_applicants(request, id):
 
 @login_required
 def update_application_status(request, id, status):
-    application = Application.objects.get(id=id)
 
-    if application.job.client != request.user:
+    application = Application.objects.get(id=id)
+    job = application.job
+
+    if job.client != request.user:
         return redirect("browse_jobs")
 
-    if status in ["Accepted", "Rejected"]:
-        application.status = status
+    if request.method != "POST":
+        return redirect("view_applicants", id=job.id)
+
+    if application.status != "Pending":
+        return redirect("view_applicants", id=job.id)
+
+    # Keep the rest of your existing Accepted/Rejected logic here.
+    if status == "Accepted":
+
+        # Accept this applicant
+        application.status = "Accepted"
         application.save()
+
         Notification.objects.create(
-        user=application.freelancer,
-        message=f"Your application for '{application.job.title}' was {status}."
-)
+            user=application.freelancer,
+            message=f"Your application for '{job.title}' was Accepted."
+        )
 
-    return redirect("view_applicants", id=application.job.id)
+        # Reject all other pending applicants
+        other_applications = Application.objects.filter(
+            job=job,
+            status="Pending"
+        ).exclude(id=application.id)
 
+        for other_application in other_applications:
+
+            other_application.status = "Rejected"
+            other_application.save()
+
+            Notification.objects.create(
+                user=other_application.freelancer,
+                message=f"Your application for '{job.title}' was Rejected because another applicant was selected."
+            )
+
+        # Close the job because a freelancer has been hired
+        job.status = "Closed"
+        job.save()
+
+    elif status == "Rejected":
+
+        application.status = "Rejected"
+        application.save()
+
+        Notification.objects.create(
+            user=application.freelancer,
+            message=f"Your application for '{job.title}' was Rejected."
+        )
+
+    return redirect("view_applicants", id=job.id)
 @login_required
 def my_jobs(request):
     jobs = Job.objects.filter(client=request.user).order_by("-created_at")
