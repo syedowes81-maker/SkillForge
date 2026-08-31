@@ -3,7 +3,31 @@
 {% block content %}
 
 <h1>My Posted Jobs</h1>
+<div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
 
+    <h2>📊 Job Overview</h2>
+
+    <p>
+        📋 <strong>Total Jobs:</strong>
+        {{ total_jobs }}
+    </p>
+
+    <p>
+        🟢 <strong>Open Jobs:</strong>
+        {{ open_jobs }}
+    </p>
+
+    <p>
+        🔴 <strong>Closed Jobs:</strong>
+        {{ closed_jobs }}
+    </p>
+
+    <p>
+        👥 <strong>Total Applicants:</strong>
+        {{ total_applications }}
+    </p>
+
+</div>
 {% if jobs %}
 
     {% for job in jobs %}
