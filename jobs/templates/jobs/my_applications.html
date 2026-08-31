@@ -3,7 +3,53 @@
 {% block content %}
 
 <h1>My Applications</h1>
+<div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
 
+    <h2>📊 Application Overview</h2>
+
+    <p>
+        📋 <strong>All:</strong>
+        {{ total_applications }}
+    </p>
+
+    <p>
+        ⏳ <strong>Pending:</strong>
+        {{ pending_applications }}
+    </p>
+
+    <p>
+        ✅ <strong>Accepted:</strong>
+        {{ accepted_applications }}
+    </p>
+
+    <p>
+        ❌ <strong>Rejected:</strong>
+        {{ rejected_applications }}
+    </p>
+
+</div>
+
+<div>
+
+    <a href="{% url 'my_applications' %}">
+        <button>All</button>
+    </a>
+
+    <a href="?status=Pending">
+        <button>⏳ Pending</button>
+    </a>
+
+    <a href="?status=Accepted">
+        <button>✅ Accepted</button>
+    </a>
+
+    <a href="?status=Rejected">
+        <button>❌ Rejected</button>
+    </a>
+
+</div>
+
+<br>
 <form method="GET">
 
     <select name="status">

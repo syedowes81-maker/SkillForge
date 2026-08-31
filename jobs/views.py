@@ -85,12 +85,28 @@ def my_applications(request):
 
     status = request.GET.get("status")
 
-    applications = Application.objects.filter(
+    all_applications = Application.objects.filter(
         freelancer=request.user
-    ).order_by("-applied_at")
+    )
+
+    applications = all_applications.order_by("-applied_at")
 
     if status in ["Pending", "Accepted", "Rejected"]:
         applications = applications.filter(status=status)
+
+    total_applications = all_applications.count()
+
+    pending_applications = all_applications.filter(
+        status="Pending"
+    ).count()
+
+    accepted_applications = all_applications.filter(
+        status="Accepted"
+    ).count()
+
+    rejected_applications = all_applications.filter(
+        status="Rejected"
+    ).count()
 
     return render(
         request,
@@ -98,6 +114,10 @@ def my_applications(request):
         {
             "applications": applications,
             "status": status,
+            "total_applications": total_applications,
+            "pending_applications": pending_applications,
+            "accepted_applications": accepted_applications,
+            "rejected_applications": rejected_applications,
         }
     )
 
