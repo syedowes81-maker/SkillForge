@@ -3,6 +3,44 @@
 {% block content %}
 
 <h1>My Posted Jobs</h1>
+
+<form method="GET">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Search my jobs..."
+        value="{{ query|default:'' }}"
+    >
+
+    <select name="status">
+
+        <option value="">All Status</option>
+
+        <option value="Open"
+            {% if status == "Open" %}selected{% endif %}>
+            Open
+        </option>
+
+        <option value="Closed"
+            {% if status == "Closed" %}selected{% endif %}>
+            Closed
+        </option>
+
+    </select>
+
+    <button type="submit">
+        🔎 Search
+    </button>
+
+</form>
+
+<br>
+
+
+
+
+
 <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
 
     <h2>📊 Job Overview</h2>

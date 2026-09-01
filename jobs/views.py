@@ -210,20 +210,40 @@ def update_application_status(request, id, status):
 
     return redirect("view_applicants", id=job.id)
 
+
 @login_required
 def my_jobs(request):
+
+    query = request.GET.get("q")
+    status = request.GET.get("status")
 
     jobs = Job.objects.filter(
         client=request.user
     ).order_by("-created_at")
 
-    total_jobs = jobs.count()
+    # Search by title
+    if query:
+        jobs = jobs.filter(
+            title__icontains=query
+        )
 
-    open_jobs = jobs.filter(
+    # Filter by status
+    if status in ["Open", "Closed"]:
+        jobs = jobs.filter(
+            status=status
+        )
+
+    total_jobs = Job.objects.filter(
+        client=request.user
+    ).count()
+
+    open_jobs = Job.objects.filter(
+        client=request.user,
         status="Open"
     ).count()
 
-    closed_jobs = jobs.filter(
+    closed_jobs = Job.objects.filter(
+        client=request.user,
         status="Closed"
     ).count()
 
@@ -236,6 +256,8 @@ def my_jobs(request):
         "jobs/my_jobs.html",
         {
             "jobs": jobs,
+            "query": query,
+            "status": status,
             "total_jobs": total_jobs,
             "open_jobs": open_jobs,
             "closed_jobs": closed_jobs,
