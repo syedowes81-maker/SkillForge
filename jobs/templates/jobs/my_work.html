@@ -1,0 +1,91 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h1>💼 My Work</h1>
+
+<p>
+    Here are the projects you have been selected for.
+</p>
+
+<hr>
+
+{% if accepted_applications %}
+
+    {% for application in accepted_applications %}
+
+        <div style="
+            border:1px solid #ccc;
+            padding:15px;
+            margin:15px 0;
+        ">
+
+            <h2>{{ application.job.title }}</h2>
+
+            <p>
+                <strong>Client:</strong>
+                {{ application.job.client.username }}
+            </p>
+
+            <p>
+                <strong>Category:</strong>
+                {{ application.job.category }}
+            </p>
+
+            <p>
+                <strong>Budget:</strong>
+                ₹{{ application.job.budget }}
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                {{ application.job.location }}
+            </p>
+
+            <p>
+                <strong>Started:</strong>
+                {{ application.applied_at|date:"d M Y" }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                ✅ Accepted
+            </p>
+
+            <a href="{% url 'job_detail' application.job.id %}">
+                <button type="button">
+                    View Project
+                </button>
+            </a>
+
+            <a href="{% url 'send_message' application.job.client.id %}">
+                <button type="button">
+                    💬 Message Client
+                </button>
+            </a>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>
+        You don't have any accepted projects yet.
+    </p>
+
+    <a href="{% url 'browse_jobs' %}">
+        <button type="button">
+            🔎 Browse Jobs
+        </button>
+    </a>
+
+{% endif %}
+
+<br>
+
+<a href="{% url 'dashboard' %}">
+    ← Back to Dashboard
+</a>
+
+{% endblock %}

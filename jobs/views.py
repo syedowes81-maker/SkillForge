@@ -122,6 +122,25 @@ def my_applications(request):
     )
 
 @login_required
+def my_work(request):
+
+    accepted_applications = Application.objects.filter(
+        freelancer=request.user,
+        status="Accepted"
+    ).select_related("job").order_by("-applied_at")
+
+    return render(
+        request,
+        "jobs/my_work.html",
+        {
+            "accepted_applications": accepted_applications,
+        }
+    )
+
+
+
+
+@login_required
 def withdraw_application(request, id):
 
     application = Application.objects.get(id=id)
