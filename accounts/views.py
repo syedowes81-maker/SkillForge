@@ -141,21 +141,30 @@ def freelancers(request):
     )
 
 def freelancer_detail(request, id):
-    freelancer = get_object_or_404(FreelancerProfile, id=id)
+
+    freelancer = get_object_or_404(
+        FreelancerProfile,
+        id=id
+    )
 
     reviews = Review.objects.filter(
         freelancer=freelancer
     ).order_by("-created_at")
+
     average_rating = reviews.aggregate(
-    Avg("rating")
-)["rating__avg"]
+        Avg("rating")
+    )["rating__avg"]
+
+    review_count = reviews.count()
+
     return render(
         request,
         "accounts/freelancer_detail.html",
         {
             "freelancer": freelancer,
             "reviews": reviews,
-            "average_rating":average_rating,
+            "average_rating": average_rating,
+            "review_count": review_count,
         },
     )
 @login_required
