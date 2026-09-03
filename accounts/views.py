@@ -191,7 +191,23 @@ def edit_profile(request):
 
 @login_required
 def add_review(request, id):
-    freelancer = get_object_or_404(FreelancerProfile, id=id)
+
+    freelancer = get_object_or_404(
+        FreelancerProfile,
+        id=id
+    )
+
+    completed_work = Application.objects.filter(
+        freelancer=freelancer.user,
+        job__client=request.user,
+        status="Completed"
+    ).first()
+
+    if not completed_work:
+        return redirect(
+            "freelancer_detail",
+            id=freelancer.id
+        )
 
     existing_review = Review.objects.filter(
         freelancer=freelancer,
@@ -199,18 +215,28 @@ def add_review(request, id):
     ).first()
 
     if existing_review:
-        return redirect("freelancer_detail", id=freelancer.id)
+        return redirect(
+            "freelancer_detail",
+            id=freelancer.id
+        )
 
     if request.method == "POST":
+
         form = ReviewForm(request.POST)
 
         if form.is_valid():
+
             review = form.save(commit=False)
+
             review.freelancer = freelancer
             review.client = request.user
+
             review.save()
 
-            return redirect("freelancer_detail", id=freelancer.id)
+            return redirect(
+                "freelancer_detail",
+                id=freelancer.id
+            )
 
     else:
         form = ReviewForm()
@@ -220,9 +246,13 @@ def add_review(request, id):
         "accounts/add_review.html",
         {
             "form": form,
-            "freelancer": freelancer,
-        },
+            "freelancer": freelancer
+        }
     )
+
+
+
+
 @login_required
 def notifications(request):
     notifications = Notification.objects.filter(
