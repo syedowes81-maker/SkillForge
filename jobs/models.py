@@ -51,11 +51,11 @@ class Job(models.Model):
 class Application(models.Model):
 
     STATUS_CHOICES = [
-        ("Pending", "Pending"),
-        ("Accepted", "Accepted"),
-        ("Rejected", "Rejected"),
-    ]
-
+    ("Pending", "Pending"),
+    ("Accepted", "Accepted"),
+    ("Rejected", "Rejected"),
+    ("Completed", "Completed"),
+]
     job = models.ForeignKey(
         Job,
         on_delete=models.CASCADE
