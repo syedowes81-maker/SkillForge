@@ -9,6 +9,8 @@ from .models import Application
 from .models import Job,Application,SavedJob
 from accounts.models import Notification
 from django.core.paginator import Paginator
+from django.shortcuts import render, redirect, get_object_or_404
+
 
 @login_required
 def post_job(request):
@@ -137,7 +139,26 @@ def my_work(request):
         }
     )
 
+@login_required
+def complete_work(request, id):
 
+    application = get_object_or_404(
+        Application,
+        id=id,
+        freelancer=request.user
+    )
+
+    if application.status == "Accepted":
+
+        application.status = "Completed"
+        application.save()
+
+        Notification.objects.create(
+            user=application.job.client,
+            message=f"The project '{application.job.title}' has been marked as completed."
+        )
+
+    return redirect("my_work")
 
 
 @login_required

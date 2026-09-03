@@ -48,10 +48,32 @@
             </p>
 
             <p>
-                <strong>Status:</strong>
-                ✅ Accepted
-            </p>
+            <p>
+    <strong>Status:</strong>
 
+    {% if application.status == "Accepted" %}
+        🟢 In Progress
+
+    {% elif application.status == "Completed" %}
+        ✅ Completed
+
+    {% endif %}
+</p>
+
+{% if application.status == "Accepted" %}
+
+    <form
+        method="POST"
+        action="{% url 'complete_work' application.id %}"
+    >
+        {% csrf_token %}
+
+        <button type="submit">
+            ✅ Mark as Completed
+        </button>
+    </form>
+
+{% endif %}
             <a href="{% url 'job_detail' application.job.id %}">
                 <button type="button">
                     View Project
