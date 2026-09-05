@@ -464,6 +464,29 @@ def browse_jobs(request):
     )
 
 @login_required
+def confirm_completion(request, id):
+
+    application = get_object_or_404(
+        Application,
+        id=id,
+        job__client=request.user
+    )
+
+    if request.method == "POST":
+
+        if application.status == "Completed":
+
+            application.status = "Confirmed"
+            application.save()
+
+            Notification.objects.create(
+                user=application.freelancer,
+                message=f"The client confirmed completion of '{application.job.title}'."
+            )
+
+    return redirect("my_projects")
+
+@login_required
 def withdraw_application(request, id):
 
     application = Application.objects.get(id=id)

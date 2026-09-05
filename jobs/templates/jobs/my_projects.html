@@ -42,12 +42,26 @@
                 <strong>Status:</strong>
 
                 {% if project.status == "Accepted" %}
+
                     🟢 In Progress
+
                 {% elif project.status == "Completed" %}
-                    ✅ Completed
+
+                    🟡 Waiting for Client Confirmation
+
+                {% elif project.status == "Confirmed" %}
+
+                    ✅ Project Confirmed
+
+                {% elif project.status == "Rejected" %}
+
+                    ❌ Rejected
+
                 {% endif %}
 
             </p>
+
+            <hr>
 
             <a href="{% url 'job_detail' project.job.id %}">
                 <button type="button">
@@ -64,6 +78,25 @@
             {% if project.status == "Completed" %}
 
                 <br><br>
+
+                <form
+                    method="POST"
+                    action="{% url 'confirm_completion' project.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        ✅ Confirm Completion
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+            {% if project.status == "Completed" or project.status == "Confirmed" %}
+
+                <br>
 
                 <a href="{% url 'add_review' project.freelancer.freelancerprofile.id %}">
                     <button type="button">
