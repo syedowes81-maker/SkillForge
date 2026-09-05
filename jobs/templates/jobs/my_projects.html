@@ -1,0 +1,100 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+
+<h1>💼 My Projects</h1>
+
+<p>
+    Projects where you have selected a freelancer.
+</p>
+
+<hr>
+
+{% if projects %}
+
+    {% for project in projects %}
+
+        <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+
+            <h2>{{ project.job.title }}</h2>
+
+            <p>
+                <strong>Freelancer:</strong>
+                {{ project.freelancer.username }}
+            </p>
+
+            <p>
+                <strong>Category:</strong>
+                {{ project.job.category }}
+            </p>
+
+            <p>
+                <strong>Budget:</strong>
+                ₹{{ project.job.budget }}
+            </p>
+
+            <p>
+                <strong>Started:</strong>
+                {{ project.applied_at|date:"d M Y" }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+
+                {% if project.status == "Accepted" %}
+                    🟢 In Progress
+                {% elif project.status == "Completed" %}
+                    ✅ Completed
+                {% endif %}
+
+            </p>
+
+            <a href="{% url 'job_detail' project.job.id %}">
+                <button type="button">
+                    View Project
+                </button>
+            </a>
+
+            <a href="{% url 'send_message' project.freelancer.id %}">
+                <button type="button">
+                    💬 Message Freelancer
+                </button>
+            </a>
+
+            {% if project.status == "Completed" %}
+
+                <br><br>
+
+                <a href="{% url 'add_review' project.freelancer.freelancerprofile.id %}">
+                    <button type="button">
+                        ⭐ Review Freelancer
+                    </button>
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>
+        You don't have any active projects yet.
+    </p>
+
+    <a href="{% url 'my_jobs' %}">
+        <button type="button">
+            📋 View My Posted Jobs
+        </button>
+    </a>
+
+{% endif %}
+
+<br>
+
+<a href="{% url 'dashboard' %}">
+    ← Back to Dashboard
+</a>
+
+{% endblock %}

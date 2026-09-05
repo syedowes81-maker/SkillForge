@@ -138,6 +138,26 @@ def my_work(request):
             "applications": applications,
         }
     )
+
+@login_required
+def my_projects(request):
+
+    projects = Application.objects.filter(
+        job__client=request.user,
+        status__in=["Accepted", "Completed"]
+    ).select_related(
+        "job",
+        "freelancer"
+    ).order_by("-applied_at")
+
+    return render(
+        request,
+        "jobs/my_projects.html",
+        {
+            "projects": projects,
+        }
+    )
+
 @login_required
 def complete_work(request, id):
 

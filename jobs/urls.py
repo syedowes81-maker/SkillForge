@@ -7,6 +7,7 @@ urlpatterns = [
     path("applications/", views.my_applications, name="my_applications"),
     path("my-work/", views.my_work, name="my_work"),
     path("my-work/<int:id>/complete/",views.complete_work,name="complete_work"),
+    path("my-projects/",views.my_projects,name="my_projects"),
     path("my-jobs/",views.my_jobs,name="my_jobs"),
     path("saved/", views.saved_jobs, name="saved_jobs"),
     path("<int:id>/apply/", views.apply_job, name="apply_job"),
