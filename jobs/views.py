@@ -126,19 +126,18 @@ def my_applications(request):
 @login_required
 def my_work(request):
 
-    accepted_applications = Application.objects.filter(
+    applications = Application.objects.filter(
         freelancer=request.user,
-        status="Accepted"
+        status__in=["Accepted", "Completed"]
     ).select_related("job").order_by("-applied_at")
 
     return render(
         request,
         "jobs/my_work.html",
         {
-            "accepted_applications": accepted_applications,
+            "applications": applications,
         }
     )
-
 @login_required
 def complete_work(request, id):
 

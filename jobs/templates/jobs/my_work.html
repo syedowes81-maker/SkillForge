@@ -5,20 +5,16 @@
 <h1>💼 My Work</h1>
 
 <p>
-    Here are the projects you have been selected for.
+    Projects you have been selected for.
 </p>
 
 <hr>
 
-{% if accepted_applications %}
+{% if applications %}
 
-    {% for application in accepted_applications %}
+    {% for application in applications %}
 
-        <div style="
-            border:1px solid #ccc;
-            padding:15px;
-            margin:15px 0;
-        ">
+        <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
 
             <h2>{{ application.job.title }}</h2>
 
@@ -38,52 +34,48 @@
             </p>
 
             <p>
-                <strong>Location:</strong>
-                {{ application.job.location }}
-            </p>
-
-            <p>
                 <strong>Started:</strong>
                 {{ application.applied_at|date:"d M Y" }}
             </p>
 
             <p>
-            <p>
-    <strong>Status:</strong>
+                <strong>Status:</strong>
 
-    {% if application.status == "Accepted" %}
-        🟢 In Progress
+                {% if application.status == "Accepted" %}
+                    🟢 In Progress
+                {% elif application.status == "Completed" %}
+                    ✅ Completed
+                {% endif %}
 
-    {% elif application.status == "Completed" %}
-        ✅ Completed
+            </p>
 
-    {% endif %}
-</p>
+            {% if application.status == "Accepted" %}
 
-{% if application.status == "Accepted" %}
+                <form
+                    method="POST"
+                    action="{% url 'complete_work' application.id %}"
+                >
 
-    <form
-        method="POST"
-        action="{% url 'complete_work' application.id %}"
-    >
-        {% csrf_token %}
+                    {% csrf_token %}
 
-        <button type="submit">
-            ✅ Mark as Completed
-        </button>
-    </form>
+                    <button type="submit">
+                        ✅ Mark as Completed
+                    </button>
 
-{% endif %}
+                </form>
+
+            {% endif %}
+
+            <br>
+
             <a href="{% url 'job_detail' application.job.id %}">
-                <button type="button">
-                    View Project
-                </button>
+                View Project
             </a>
 
+            <br><br>
+
             <a href="{% url 'send_message' application.job.client.id %}">
-                <button type="button">
-                    💬 Message Client
-                </button>
+                💬 Message Client
             </a>
 
         </div>
@@ -93,7 +85,7 @@
 {% else %}
 
     <p>
-        You don't have any accepted projects yet.
+        You don't have any projects yet.
     </p>
 
     <a href="{% url 'browse_jobs' %}">
