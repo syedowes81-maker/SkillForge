@@ -435,29 +435,28 @@ def unsave_job(request, id):
 def browse_jobs(request):
     query = request.GET.get("q")
     category = request.GET.get("category")
+    location = request.GET.get("location")
     min_budget = request.GET.get("min_budget")
     max_budget = request.GET.get("max_budget")
     sort = request.GET.get("sort", "newest")
 
     jobs = Job.objects.all()
 
-    # Search by job title
     if query:
         jobs = jobs.filter(title__icontains=query)
 
-    # Filter by category
     if category:
         jobs = jobs.filter(category=category)
 
-    # Filter by minimum budget
+    if location:
+        jobs = jobs.filter(location__icontains=location)
+
     if min_budget:
         jobs = jobs.filter(budget__gte=min_budget)
 
-    # Filter by maximum budget
     if max_budget:
         jobs = jobs.filter(budget__lte=max_budget)
 
-    # Sorting
     if sort == "budget_low":
         jobs = jobs.order_by("budget")
     elif sort == "budget_high":
@@ -465,7 +464,6 @@ def browse_jobs(request):
     else:
         jobs = jobs.order_by("-created_at")
 
-    # Pagination
     paginator = Paginator(jobs, 5)
 
     page_number = request.GET.get("page")
@@ -478,13 +476,13 @@ def browse_jobs(request):
             "jobs": jobs_page,
             "query": query,
             "category": category,
+            "location": location,
             "min_budget": min_budget,
             "max_budget": max_budget,
             "sort": sort,
             "categories": Job.CATEGORY_CHOICES,
         },
     )
-
 @login_required
 def confirm_completion(request, id):
 

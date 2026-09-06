@@ -29,7 +29,12 @@
         {% endfor %}
 
     </select>
-
+    <input
+        type="text"
+        name="location"
+        placeholder="Location"
+        value="{{ location }}"
+    >
     <input
         type="number"
         name="min_budget"
@@ -123,7 +128,7 @@
 
         {% if jobs.has_previous %}
 
-            <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.previous_page_number }}">
+    <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.previous_page_number }}">
                 <button>← Previous</button>
             </a>
 
@@ -139,8 +144,7 @@
 
 
         {% if jobs.has_next %}
-
-            <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.next_page_number }}">
+        <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.next_page_number }}">
                 <button>Next →</button>
             </a>
 
