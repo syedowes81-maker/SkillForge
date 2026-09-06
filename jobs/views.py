@@ -140,6 +140,28 @@ def my_work(request):
     )
 
 @login_required
+def earnings(request):
+
+    completed_projects = Application.objects.filter(
+        freelancer=request.user,
+        status="Confirmed"
+    ).select_related("job").order_by("-applied_at")
+
+    total_earnings = sum(
+        project.job.budget
+        for project in completed_projects
+    )
+
+    return render(
+        request,
+        "jobs/earnings.html",
+        {
+            "completed_projects": completed_projects,
+            "total_earnings": total_earnings,
+        }
+    )
+
+@login_required
 def my_projects(request):
 
     projects = Application.objects.filter(
