@@ -2,157 +2,160 @@
 
 {% block content %}
 
-<div style="max-width:800px; margin:auto;">
+<h1>{{ freelancer.user.username }}</h1>
 
-    <h1>👤 {{ freelancer.user.username }}</h1>
+{% if average_rating %}
+    <p>
+        <strong>⭐ Average Rating:</strong>
+        {{ average_rating|floatformat:1 }}/5
+        ({{ review_count }} reviews)
+    </p>
 
-    {% if freelancer.profile_picture %}
-        <p>
-            <img
-                src="{{ freelancer.profile_picture.url }}"
-                alt="Profile Picture"
-                width="150"
-                height="150"
-                style="object-fit:cover; border-radius:50%;"
-            >
-        </p>
-    {% endif %}
-
-    <hr>
-
-    <h2>About</h2>
-
-    {% if freelancer.bio %}
-        <p>{{ freelancer.bio }}</p>
-    {% else %}
-        <p>No bio added yet.</p>
-    {% endif %}
-
-    <h2>Skills</h2>
-
-    {% if freelancer.skills %}
-        <p>{{ freelancer.skills }}</p>
-    {% else %}
-        <p>No skills added yet.</p>
-    {% endif %}
-
-    <h2>Professional Information</h2>
+    <h3>Rating Breakdown</h3>
 
     <p>
-        <strong>Experience:</strong>
-        {{ freelancer.experience }} years
+        ⭐⭐⭐⭐⭐
+        {{ rating_distribution.5 }}
     </p>
 
     <p>
-        <strong>Hourly Rate:</strong>
-        ₹{{ freelancer.hourly_rate }}/hr
+        ⭐⭐⭐⭐
+        {{ rating_distribution.4 }}
     </p>
 
-    {% if freelancer.location %}
-        <p>
-            <strong>Location:</strong>
-            {{ freelancer.location }}
-        </p>
-    {% endif %}
+    <p>
+        ⭐⭐⭐
+        {{ rating_distribution.3 }}
+    </p>
 
-    {% if freelancer.portfolio %}
-        <p>
-            <strong>Portfolio:</strong>
-            <a href="{{ freelancer.portfolio }}" target="_blank">
-                🔗 View Portfolio
-            </a>
-        </p>
-    {% endif %}
+    <p>
+        ⭐⭐
+        {{ rating_distribution.2 }}
+    </p>
 
-    {% if freelancer.resume %}
-        <p>
-            <a href="{{ freelancer.resume.url }}" target="_blank">
-                <button type="button">
-                    📄 View / Download Resume
-                </button>
-            </a>
-        </p>
-    {% endif %}
+    <p>
+        ⭐
+        {{ rating_distribution.1 }}
+    </p>
 
-    <hr>
+{% else %}
 
-    <h2>⭐ Reviews & Ratings</h2>
+    <p>
+        <strong>⭐ Average Rating:</strong>
+        No ratings yet
+    </p>
 
-    {% if average_rating %}
+{% endif %}
 
-        <p>
-            <strong>⭐ Average Rating:</strong>
-            {{ average_rating|floatformat:1 }}/5
-        </p>
+<hr>
 
-        <p>
-            {{ review_count }} review{{ review_count|pluralize }}
-        </p>
+<h2>About the Freelancer</h2>
 
-    {% else %}
+<p>
+    <strong>Bio:</strong>
+    {{ freelancer.bio }}
+</p>
 
-        <p>No ratings yet.</p>
+<p>
+    <strong>Skills:</strong>
+    {{ freelancer.skills }}
+</p>
 
-    {% endif %}
+<p>
+    <strong>Experience:</strong>
+    {{ freelancer.experience }} years
+</p>
 
-    {% if reviews %}
+<p>
+    <strong>Hourly Rate:</strong>
+    ₹{{ freelancer.hourly_rate }}/hr
+</p>
 
-        {% for review in reviews %}
+<p>
+    <strong>Location:</strong>
+    {{ freelancer.location }}
+</p>
 
-            <div style="
-                border:1px solid #ccc;
-                padding:15px;
-                margin:15px 0;
-            ">
+{% if freelancer.portfolio %}
+    <p>
+        <strong>Portfolio:</strong>
+        <a href="{{ freelancer.portfolio }}" target="_blank">
+            View Portfolio
+        </a>
+    </p>
+{% endif %}
 
-                <strong>
-                    👤 {{ review.client.username }}
-                </strong>
+{% if freelancer.resume %}
+    <p>
+        <a href="{{ freelancer.resume.url }}">
+            <button type="button">
+                📄 Download Resume
+            </button>
+        </a>
+    </p>
+{% endif %}
 
-                <p>
-                    ⭐ {{ review.rating }}/5
-                </p>
+<hr>
 
-                <p>
-                    {{ review.comment }}
-                </p>
+<h2>Actions</h2>
 
-                <small>
-                    {{ review.created_at|date:"d M Y" }}
-                </small>
+<button type="button">
+    Hire Me
+</button>
 
-            </div>
+<a href="{% url 'send_message' freelancer.user.id %}">
+    <button type="button">
+        💬 Message
+    </button>
+</a>
 
-        {% endfor %}
+<a href="{% url 'add_review' freelancer.id %}">
+    <button type="button">
+        ⭐ Leave Review
+    </button>
+</a>
 
-    {% else %}
+<hr>
 
-        <p>No reviews yet.</p>
+<h2>Reviews</h2>
 
-    {% endif %}
+{% if reviews %}
 
-    <hr>
+    {% for review in reviews %}
 
-    <h2>Actions</h2>
+        <div style="border:1px solid #ccc; padding:10px; margin:10px;">
 
-    <a href="{% url 'send_message' freelancer.user.id %}">
-        <button type="button">
-            💬 Message
-        </button>
-    </a>
+            <strong>
+                {{ review.client.username }}
+            </strong>
 
-    <a href="{% url 'add_review' freelancer.id %}">
-        <button type="button">
-            ⭐ Leave Review
-        </button>
-    </a>
+            <br>
 
-    <br><br>
+            ⭐ Rating:
+            {{ review.rating }}/5
 
-    <a href="{% url 'freelancers' %}">
-        ← Back to Freelancers
-    </a>
+            <p>
+                {{ review.comment }}
+            </p>
 
-</div>
+            <small>
+                {{ review.created_at|date:"d M Y, h:i A" }}
+            </small>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No reviews yet.</p>
+
+{% endif %}
+
+<br>
+
+<a href="{% url 'freelancers' %}">
+    ← Back to Freelancers
+</a>
 
 {% endblock %}

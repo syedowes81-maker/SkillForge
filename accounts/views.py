@@ -10,7 +10,7 @@ from .forms import FreelancerProfileForm
 from django.contrib.auth.decorators import login_required
 from .models import FreelancerProfile, Review, Message
 from .forms import FreelancerProfileForm, ReviewForm
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from .models import User, FreelancerProfile, Review, Notification, Message
 from jobs.models import Job,Application
 
@@ -156,7 +156,13 @@ def freelancer_detail(request, id):
     )["rating__avg"]
 
     review_count = reviews.count()
-
+    rating_distribution = {
+      5: reviews.filter(rating=5).count(),
+      4: reviews.filter(rating=4).count(),
+      3: reviews.filter(rating=3).count(),
+      2: reviews.filter(rating=2).count(),
+      1: reviews.filter(rating=1).count(),
+    }
     return render(
         request,
         "accounts/freelancer_detail.html",
