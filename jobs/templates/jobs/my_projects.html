@@ -38,6 +38,32 @@
                 {{ project.applied_at|date:"d M Y" }}
             </p>
 
+            <hr>
+
+            <h3>📊 Project Progress</h3>
+
+            <p>
+                {% if project.status == "Accepted" %}
+                    🟢 <strong>1. Accepted</strong>
+                    → ⚪ 2. Completed
+                    → ⚪ 3. Confirmed
+
+                {% elif project.status == "Completed" %}
+                    ✅ <strong>1. Accepted</strong>
+                    →
+                    🟡 <strong>2. Completed</strong>
+                    →
+                    ⚪ 3. Confirmed
+
+                {% elif project.status == "Confirmed" %}
+                    ✅ <strong>1. Accepted</strong>
+                    →
+                    ✅ <strong>2. Completed</strong>
+                    →
+                    ✅ <strong>3. Confirmed</strong>
+                {% endif %}
+            </p>
+
             <p>
                 <strong>Status:</strong>
 
@@ -52,10 +78,6 @@
                 {% elif project.status == "Confirmed" %}
 
                     ✅ Project Confirmed
-
-                {% elif project.status == "Rejected" %}
-
-                    ❌ Rejected
 
                 {% endif %}
 
