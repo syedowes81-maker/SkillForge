@@ -95,6 +95,32 @@ def dashboard(request):
         status="Rejected"
     ).count()
 
+    # Freelancer project statistics
+    freelancer_projects = Application.objects.filter(
+        freelancer=request.user
+    )
+
+    total_projects = freelancer_projects.count()
+
+    active_projects = freelancer_projects.filter(
+        status="Accepted"
+    ).count()
+
+    completed_projects = freelancer_projects.filter(
+        status="Completed"
+    ).count()
+
+    confirmed_projects = freelancer_projects.filter(
+        status="Confirmed"
+    ).count()
+
+    total_earnings = sum(
+        project.job.budget
+        for project in freelancer_projects.filter(
+            status="Confirmed"
+        ).select_related("job")
+    )
+
     return render(
         request,
         "accounts/dashboard.html",
@@ -107,9 +133,14 @@ def dashboard(request):
             "pending_applications": pending_applications,
             "accepted_applications": accepted_applications,
             "rejected_applications": rejected_applications,
-        },
-    )
 
+            "total_projects": total_projects,
+            "active_projects": active_projects,
+            "completed_projects": completed_projects,
+            "confirmed_projects": confirmed_projects,
+            "total_earnings": total_earnings,
+        }
+    )
 def logout_view(request):
   logout(request)
   return redirect("/login/")
