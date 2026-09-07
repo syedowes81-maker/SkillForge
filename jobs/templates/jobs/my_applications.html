@@ -115,7 +115,34 @@
 {% endif %}
 
 <br>
+{% if applications.has_other_pages %}
 
+    <div style="margin:20px;">
+
+        {% if applications.has_previous %}
+
+            <a href="?status={{ status|urlencode }}&page={{ applications.previous_page_number }}">
+                <button type="button">← Previous</button>
+            </a>
+
+        {% endif %}
+
+        <span style="margin:0 15px;">
+            Page {{ applications.number }}
+            of {{ applications.paginator.num_pages }}
+        </span>
+
+        {% if applications.has_next %}
+
+            <a href="?status={{ status|urlencode }}&page={{ applications.next_page_number }}">
+                <button type="button">Next →</button>
+            </a>
+
+        {% endif %}
+
+    </div>
+
+{% endif %}
 <a href="{% url 'dashboard' %}">
     ← Back to Dashboard
 </a>

@@ -84,7 +84,6 @@ def apply_job(request, id):
 
 @login_required
 def my_applications(request):
-
     status = request.GET.get("status")
 
     all_applications = Application.objects.filter(
@@ -110,11 +109,16 @@ def my_applications(request):
         status="Rejected"
     ).count()
 
+    paginator = Paginator(applications, 5)
+
+    page_number = request.GET.get("page")
+    applications_page = paginator.get_page(page_number)
+
     return render(
         request,
         "jobs/my_applications.html",
         {
-            "applications": applications,
+            "applications": applications_page,
             "status": status,
             "total_applications": total_applications,
             "pending_applications": pending_applications,
