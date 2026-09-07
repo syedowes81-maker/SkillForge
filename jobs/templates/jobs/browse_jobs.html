@@ -6,12 +6,10 @@
 
 <form method="GET">
 
-    <input
-        type="text"
-        name="q"
-        placeholder="Search jobs..."
-        value="{{ query }}"
-    >
+    <input type="text"
+           name="q"
+           placeholder="Search jobs..."
+           value="{{ query }}">
 
     <select name="category">
 
@@ -19,62 +17,50 @@
 
         {% for value, label in categories %}
 
-            <option
-                value="{{ value }}"
-                {% if value == category %}selected{% endif %}
-            >
+            <option value="{{ value }}"
+                {% if value == category %}selected{% endif %}>
                 {{ label }}
             </option>
 
         {% endfor %}
 
     </select>
-    <input
-        type="text"
-        name="location"
-        placeholder="Location"
-        value="{{ location }}"
-    >
-    <input
-        type="number"
-        name="min_budget"
-        placeholder="Minimum budget"
-        value="{{ min_budget }}"
-        min="0"
-        step="0.01"
-    >
 
-    <input
-        type="number"
-        name="max_budget"
-        placeholder="Maximum budget"
-        value="{{ max_budget }}"
-        min="0"
-        step="0.01"
-    >
+    <input type="text"
+           name="location"
+           placeholder="Location"
+           value="{{ location }}">
+
+    <input type="number"
+           name="min_budget"
+           placeholder="Minimum budget"
+           value="{{ min_budget }}"
+           min="0"
+           step="0.01">
+
+    <input type="number"
+           name="max_budget"
+           placeholder="Maximum budget"
+           value="{{ max_budget }}"
+           min="0"
+           step="0.01">
 
     <label for="sort">Sort by:</label>
 
     <select name="sort" id="sort">
 
-        <option
-            value="newest"
-            {% if sort == "newest" %}selected{% endif %}
-        >
+        <option value="newest"
+            {% if sort == "newest" %}selected{% endif %}>
             Newest
         </option>
 
-        <option
-            value="budget_low"
-            {% if sort == "budget_low" %}selected{% endif %}
-        >
+        <option value="budget_low"
+            {% if sort == "budget_low" %}selected{% endif %}>
             Budget: Low to High
         </option>
 
-        <option
-            value="budget_high"
-            {% if sort == "budget_high" %}selected{% endif %}
-        >
+        <option value="budget_high"
+            {% if sort == "budget_high" %}selected{% endif %}>
             Budget: High to Low
         </option>
 
@@ -113,6 +99,22 @@
         <strong>Status:</strong>
         {{ job.status }}
 
+        <br><br>
+
+        {% if job.id in saved_job_ids %}
+
+            <a href="{% url 'unsave_job' job.id %}">
+                <button type="button">✅ Saved - Unsave</button>
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'save_job' job.id %}">
+                <button type="button">🔖 Save Job</button>
+            </a>
+
+        {% endif %}
+
     </div>
 
 {% empty %}
@@ -128,23 +130,20 @@
 
         {% if jobs.has_previous %}
 
-    <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.previous_page_number }}">
+            <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.previous_page_number }}">
                 <button>← Previous</button>
             </a>
 
         {% endif %}
 
-
         <span style="margin:0 15px;">
-
             Page {{ jobs.number }}
             of {{ jobs.paginator.num_pages }}
-
         </span>
 
-
         {% if jobs.has_next %}
-        <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.next_page_number }}">
+
+            <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.next_page_number }}">
                 <button>Next →</button>
             </a>
 

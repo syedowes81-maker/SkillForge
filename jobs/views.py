@@ -431,7 +431,7 @@ def unsave_job(request, id):
     ).delete()
 
     return redirect("saved_jobs")
-
+@login_required
 def browse_jobs(request):
     query = request.GET.get("q")
     category = request.GET.get("category")
@@ -469,6 +469,13 @@ def browse_jobs(request):
     page_number = request.GET.get("page")
     jobs_page = paginator.get_page(page_number)
 
+    saved_job_ids = set(
+        SavedJob.objects.filter(
+            freelancer=request.user,
+            job__in=jobs_page.object_list
+        ).values_list("job_id", flat=True)
+    )
+
     return render(
         request,
         "jobs/browse_jobs.html",
@@ -481,8 +488,10 @@ def browse_jobs(request):
             "max_budget": max_budget,
             "sort": sort,
             "categories": Job.CATEGORY_CHOICES,
+            "saved_job_ids": saved_job_ids,
         },
     )
+
 @login_required
 def confirm_completion(request, id):
 
