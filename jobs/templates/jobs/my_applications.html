@@ -2,80 +2,38 @@
 
 {% block content %}
 
-<h1>My Applications</h1>
+<h1>📋 My Applications</h1>
+
 <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
 
     <h2>📊 Application Overview</h2>
 
-    <p>
-        📋 <strong>All:</strong>
-        {{ total_applications }}
-    </p>
-
-    <p>
-        ⏳ <strong>Pending:</strong>
-        {{ pending_applications }}
-    </p>
-
-    <p>
-        ✅ <strong>Accepted:</strong>
-        {{ accepted_applications }}
-    </p>
-
-    <p>
-        ❌ <strong>Rejected:</strong>
-        {{ rejected_applications }}
-    </p>
+    <p>📋 <strong>All:</strong> {{ total_applications }}</p>
+    <p>⏳ <strong>Pending:</strong> {{ pending_applications }}</p>
+    <p>✅ <strong>Accepted:</strong> {{ accepted_applications }}</p>
+    <p>❌ <strong>Rejected:</strong> {{ rejected_applications }}</p>
 
 </div>
 
 <div>
 
     <a href="{% url 'my_applications' %}">
-        <button>All</button>
+        <button type="button">All</button>
     </a>
 
     <a href="?status=Pending">
-        <button>⏳ Pending</button>
+        <button type="button">⏳ Pending</button>
     </a>
 
     <a href="?status=Accepted">
-        <button>✅ Accepted</button>
+        <button type="button">✅ Accepted</button>
     </a>
 
     <a href="?status=Rejected">
-        <button>❌ Rejected</button>
+        <button type="button">❌ Rejected</button>
     </a>
 
 </div>
-
-<br>
-<form method="GET">
-
-    <select name="status">
-
-        <option value="">All Applications</option>
-
-        <option value="Pending"
-            {% if status == "Pending" %}selected{% endif %}>
-            Pending
-        </option>
-
-        <option value="Accepted"
-            {% if status == "Accepted" %}selected{% endif %}>
-            Accepted
-        </option>
-
-        <option value="Rejected"
-            {% if status == "Rejected" %}selected{% endif %}>
-            Rejected
-        </option>
-
-    </select>
-
-    <button type="submit">Filter</button>
-
-</form>
 
 <br>
 
@@ -83,7 +41,7 @@
 
     {% for application in applications %}
 
-        <div style="border:1px solid #ccc; padding:15px; margin:15px;">
+        <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
 
             <h2>{{ application.job.title }}</h2>
 
@@ -99,29 +57,45 @@
 
             <p>
                 <strong>Applied:</strong>
-                {{ application.applied_at }}
+                {{ application.applied_at|date:"d M Y, h:i A" }}
             </p>
 
             <p>
                 <strong>Status:</strong>
-                {{ application.status }}
+
+                {% if application.status == "Pending" %}
+                    ⏳ Pending
+
+                {% elif application.status == "Accepted" %}
+                    🟢 Accepted
+
+                {% elif application.status == "Rejected" %}
+                    ❌ Rejected
+
+                {% elif application.status == "Completed" %}
+                    🟡 Completed - Waiting for Confirmation
+
+                {% elif application.status == "Confirmed" %}
+                    ✅ Project Confirmed
+
+                {% endif %}
+
             </p>
+
             {% if application.status == "Pending" %}
 
-{% if application.status == "Pending" %}
+                <a href="{% url 'withdraw_application' application.id %}">
+                    <button type="button">
+                        ❌ Withdraw Application
+                    </button>
+                </a>
 
-    <a href="{% url 'withdraw_application' application.id %}">
-        <button>❌ Withdraw Application</button>
-    </a>
+            {% endif %}
 
-{% endif %}
-    <a href="{% url 'withdraw_application' application.id %}">
-        <button>❌ Withdraw Application</button>
-    </a>
-
-{% endif %}
             <a href="{% url 'job_detail' application.job.id %}">
-                View Job
+                <button type="button">
+                    View Job
+                </button>
             </a>
 
         </div>
@@ -132,6 +106,18 @@
 
     <p>No applications found.</p>
 
+    <a href="{% url 'browse_jobs' %}">
+        <button type="button">
+            🔎 Browse Jobs
+        </button>
+    </a>
+
 {% endif %}
+
+<br>
+
+<a href="{% url 'dashboard' %}">
+    ← Back to Dashboard
+</a>
 
 {% endblock %}
