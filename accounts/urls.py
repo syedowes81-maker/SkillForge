@@ -40,7 +40,7 @@ urlpatterns = [
         views.notifications,
         name="notifications"
     ),
-
+    path("notifications/read/", views.mark_notifications_read, name="mark_notifications_read"),
     # Password reset
     path(
         "password-reset/",

@@ -291,18 +291,35 @@ def add_review(request, id):
 
 
 @login_required
+@login_required
 def notifications(request):
     notifications = Notification.objects.filter(
         user=request.user
     ).order_by("-created_at")
 
+    unread_count = notifications.filter(
+        is_read=False
+    ).count()
+
     return render(
         request,
         "accounts/notifications.html",
         {
-            "notifications": notifications
+            "notifications": notifications,
+            "unread_count": unread_count,
         }
     )
+
+@login_required
+def mark_notifications_read(request):
+    if request.method == "POST":
+        Notification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).update(is_read=True)
+
+    return redirect("notifications")
+
 @login_required
 def send_message(request, id):
     receiver = get_object_or_404(User, id=id)
