@@ -291,7 +291,6 @@ def add_review(request, id):
 
 
 @login_required
-@login_required
 def notifications(request):
     notifications = Notification.objects.filter(
         user=request.user
@@ -345,7 +344,9 @@ def send_message(request, id):
     )
 
 @login_required
+@login_required
 def messages_view(request):
+
     messages = Message.objects.filter(
         receiver=request.user
     ).order_by("-created_at")
@@ -355,10 +356,6 @@ def messages_view(request):
         is_read=False
     ).count()
 
-    for message in messages:
-        message.is_read = True
-        message.save()
-
     return render(
         request,
         "accounts/messages.html",
@@ -367,6 +364,7 @@ def messages_view(request):
             "unread_count": unread_count,
         },
     )
+
 @login_required
 def conversation(request, id):
     other_user = get_object_or_404(User, id=id)
@@ -392,7 +390,13 @@ def conversation(request, id):
     )
 
     messages = messages.order_by("created_at")
-
+    Message.objects.filter(
+    sender=other_user,
+    receiver=request.user,
+    is_read=False
+).update(
+    is_read=True
+)
     return render(
         request,
         "accounts/conversation.html",
