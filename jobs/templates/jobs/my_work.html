@@ -43,10 +43,19 @@
 
                 {% if application.status == "Accepted" %}
                     🟢 In Progress
-                {% elif application.status == "Completed" %}
-                    ✅ Completed
-                {% endif %}
+                {% if application.status == "Accepted" %}
 
+    🟢 In Progress
+
+{% elif application.status == "Completed" %}
+
+    🟡 Completed — Waiting for Client Confirmation
+
+{% elif application.status == "Confirmed" %}
+
+    ✅ Project Confirmed
+
+{% endif %}
             </p>
 
             {% if application.status == "Accepted" %}

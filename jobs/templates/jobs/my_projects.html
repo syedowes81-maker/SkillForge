@@ -75,7 +75,16 @@
 
                     🟡 Waiting for Client Confirmation
 
-                {% elif project.status == "Confirmed" %}
+                 {% if project.status == "Confirmed" %}
+                   <br>
+
+    <a href="{% url 'add_review' project.freelancer.freelancerprofile.id %}">
+        <button type="button">
+            ⭐ Review Freelancer
+        </button>
+    </a>
+
+{% endif %}
 
                     ✅ Project Confirmed
 

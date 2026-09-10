@@ -193,18 +193,19 @@ def complete_work(request, id):
         freelancer=request.user
     )
 
-    if application.status == "Accepted":
+    if request.method == "POST":
 
-        application.status = "Completed"
-        application.save()
+        if application.status == "Accepted":
 
-        Notification.objects.create(
-            user=application.job.client,
-            message=f"The project '{application.job.title}' has been marked as completed."
-        )
+            application.status = "Completed"
+            application.save()
+
+            Notification.objects.create(
+                user=application.job.client,
+                message=f"The project '{application.job.title}' has been marked as completed."
+            )
 
     return redirect("my_work")
-
 
 @login_required
 def withdraw_application(request, id):
@@ -250,7 +251,8 @@ def update_application_status(request, id, status):
 
     if application.status != "Pending":
         return redirect("view_applicants", id=job.id)
-
+    if job.status == "Closed":
+        return redirect("view_applicants", id=job.id)
     # Keep the rest of your existing Accepted/Rejected logic here.
     if status == "Accepted":
 
@@ -518,7 +520,6 @@ def confirm_completion(request, id):
             )
 
     return redirect("my_projects")
-
 @login_required
 def withdraw_application(request, id):
 
