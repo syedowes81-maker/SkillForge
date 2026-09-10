@@ -297,40 +297,35 @@ def update_application_status(request, id, status):
 
     return redirect("view_applicants", id=job.id)
 
-
 @login_required
 def my_jobs(request):
 
     query = request.GET.get("q")
     status = request.GET.get("status")
 
-    jobs = Job.objects.filter(
+    all_jobs = Job.objects.filter(
         client=request.user
-    ).order_by("-created_at")
+    )
 
-    # Search by title
+    jobs = all_jobs.order_by("-created_at")
+
     if query:
         jobs = jobs.filter(
             title__icontains=query
         )
 
-    # Filter by status
     if status in ["Open", "Closed"]:
         jobs = jobs.filter(
             status=status
         )
 
-    total_jobs = Job.objects.filter(
-        client=request.user
-    ).count()
+    total_jobs = all_jobs.count()
 
-    open_jobs = Job.objects.filter(
-        client=request.user,
+    open_jobs = all_jobs.filter(
         status="Open"
     ).count()
 
-    closed_jobs = Job.objects.filter(
-        client=request.user,
+    closed_jobs = all_jobs.filter(
         status="Closed"
     ).count()
 
@@ -351,6 +346,8 @@ def my_jobs(request):
             "total_applications": total_applications,
         }
     )
+
+
 @login_required
 def edit_job(request, id):
     job = Job.objects.get(id=id)
@@ -389,21 +386,35 @@ def delete_job(request, id):
 
 @login_required
 def toggle_job_status(request, id):
-    job = Job.objects.get(id=id)
 
-    if job.client != request.user:
+    job = get_object_or_404(
+        Job,
+        id=id,
+        client=request.user
+    )
+
+    if request.method != "POST":
         return redirect("my_jobs")
 
-    if request.method == "POST":
-        if job.status == "Open":
-            job.status = "Closed"
-        else:
-            job.status = "Open"
+    # Do not reopen a job if a freelancer has already been hired
+    hired_application = Application.objects.filter(
+        job=job,
+        status__in=["Accepted", "Completed", "Confirmed"]
+    ).exists()
 
+    if job.status == "Open":
+
+        job.status = "Closed"
+        job.save()
+
+    elif not hired_application:
+
+        job.status = "Open"
         job.save()
 
     return redirect("my_jobs")
-@login_required
+
+
 def save_job(request, id):
     job = Job.objects.get(id=id)
 
