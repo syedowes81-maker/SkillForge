@@ -224,39 +224,71 @@ def withdraw_application(request, id):
 
 @login_required
 def view_applicants(request, id):
-    job = Job.objects.get(id=id)
 
-    # Optional safety check: only the client who posted the job can view applicants
-    if job.client != request.user:
-        return redirect("browse_jobs")
+    job = get_object_or_404(
+        Job,
+        id=id,
+        client=request.user
+    )
 
-    applications = Application.objects.filter(job=job).order_by("-applied_at")
+    applications = Application.objects.filter(
+        job=job
+    ).select_related(
+        "freelancer"
+    ).order_by("-applied_at")
 
-    return render(request, "jobs/view_applicants.html", {
-        "job": job,
-        "applications": applications
-    })
-
+    return render(
+        request,
+        "jobs/view_applicants.html",
+        {
+            "job": job,
+            "applications": applications
+        }
+    )
 @login_required
 def update_application_status(request, id, status):
 
-    application = Application.objects.get(id=id)
+    application = get_object_or_404(
+        Application,
+        id=id
+    )
+
     job = application.job
 
+    # Only the client who posted the job can manage applications
     if job.client != request.user:
         return redirect("browse_jobs")
 
+    # Only POST requests are allowed
     if request.method != "POST":
-        return redirect("view_applicants", id=job.id)
+        return redirect(
+            "view_applicants",
+            id=job.id
+        )
 
+    # Only valid statuses are allowed
+    if status not in ["Accepted", "Rejected"]:
+        return redirect(
+            "view_applicants",
+            id=job.id
+        )
+
+    # Application must still be pending
     if application.status != "Pending":
-        return redirect("view_applicants", id=job.id)
+        return redirect(
+            "view_applicants",
+            id=job.id
+        )
+
+    # Closed jobs cannot accept/reject applications
     if job.status == "Closed":
-        return redirect("view_applicants", id=job.id)
-    # Keep the rest of your existing Accepted/Rejected logic here.
+        return redirect(
+            "view_applicants",
+            id=job.id
+        )
+
     if status == "Accepted":
 
-        # Accept this applicant
         application.status = "Accepted"
         application.save()
 
@@ -269,7 +301,9 @@ def update_application_status(request, id, status):
         other_applications = Application.objects.filter(
             job=job,
             status="Pending"
-        ).exclude(id=application.id)
+        ).exclude(
+            id=application.id
+        )
 
         for other_application in other_applications:
 
@@ -278,10 +312,13 @@ def update_application_status(request, id, status):
 
             Notification.objects.create(
                 user=other_application.freelancer,
-                message=f"Your application for '{job.title}' was Rejected because another applicant was selected."
+                message=(
+                    f"Your application for '{job.title}' was Rejected "
+                    "because another applicant was selected."
+                )
             )
 
-        # Close the job because a freelancer has been hired
+        # Close job after hiring
         job.status = "Closed"
         job.save()
 
@@ -295,7 +332,11 @@ def update_application_status(request, id, status):
             message=f"Your application for '{job.title}' was Rejected."
         )
 
-    return redirect("view_applicants", id=job.id)
+    return redirect(
+        "view_applicants",
+        id=job.id
+    )
+
 
 @login_required
 def my_jobs(request):
