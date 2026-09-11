@@ -34,44 +34,67 @@ def post_job(request):
 
 
 def job_detail(request, id):
-    job = Job.objects.get(id=id)
+    job = get_object_or_404(
+        Job,
+        id=id
+    )
 
-    return render(request, "jobs/job_detail.html", {
-        "job": job
-    })
+    return render(
+        request,
+        "jobs/job_detail.html",
+        {
+            "job": job
+        }
+    )
 
 @login_required
 def apply_job(request, id):
 
-    job = Job.objects.get(id=id)
+    job = get_object_or_404(
+        Job,
+        id=id
+    )
 
     # Closed jobs cannot receive applications
     if job.status == "Closed":
-        return redirect("job_detail", id=job.id)
+        return redirect(
+            "job_detail",
+            id=job.id
+        )
 
     # Prevent the client from applying to their own job
     if job.client == request.user:
-        return redirect("job_detail", id=job.id)
+        return redirect(
+            "job_detail",
+            id=job.id
+        )
 
     # Prevent duplicate applications
     if Application.objects.filter(
         job=job,
         freelancer=request.user
     ).exists():
-        return redirect("my_applications")
+        return redirect(
+            "my_applications"
+        )
 
     if request.method == "POST":
 
-        cover_letter = request.POST.get("cover_letter")
+        cover_letter = request.POST.get(
+            "cover_letter"
+        )
 
         if cover_letter:
+
             Application.objects.create(
                 job=job,
                 freelancer=request.user,
                 cover_letter=cover_letter
             )
 
-            return redirect("my_applications")
+            return redirect(
+                "my_applications"
+            )
 
     return render(
         request,
@@ -80,8 +103,6 @@ def apply_job(request, id):
             "job": job
         }
     )
-
-
 @login_required
 def my_applications(request):
     status = request.GET.get("status")
@@ -210,8 +231,10 @@ def complete_work(request, id):
 @login_required
 def withdraw_application(request, id):
 
-    application = Application.objects.get(id=id)
-
+    application = get_object_or_404(
+    Application,
+    id=id
+)
     # Only the freelancer who submitted it can withdraw it
     if application.freelancer != request.user:
         return redirect("my_applications")
@@ -391,8 +414,10 @@ def my_jobs(request):
 
 @login_required
 def edit_job(request, id):
-    job = Job.objects.get(id=id)
-
+    job = get_object_or_404(
+    Job,
+    id=id
+)
     if job.client != request.user:
         return redirect("my_jobs")
 
@@ -412,8 +437,10 @@ def edit_job(request, id):
 
 @login_required
 def delete_job(request, id):
-    job = Job.objects.get(id=id)
-
+    job = get_object_or_404(
+    Job,
+    id=id
+)
     if job.client != request.user:
         return redirect("my_jobs")
 
@@ -455,10 +482,12 @@ def toggle_job_status(request, id):
 
     return redirect("my_jobs")
 
-
+@login_required
 def save_job(request, id):
-    job = Job.objects.get(id=id)
-
+    job = get_object_or_404(
+    Job,
+    id=id
+)
     SavedJob.objects.get_or_create(
         freelancer=request.user,
         job=job
@@ -481,8 +510,10 @@ def saved_jobs(request):
     )
 @login_required
 def unsave_job(request, id):
-    job = Job.objects.get(id=id)
-
+    job = get_object_or_404(
+    Job,
+    id=id
+)
     SavedJob.objects.filter(
         freelancer=request.user,
         job=job
@@ -575,8 +606,10 @@ def confirm_completion(request, id):
 @login_required
 def withdraw_application(request, id):
 
-    application = Application.objects.get(id=id)
-
+    application = get_object_or_404(
+    Application,
+    id=id
+)
     # Only the freelancer who submitted the application
     # can withdraw it
     if application.freelancer != request.user:
