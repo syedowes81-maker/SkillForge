@@ -1,122 +1,252 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}Dashboard — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>Welcome, {{ user.username }}</h1>
+<section class="sf-dashboard">
+  <div class="container">
 
-<p>You are successfully logged in.</p>
+    <!-- HEADER -->
+    <div class="sf-dashboard__head">
+      <div>
+        <span class="sf-dashboard__eyebrow">Your Workspace</span>
+        <h1 class="sf-dashboard__title">
+          Welcome, {{ user.username }}
+        </h1>
+        <p class="sf-dashboard__subtitle">
+          Here's what's happening with your work today.
+        </p>
+      </div>
 
-<hr>
+      <div class="sf-dashboard__head-actions">
+        <a href="{% url 'browse_jobs' %}" class="btn btn--ghost">
+          Browse Jobs
+        </a>
 
-<h2>Dashboard Overview</h2>
-
-<h3>Jobs</h3>
-
-<div style="border:1px solid #ccc; padding:15px; margin:15px;">
-
-    <p>
-        <strong>📄 Jobs Posted:</strong>
-        {{ jobs_posted }}
-    </p>
-
-    <p>
-        <strong>🟢 Open Jobs:</strong>
-        {{ open_jobs }}
-    </p>
-
-    <p>
-        <strong>🔴 Closed Jobs:</strong>
-        {{ closed_jobs }}
-    </p>
-
-</div>
-
-<h3>Applications</h3>
-
-<div style="border:1px solid #ccc; padding:15px; margin:15px;">
-
-    <p>
-        <strong>👥 Total Applications:</strong>
-        {{ applications_received }}
-    </p>
-
-    <p>
-        <strong>🟡 Pending:</strong>
-        {{ pending_applications }}
-    </p>
-
-    <p>
-        <strong>🟢 Accepted:</strong>
-        {{ accepted_applications }}
-    </p>
-
-    <p>
-        <strong>🔴 Rejected:</strong>
-        {{ rejected_applications }}
-    </p>
-
-</div>
-<h3>Freelancer Overview</h3>
-
-<div style="border:1px solid #ccc; padding:15px; margin:15px;">
-
-    <p>
-        <strong>💼 Total Projects:</strong>
-        {{ total_projects }}
-    </p>
-
-    <p>
-        <strong>🟢 Active Projects:</strong>
-        {{ active_projects }}
-    </p>
-
-    <p>
-        <strong>🟡 Completed:</strong>
-        {{ completed_projects }}
-    </p>
-
-    <p>
-        <strong>✅ Confirmed:</strong>
-        {{ confirmed_projects }}
-    </p>
-
-    <p>
-        <strong>💰 Total Earnings:</strong>
-        ₹{{ total_earnings }}
-    </p>
-
-</div>
+        <a href="{% url 'post_job' %}" class="btn btn--primary">
+          Post a Job
+        </a>
+      </div>
+    </div>
 
 
-<hr>
+    <!-- STATS -->
+    <div class="sf-dashboard__stats">
 
-<a href="{% url 'saved_jobs' %}">
-    <button>My Saved Jobs</button>
-</a>
+      <div class="sf-stat">
+        <span class="sf-stat__label">Jobs Posted</span>
+        <strong class="sf-stat__value">{{ jobs_posted }}</strong>
+        <span class="sf-stat__meta">Total jobs created</span>
+      </div>
 
-<a href="{% url 'browse_jobs' %}">
-    <button>Browse Jobs</button>
-</a>
+      <div class="sf-stat">
+        <span class="sf-stat__label">Open Jobs</span>
+        <strong class="sf-stat__value">{{ open_jobs }}</strong>
+        <span class="sf-stat__meta">Currently accepting work</span>
+      </div>
 
-<a href="{% url 'post_job' %}">
-    <button>Post Job</button>
-</a>
+      <div class="sf-stat">
+        <span class="sf-stat__label">Applications</span>
+        <strong class="sf-stat__value">{{ applications_received }}</strong>
+        <span class="sf-stat__meta">Applications received</span>
+      </div>
 
-<a href="{% url 'notifications' %}">
-    <button>Notifications</button>
-</a>
+      <div class="sf-stat">
+        <span class="sf-stat__label">Total Earnings</span>
+        <strong class="sf-stat__value">₹{{ total_earnings }}</strong>
+        <span class="sf-stat__meta">From completed work</span>
+      </div>
 
-<br><br>
-
-<a href="{% url 'earnings' %}">
-    <button type="button">
-        💰 My Earnings
-    </button>
-</a>
+    </div>
 
 
-<a href="{% url 'logout' %}">
-    <button>Logout</button>
-</a>
+    <!-- MAIN DASHBOARD GRID -->
+    <div class="sf-dashboard__grid">
+
+      <!-- JOB OVERVIEW -->
+      <div class="sf-dashboard__card">
+
+        <div class="sf-dashboard__card-head">
+          <h2>Job Overview</h2>
+          <span>Marketplace activity</span>
+        </div>
+
+        <div class="sf-overview-list">
+
+          <div class="sf-overview">
+            <div class="sf-overview__left">
+              <span class="sf-overview__icon">J</span>
+              <span class="sf-overview__name">Jobs Posted</span>
+            </div>
+            <strong class="sf-overview__value">
+              {{ jobs_posted }}
+            </strong>
+          </div>
+
+          <div class="sf-overview">
+            <div class="sf-overview__left">
+              <span class="sf-overview__icon">O</span>
+              <span class="sf-overview__name">Open Jobs</span>
+            </div>
+            <strong class="sf-overview__value">
+              {{ open_jobs }}
+            </strong>
+          </div>
+
+          <div class="sf-overview">
+            <div class="sf-overview__left">
+              <span class="sf-overview__icon">C</span>
+              <span class="sf-overview__name">Closed Jobs</span>
+            </div>
+            <strong class="sf-overview__value">
+              {{ closed_jobs }}
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- APPLICATIONS -->
+      <div class="sf-dashboard__card">
+
+        <div class="sf-dashboard__card-head">
+          <h2>Applications</h2>
+          <span>Current status</span>
+        </div>
+
+        <div class="sf-status-list">
+
+          <div class="sf-status">
+            <div class="sf-status__left">
+              <span class="sf-status__dot sf-status__dot--yellow"></span>
+              Pending
+            </div>
+            <strong class="sf-status__value">
+              {{ pending_applications }}
+            </strong>
+          </div>
+
+          <div class="sf-status">
+            <div class="sf-status__left">
+              <span class="sf-status__dot sf-status__dot--green"></span>
+              Accepted
+            </div>
+            <strong class="sf-status__value">
+              {{ accepted_applications }}
+            </strong>
+          </div>
+
+          <div class="sf-status">
+            <div class="sf-status__left">
+              <span class="sf-status__dot sf-status__dot--red"></span>
+              Rejected
+            </div>
+            <strong class="sf-status__value">
+              {{ rejected_applications }}
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- FREELANCER OVERVIEW -->
+      <div class="sf-dashboard__card sf-dashboard__card--wide">
+
+        <div class="sf-dashboard__card-head">
+          <h2>Freelancer Overview</h2>
+          <span>Your work at a glance</span>
+        </div>
+
+        <div class="sf-overview-list">
+
+          <div class="sf-overview">
+            <div class="sf-overview__left">
+              <span class="sf-overview__icon">P</span>
+              <span class="sf-overview__name">Total Projects</span>
+            </div>
+            <strong class="sf-overview__value">
+              {{ total_projects }}
+            </strong>
+          </div>
+
+          <div class="sf-overview">
+            <div class="sf-overview__left">
+              <span class="sf-overview__icon">A</span>
+              <span class="sf-overview__name">Active Projects</span>
+            </div>
+            <strong class="sf-overview__value">
+              {{ active_projects }}
+            </strong>
+          </div>
+
+          <div class="sf-overview">
+            <div class="sf-overview__left">
+              <span class="sf-overview__icon">✓</span>
+              <span class="sf-overview__name">Completed Projects</span>
+            </div>
+            <strong class="sf-overview__value">
+              {{ completed_projects }}
+            </strong>
+          </div>
+
+          <div class="sf-overview">
+            <div class="sf-overview__left">
+              <span class="sf-overview__icon">✓</span>
+              <span class="sf-overview__name">Confirmed Projects</span>
+            </div>
+            <strong class="sf-overview__value">
+              {{ confirmed_projects }}
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- QUICK ACTIONS -->
+      <div class="sf-dashboard__card sf-dashboard__card--wide">
+
+        <div class="sf-dashboard__card-head">
+          <h2>Quick Actions</h2>
+          <span>Jump back into SkillForge</span>
+        </div>
+
+        <div class="sf-dashboard__actions">
+
+          <a href="{% url 'saved_jobs' %}" class="sf-dashboard__action">
+            Saved Jobs
+          </a>
+
+          <a href="{% url 'browse_jobs' %}" class="sf-dashboard__action">
+            Browse Jobs
+          </a>
+
+          <a href="{% url 'post_job' %}" class="sf-dashboard__action">
+            Post a Job
+          </a>
+
+          <a href="{% url 'notifications' %}" class="sf-dashboard__action">
+            Notifications
+          </a>
+
+          <a href="{% url 'earnings' %}" class="sf-dashboard__action">
+            My Earnings
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
 
 {% endblock %}
+EOF
