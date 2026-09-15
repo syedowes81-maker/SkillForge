@@ -1,32 +1,100 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}Log In — SkillForge{% endblock %}
+
 {% block content %}
 
-<h2>Login</h2>
+<section class="sf-auth-page">
+  <div class="sf-auth-shell">
 
-<form method="POST">
+    <div class="sf-auth-visual">
+      <div class="sf-auth-visual__content">
+        <span class="sf-auth-visual__eyebrow">SKILLFORGE</span>
 
-    {% csrf_token %}
+        <h1>Build meaningful work.<br>Find the right people.</h1>
 
-    {{ form.as_p }}
+        <p>
+          Connect with skilled professionals and opportunities
+          built around real work.
+        </p>
 
-    <button type="submit">
-        Login
-    </button>
+        <div class="sf-auth-visual__line"></div>
 
-</form>
+        <span class="sf-auth-visual__note">
+          Your work. Your skills. Your next opportunity.
+        </span>
+      </div>
+    </div>
 
-<p>
-    <a href="{% url 'password_reset' %}">
-        Forgot your password?
-    </a>
-</p>
+    <div class="sf-auth-panel">
 
-<p>
-    Don't have an account?
-    <a href="{% url 'register' %}">
-        Register
-    </a>
-</p>
+      <div class="sf-auth-panel__head">
+        <span class="sf-auth__eyebrow">Welcome back</span>
+
+        <h2>Log in to SkillForge</h2>
+
+        <p>
+          Continue where you left off.
+        </p>
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="sf-auth-error">
+          {{ form.non_field_errors|striptags }}
+        </div>
+      {% endif %}
+
+      <form method="post" action="{% url 'login' %}" class="sf-auth-form" novalidate>
+
+        {% csrf_token %}
+
+        {% for field in form %}
+          <div class="sf-auth-field">
+
+            <label for="{{ field.id_for_label }}">
+              {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% if field.errors %}
+              <span class="sf-auth-field__error">
+                {{ field.errors|striptags }}
+              </span>
+            {% endif %}
+
+          </div>
+        {% endfor %}
+
+        <div class="sf-auth-options">
+          <span></span>
+
+          <a href="{% url 'password_reset' %}">
+            Forgot password?
+          </a>
+        </div>
+
+        <button type="submit" class="sf-auth-submit">
+          Log In
+        </button>
+
+      </form>
+
+      <div class="sf-auth-divider">
+        <span>or</span>
+      </div>
+
+      <p class="sf-auth-switch">
+        Don't have an account?
+        <a href="{% url 'register' %}">
+          Create one
+        </a>
+      </p>
+
+    </div>
+
+  </div>
+</section>
 
 {% endblock %}
+

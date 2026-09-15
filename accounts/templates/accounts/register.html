@@ -1,41 +1,120 @@
 {% extends "accounts/base.html" %}
-{% load static %}
 
 {% block title %}Create Account — SkillForge{% endblock %}
 
 {% block content %}
-<section class="sf-auth">
-  <div class="sf-auth__card">
-    <span class="sf-eyebrow">Get started</span>
-    <h1>Create your account</h1>
-    <p>Join as a freelancer or a client — you can always adjust this later.</p>
 
-    {# NOTE: form action/method and field names are unchanged — only wrapper markup/classes were added. #}
-    <form method="post" action="{% url 'register' %}" novalidate>
-      {% csrf_token %}
+<section class="sf-auth-page">
+  <div class="sf-auth-shell">
 
-      {% for field in form %}
-        <div class="sf-field">
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
-          {% if field.errors %}
-            <small style="color:#dc2626; display:block; margin-top:6px;">{{ field.errors|striptags }}</small>
-          {% endif %}
-        </div>
-      {% endfor %}
+    <div class="sf-auth-visual">
+      <div class="sf-auth-visual__content">
+
+        <span class="sf-auth-visual__eyebrow">SKILLFORGE</span>
+
+        <h1>Turn your skills<br>into opportunity.</h1>
+
+        <p>
+          Join a focused marketplace where independent
+          professionals meet teams that need their expertise.
+        </p>
+
+        <div class="sf-auth-visual__line"></div>
+
+        <span class="sf-auth-visual__note">
+          One account. Real opportunities.
+        </span>
+
+      </div>
+    </div>
+
+
+    <div class="sf-auth-panel">
+
+      <div class="sf-auth-panel__head">
+
+        <span class="sf-auth__eyebrow">
+          Get started
+        </span>
+
+        <h2>Create your account</h2>
+
+        <p>
+          Join SkillForge as a freelancer or client.
+        </p>
+
+      </div>
+
 
       {% if form.non_field_errors %}
-        <p style="color:#dc2626; font-size:13.5px; margin-top:14px;">{{ form.non_field_errors|striptags }}</p>
+        <div class="sf-auth-error">
+          {{ form.non_field_errors|striptags }}
+        </div>
       {% endif %}
 
-      <div class="sf-auth__submit">
-        <button type="submit" class="btn btn--primary btn--block">Create Account</button>
-      </div>
-    </form>
 
-    <p class="sf-auth__foot">
-      Already have an account? <a href="{% url 'login' %}">Log in</a>
-    </p>
+      <form
+        method="post"
+        action="{% url 'register' %}"
+        class="sf-auth-form"
+        novalidate
+      >
+
+        {% csrf_token %}
+
+        {% for field in form %}
+
+          <div class="sf-auth-field">
+
+            <label for="{{ field.id_for_label }}">
+              {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% if field.help_text %}
+              <span class="sf-auth-field__help">
+                {{ field.help_text|striptags }}
+              </span>
+            {% endif %}
+
+            {% if field.errors %}
+              <span class="sf-auth-field__error">
+                {{ field.errors|striptags }}
+              </span>
+            {% endif %}
+
+          </div>
+
+        {% endfor %}
+
+
+        <button type="submit" class="sf-auth-submit">
+          Create Account
+        </button>
+
+      </form>
+
+
+      <div class="sf-auth-divider">
+        <span>or</span>
+      </div>
+
+
+      <p class="sf-auth-switch">
+
+        Already have an account?
+
+        <a href="{% url 'login' %}">
+          Log in
+        </a>
+
+      </p>
+
+    </div>
+
   </div>
 </section>
+
 {% endblock %}
+

@@ -1,156 +1,333 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}Browse Jobs — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>Browse Jobs</h1>
+<section class="sf-browse">
 
-<form method="GET">
+  <div class="container">
 
-    <input type="text"
-           name="q"
-           placeholder="Search jobs..."
-           value="{{ query }}">
+    <!-- PAGE HEADER -->
+    <div class="sf-browse__header">
+      <div>
+        <span class="sf-browse__eyebrow">SkillForge Marketplace</span>
 
-    <select name="category">
+        <h1 class="sf-browse__title">
+          Find your next <span>opportunity.</span>
+        </h1>
 
-        <option value="">All Categories</option>
+        <p class="sf-browse__subtitle">
+          Explore projects from clients looking for skilled professionals.
+        </p>
+      </div>
 
-        {% for value, label in categories %}
+      <a href="{% url 'post_job' %}" class="btn btn--primary">
+        Post a Job
+      </a>
+    </div>
 
-            <option value="{{ value }}"
+
+    <!-- SEARCH / FILTER PANEL -->
+    <form method="GET" class="sf-job-filters">
+
+      <div class="sf-job-filter sf-job-filter--search">
+        <label for="job-search">Search</label>
+        <div class="sf-job-filter__control">
+          <span class="sf-job-filter__icon">⌕</span>
+          <input
+            id="job-search"
+            type="text"
+            name="q"
+            placeholder="Search jobs, skills, projects..."
+            value="{{ query }}"
+          >
+        </div>
+      </div>
+
+
+      <div class="sf-job-filter">
+        <label for="job-category">Category</label>
+        <div class="sf-job-filter__control">
+          <select name="category" id="job-category">
+            <option value="">All Categories</option>
+
+            {% for value, label in categories %}
+              <option value="{{ value }}"
                 {% if value == category %}selected{% endif %}>
                 {{ label }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+
+      <div class="sf-job-filter">
+        <label for="job-location">Location</label>
+        <div class="sf-job-filter__control">
+          <input
+            id="job-location"
+            type="text"
+            name="location"
+            placeholder="e.g. Remote"
+            value="{{ location }}"
+          >
+        </div>
+      </div>
+
+
+      <div class="sf-job-filter">
+        <label for="min-budget">Min budget</label>
+        <div class="sf-job-filter__control">
+          <span class="sf-job-filter__prefix">₹</span>
+          <input
+            id="min-budget"
+            type="number"
+            name="min_budget"
+            placeholder="0"
+            value="{{ min_budget }}"
+            min="0"
+            step="0.01"
+          >
+        </div>
+      </div>
+
+
+      <div class="sf-job-filter">
+        <label for="max-budget">Max budget</label>
+        <div class="sf-job-filter__control">
+          <span class="sf-job-filter__prefix">₹</span>
+          <input
+            id="max-budget"
+            type="number"
+            name="max_budget"
+            placeholder="Any"
+            value="{{ max_budget }}"
+            min="0"
+            step="0.01"
+          >
+        </div>
+      </div>
+
+
+      <div class="sf-job-filter">
+        <label for="job-sort">Sort</label>
+        <div class="sf-job-filter__control">
+          <select name="sort" id="job-sort">
+
+            <option value="newest"
+              {% if sort == "newest" %}selected{% endif %}>
+              Newest
             </option>
 
-        {% endfor %}
+            <option value="budget_low"
+              {% if sort == "budget_low" %}selected{% endif %}>
+              Budget: Low to High
+            </option>
 
-    </select>
+            <option value="budget_high"
+              {% if sort == "budget_high" %}selected{% endif %}>
+              Budget: High to Low
+            </option>
 
-    <input type="text"
-           name="location"
-           placeholder="Location"
-           value="{{ location }}">
+          </select>
+        </div>
+      </div>
 
-    <input type="number"
-           name="min_budget"
-           placeholder="Minimum budget"
-           value="{{ min_budget }}"
-           min="0"
-           step="0.01">
 
-    <input type="number"
-           name="max_budget"
-           placeholder="Maximum budget"
-           value="{{ max_budget }}"
-           min="0"
-           step="0.01">
+      <button type="submit" class="sf-job-filter__submit">
+        Search Jobs
+      </button>
 
-    <label for="sort">Sort by:</label>
+    </form>
 
-    <select name="sort" id="sort">
 
-        <option value="newest"
-            {% if sort == "newest" %}selected{% endif %}>
-            Newest
-        </option>
+    <!-- RESULTS HEADER -->
+    <div class="sf-browse__results-head">
+      <div>
+        <h2>Available projects</h2>
+        <p>Find work that matches your skills and interests.</p>
+      </div>
 
-        <option value="budget_low"
-            {% if sort == "budget_low" %}selected{% endif %}>
-            Budget: Low to High
-        </option>
+      {% if jobs %}
+        <span class="sf-browse__result-count">
+          Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
+        </span>
+      {% endif %}
+    </div>
 
-        <option value="budget_high"
-            {% if sort == "budget_high" %}selected{% endif %}>
-            Budget: High to Low
-        </option>
 
-    </select>
+    <!-- JOB LIST -->
+    <div class="sf-job-list">
 
-    <button type="submit">Search</button>
+      {% for job in jobs %}
 
-</form>
+        <article class="sf-job-card">
 
-<br>
+          <div class="sf-job-card__main">
 
-{% for job in jobs %}
+            <div class="sf-job-card__top">
 
-    <div style="border:1px solid #ccc; padding:15px; margin:15px;">
+              <div class="sf-job-card__category">
+                {{ job.category }}
+              </div>
 
-        <h2>
-            <a href="{% url 'job_detail' job.id %}">
+              {% if job.status %}
+                <span class="sf-job-card__status">
+                  {{ job.status }}
+                </span>
+              {% endif %}
+
+            </div>
+
+
+            <h3 class="sf-job-card__title">
+              <a href="{% url 'job_detail' job.id %}">
                 {{ job.title }}
+              </a>
+            </h3>
+
+
+            <p class="sf-job-card__description">
+              {{ job.description|truncatewords:30 }}
+            </p>
+
+
+            <div class="sf-job-card__meta">
+
+              <span>
+                <span class="sf-job-card__meta-icon">₹</span>
+                ₹{{ job.budget }}
+              </span>
+
+              <span>
+                <span class="sf-job-card__meta-icon">⌖</span>
+                {{ job.location }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="sf-job-card__side">
+
+            <div class="sf-job-card__budget">
+              <span>Budget</span>
+              <strong>₹{{ job.budget }}</strong>
+            </div>
+
+
+            {% if job.id in saved_job_ids %}
+
+              <a
+                href="{% url 'unsave_job' job.id %}"
+                class="sf-job-card__save sf-job-card__save--saved"
+              >
+                <span>✓</span>
+                Saved
+              </a>
+
+            {% else %}
+
+              <a
+                href="{% url 'save_job' job.id %}"
+                class="sf-job-card__save"
+              >
+                <span>☆</span>
+                Save
+              </a>
+
+            {% endif %}
+
+
+            <a
+              href="{% url 'job_detail' job.id %}"
+              class="sf-job-card__view"
+            >
+              View project →
             </a>
-        </h2>
 
-        <p>{{ job.description }}</p>
+          </div>
 
-        <strong>Category:</strong>
-        {{ job.category }}
-        <br>
+        </article>
 
-        <strong>Budget:</strong>
-        ₹{{ job.budget }}
-        <br>
+      {% empty %}
 
-        <strong>Location:</strong>
-        {{ job.location }}
-        <br>
+        <div class="sf-jobs-empty">
 
-        <strong>Status:</strong>
-        {{ job.status }}
+          <div class="sf-jobs-empty__icon">⌕</div>
 
-        <br><br>
+          <h3>No projects found</h3>
 
-        {% if job.id in saved_job_ids %}
+          <p>
+            Try changing your search or filters to discover more opportunities.
+          </p>
 
-            <a href="{% url 'unsave_job' job.id %}">
-                <button type="button">✅ Saved - Unsave</button>
-            </a>
+          <a href="{% url 'browse_jobs' %}" class="btn btn--ghost">
+            Clear Filters
+          </a>
 
-        {% else %}
+        </div>
 
-            <a href="{% url 'save_job' job.id %}">
-                <button type="button">🔖 Save Job</button>
-            </a>
-
-        {% endif %}
+      {% endfor %}
 
     </div>
 
-{% empty %}
 
-    <p>No jobs available.</p>
+    <!-- PAGINATION -->
+    {% if jobs.has_other_pages %}
 
-{% endfor %}
-
-
-{% if jobs.has_other_pages %}
-
-    <div style="margin:20px;">
+      <div class="sf-pagination">
 
         {% if jobs.has_previous %}
 
-            <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.previous_page_number }}">
-                <button>← Previous</button>
-            </a>
+          <a
+            href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.previous_page_number }}"
+            class="sf-pagination__button"
+          >
+            ← Previous
+          </a>
+
+        {% else %}
+
+          <span class="sf-pagination__button sf-pagination__button--disabled">
+            ← Previous
+          </span>
 
         {% endif %}
 
-        <span style="margin:0 15px;">
-            Page {{ jobs.number }}
-            of {{ jobs.paginator.num_pages }}
+
+        <span class="sf-pagination__current">
+          {{ jobs.number }}
         </span>
+
 
         {% if jobs.has_next %}
 
-            <a href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.next_page_number }}">
-                <button>Next →</button>
-            </a>
+          <a
+            href="?q={{ query|urlencode }}&category={{ category|urlencode }}&location={{ location|urlencode }}&min_budget={{ min_budget|urlencode }}&max_budget={{ max_budget|urlencode }}&sort={{ sort|urlencode }}&page={{ jobs.next_page_number }}"
+            class="sf-pagination__button"
+          >
+            Next →
+          </a>
+
+        {% else %}
+
+          <span class="sf-pagination__button sf-pagination__button--disabled">
+            Next →
+          </span>
 
         {% endif %}
 
-    </div>
+      </div>
 
-{% endif %}
+    {% endif %}
+
+  </div>
+
+</section>
 
 {% endblock %}
+

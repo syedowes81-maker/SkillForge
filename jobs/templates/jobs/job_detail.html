@@ -1,72 +1,167 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}{{ job.title }} — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>{{ job.title }}</h1>
+<section class="sf-job-detail">
 
-<p>
-    <strong>Posted by:</strong>
-    {{ job.client.username }}
-</p>
+  <div class="container">
 
-<p>{{ job.description }}</p>
-
-<p>
-    <strong>Budget:</strong>
-    ₹{{ job.budget }}
-</p>
-
-<p>
-    <strong>Location:</strong>
-    {{ job.location }}
-</p>
-
-<p>
-    <strong>Category:</strong>
-    {{ job.category }}
-</p>
-
-<p>
-    <strong>Status:</strong>
-    {{ job.status }}
-</p>
-
-<hr>
-
-{% if job.client == user %}
-
-    <p>
-        <strong>📌 This is your job.</strong>
-    </p>
-
-{% elif job.status == "Open" %}
-
-    <a href="{% url 'apply_job' job.id %}">
-        <button>Apply Now</button>
+    <a href="{% url 'browse_jobs' %}" class="sf-job-detail__back">
+      ← Back to Jobs
     </a>
 
-{% else %}
 
-    <p>
-        <strong>
-            ⚠️ This job is closed and is no longer accepting applications.
-        </strong>
-    </p>
+    <div class="sf-job-detail__layout">
 
-{% endif %}
+      <!-- MAIN CONTENT -->
+      <main class="sf-job-detail__main">
 
-<a href="{% url 'save_job' job.id %}">
-    <button>⭐ Save Job</button>
-</a>
+        <div class="sf-job-detail__category">
+          {{ job.category }}
+        </div>
 
-<a href="{% url 'view_applicants' job.id %}">
-    <button>View Applicants</button>
-</a>
+        <h1 class="sf-job-detail__title">
+          {{ job.title }}
+        </h1>
 
-<br><br>
+        <div class="sf-job-detail__client">
+          <span class="sf-job-detail__avatar">
+            {{ job.client.username|first|upper }}
+          </span>
 
-<a href="{% url 'browse_jobs' %}">
-    ← Back to Jobs
-</a>
+          <div>
+            <span class="sf-job-detail__client-label">Posted by</span>
+            <strong>{{ job.client.username }}</strong>
+          </div>
+        </div>
+
+
+        <div class="sf-job-detail__divider"></div>
+
+
+        <section class="sf-job-detail__section">
+          <h2>About this project</h2>
+
+          <p>
+            {{ job.description }}
+          </p>
+        </section>
+
+
+        <section class="sf-job-detail__section">
+          <h2>Project details</h2>
+
+          <div class="sf-job-detail__details">
+
+            <div class="sf-job-detail__detail">
+              <span>Category</span>
+              <strong>{{ job.category }}</strong>
+            </div>
+
+            <div class="sf-job-detail__detail">
+              <span>Location</span>
+              <strong>{{ job.location }}</strong>
+            </div>
+
+            <div class="sf-job-detail__detail">
+              <span>Status</span>
+              <strong>{{ job.status }}</strong>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+
+      <!-- SIDEBAR -->
+      <aside class="sf-job-detail__sidebar">
+
+        <div class="sf-job-detail__card">
+
+          <span class="sf-job-detail__budget-label">
+            Project budget
+          </span>
+
+          <strong class="sf-job-detail__budget">
+            ₹{{ job.budget }}
+          </strong>
+
+
+          <div class="sf-job-detail__card-divider"></div>
+
+
+          {% if job.client == user %}
+
+            <div class="sf-job-detail__notice">
+              <span>✓</span>
+              <div>
+                <strong>Your job</strong>
+                <p>You posted this project.</p>
+              </div>
+            </div>
+
+          {% elif job.status == "Open" %}
+
+            <a
+              href="{% url 'apply_job' job.id %}"
+              class="sf-job-detail__apply"
+            >
+              Apply Now
+              <span>→</span>
+            </a>
+
+          {% else %}
+
+            <div class="sf-job-detail__notice sf-job-detail__notice--closed">
+              <span>!</span>
+              <div>
+                <strong>Applications closed</strong>
+                <p>This project is no longer accepting applications.</p>
+              </div>
+            </div>
+
+          {% endif %}
+
+
+          <a
+            href="{% url 'save_job' job.id %}"
+            class="sf-job-detail__save"
+          >
+            ☆ &nbsp; Save Job
+          </a>
+
+
+          <a
+            href="{% url 'view_applicants' job.id %}"
+            class="sf-job-detail__applicants"
+          >
+            View Applicants
+          </a>
+
+        </div>
+
+
+        <div class="sf-job-detail__side-note">
+          <span class="sf-job-detail__side-note-dot"></span>
+
+          <div>
+            <strong>Work with confidence</strong>
+            <p>
+              Review the project details carefully before applying.
+            </p>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+</section>
 
 {% endblock %}
+
