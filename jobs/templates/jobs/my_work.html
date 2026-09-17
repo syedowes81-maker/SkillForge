@@ -1,114 +1,234 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}My Work — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>💼 My Work</h1>
+<section class="sf-work">
+  <div class="container">
 
-<p>
-    Projects you have been selected for.
-</p>
+    <!-- HEADER -->
+    <div class="sf-work__header">
+      <div>
+        <span class="sf-work__eyebrow">Freelancer Workspace</span>
 
-<hr>
+        <h1 class="sf-work__title">
+          My Work
+        </h1>
 
-{% if applications %}
+        <p class="sf-work__subtitle">
+          Manage the projects you've been selected to work on.
+        </p>
+      </div>
 
-    {% for application in applications %}
+      <a href="{% url 'browse_jobs' %}" class="btn btn--primary">
+        Find More Work
+      </a>
+    </div>
 
-        <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
 
-            <h2>{{ application.job.title }}</h2>
+    {% if applications %}
 
-            <p>
-                <strong>Client:</strong>
-                {{ application.job.client.username }}
-            </p>
+      <!-- PROJECT LIST -->
+      <div class="sf-work__list">
 
-            <p>
-                <strong>Category:</strong>
+        {% for application in applications %}
+
+          <article class="sf-work-card">
+
+            <!-- TOP -->
+            <div class="sf-work-card__top">
+
+              <div class="sf-work-card__category">
                 {{ application.job.category }}
-            </p>
+              </div>
 
-            <p>
-                <strong>Budget:</strong>
-                ₹{{ application.job.budget }}
-            </p>
+              {% if application.status == "Accepted" %}
 
-            <p>
-                <strong>Started:</strong>
-                {{ application.applied_at|date:"d M Y" }}
-            </p>
+                <span class="sf-work-status sf-work-status--progress">
+                  <span></span>
+                  In Progress
+                </span>
 
-            <p>
-                <strong>Status:</strong>
+              {% elif application.status == "Completed" %}
 
-                {% if application.status == "Accepted" %}
-                    🟢 In Progress
-                {% if application.status == "Accepted" %}
+                <span class="sf-work-status sf-work-status--completed">
+                  <span></span>
+                  Completed
+                </span>
 
-    🟢 In Progress
+              {% elif application.status == "Confirmed" %}
 
-{% elif application.status == "Completed" %}
+                <span class="sf-work-status sf-work-status--confirmed">
+                  <span></span>
+                  Confirmed
+                </span>
 
-    🟡 Completed — Waiting for Client Confirmation
+              {% endif %}
 
-{% elif application.status == "Confirmed" %}
+            </div>
 
-    ✅ Project Confirmed
 
-{% endif %}
-            </p>
+            <!-- TITLE -->
+            <h2 class="sf-work-card__title">
+              {{ application.job.title }}
+            </h2>
 
-            {% if application.status == "Accepted" %}
+
+            <!-- DETAILS -->
+            <div class="sf-work-card__details">
+
+              <div class="sf-work-detail">
+                <span class="sf-work-detail__label">Client</span>
+                <strong>
+                  {{ application.job.client.username }}
+                </strong>
+              </div>
+
+              <div class="sf-work-detail">
+                <span class="sf-work-detail__label">Budget</span>
+                <strong>
+                  ₹{{ application.job.budget }}
+                </strong>
+              </div>
+
+              <div class="sf-work-detail">
+                <span class="sf-work-detail__label">Started</span>
+                <strong>
+                  {{ application.applied_at|date:"d M Y" }}
+                </strong>
+              </div>
+
+              <div class="sf-work-detail">
+                <span class="sf-work-detail__label">Location</span>
+                <strong>
+                  {{ application.job.location }}
+                </strong>
+              </div>
+
+            </div>
+
+
+            <!-- STATUS MESSAGE -->
+            <div class="sf-work-card__message">
+
+              {% if application.status == "Accepted" %}
+
+                <span class="sf-work-card__message-icon">●</span>
+
+                <div>
+                  <strong>Project in progress</strong>
+                  <p>
+                    Complete the work when you're ready for client review.
+                  </p>
+                </div>
+
+              {% elif application.status == "Completed" %}
+
+                <span class="sf-work-card__message-icon">◐</span>
+
+                <div>
+                  <strong>Waiting for confirmation</strong>
+                  <p>
+                    You've marked this project as completed. The client needs to confirm it.
+                  </p>
+                </div>
+
+              {% elif application.status == "Confirmed" %}
+
+                <span class="sf-work-card__message-icon">✓</span>
+
+                <div>
+                  <strong>Project confirmed</strong>
+                  <p>
+                    The client has confirmed your completed work.
+                  </p>
+                </div>
+
+              {% endif %}
+
+            </div>
+
+
+            <!-- ACTIONS -->
+            <div class="sf-work-card__actions">
+
+              <a
+                href="{% url 'job_detail' application.job.id %}"
+                class="sf-work-card__button sf-work-card__button--secondary"
+              >
+                View Project →
+              </a>
+
+
+              <a
+                href="{% url 'send_message' application.job.client.id %}"
+                class="sf-work-card__button sf-work-card__button--message"
+              >
+                💬 Message Client
+              </a>
+
+
+              {% if application.status == "Accepted" %}
 
                 <form
-                    method="POST"
-                    action="{% url 'complete_work' application.id %}"
+                  method="POST"
+                  action="{% url 'complete_work' application.id %}"
                 >
+                  {% csrf_token %}
 
-                    {% csrf_token %}
-
-                    <button type="submit">
-                        ✅ Mark as Completed
-                    </button>
-
+                  <button
+                    type="submit"
+                    class="sf-work-card__button sf-work-card__button--complete"
+                  >
+                    ✓ Mark as Completed
+                  </button>
                 </form>
 
-            {% endif %}
+              {% endif %}
 
-            <br>
+            </div>
 
-            <a href="{% url 'job_detail' application.job.id %}">
-                View Project
-            </a>
+          </article>
 
-            <br><br>
+        {% endfor %}
 
-            <a href="{% url 'send_message' application.job.client.id %}">
-                💬 Message Client
-            </a>
+      </div>
 
+
+    {% else %}
+
+      <!-- EMPTY STATE -->
+      <div class="sf-work__empty">
+
+        <div class="sf-work__empty-icon">
+          ◇
         </div>
 
-    {% endfor %}
+        <h2>No active projects yet</h2>
 
-{% else %}
+        <p>
+          You haven't been selected for any projects.
+          Browse available jobs and find your next opportunity.
+        </p>
 
-    <p>
-        You don't have any projects yet.
-    </p>
+        <a href="{% url 'browse_jobs' %}" class="btn btn--primary">
+          Browse Jobs →
+        </a>
 
-    <a href="{% url 'browse_jobs' %}">
-        <button type="button">
-            🔎 Browse Jobs
-        </button>
-    </a>
+      </div>
 
-{% endif %}
+    {% endif %}
 
-<br>
 
-<a href="{% url 'dashboard' %}">
-    ← Back to Dashboard
-</a>
+    <!-- BACK -->
+    <div class="sf-work__back">
+      <a href="{% url 'dashboard' %}">
+        ← Back to Dashboard
+      </a>
+    </div>
+
+  </div>
+</section>
 
 {% endblock %}
