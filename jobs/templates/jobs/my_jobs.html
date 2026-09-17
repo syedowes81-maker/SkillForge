@@ -1,176 +1,289 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}My Jobs — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>My Posted Jobs</h1>
+<section class="sf-my-jobs">
+  <div class="container">
 
-<form method="GET">
+    <!-- HEADER -->
+    <div class="sf-my-jobs__header">
 
-    <input
-        type="text"
-        name="q"
-        placeholder="Search my jobs..."
-        value="{{ query|default:'' }}"
-    >
+      <div>
+        <span class="sf-my-jobs__eyebrow">Your Marketplace</span>
 
-    <select name="status">
+        <h1>My posted jobs.</h1>
+
+        <p>
+          Manage your projects, review applicants and keep your listings up to date.
+        </p>
+      </div>
+
+      <a href="{% url 'post_job' %}" class="btn btn--primary">
+        + Post a Job
+      </a>
+
+    </div>
+
+
+    <!-- SEARCH -->
+    <form method="GET" class="sf-my-jobs__filters">
+
+      <div class="sf-my-jobs__search">
+        <span>⌕</span>
+
+        <input
+          type="text"
+          name="q"
+          placeholder="Search my jobs..."
+          value="{{ query|default:'' }}"
+        >
+      </div>
+
+      <select name="status">
 
         <option value="">All Status</option>
 
         <option value="Open"
-            {% if status == "Open" %}selected{% endif %}>
-            Open
+          {% if status == "Open" %}selected{% endif %}>
+          Open
         </option>
 
         <option value="Closed"
-            {% if status == "Closed" %}selected{% endif %}>
-            Closed
+          {% if status == "Closed" %}selected{% endif %}>
+          Closed
         </option>
 
-    </select>
+      </select>
 
-    <button type="submit">
-        🔎 Search
-    </button>
+      <button type="submit" class="btn btn--primary">
+        Search
+      </button>
 
-</form>
-
-<br>
+    </form>
 
 
+    <!-- OVERVIEW -->
+    <div class="sf-my-jobs__stats">
+
+      <div class="sf-my-jobs__stat">
+        <span class="sf-my-jobs__stat-label">Total Jobs</span>
+        <strong>{{ total_jobs }}</strong>
+        <span>Jobs you've posted</span>
+      </div>
+
+      <div class="sf-my-jobs__stat">
+        <span class="sf-my-jobs__stat-label">Open Jobs</span>
+        <strong>{{ open_jobs }}</strong>
+        <span>Currently accepting work</span>
+      </div>
+
+      <div class="sf-my-jobs__stat">
+        <span class="sf-my-jobs__stat-label">Closed Jobs</span>
+        <strong>{{ closed_jobs }}</strong>
+        <span>Currently inactive</span>
+      </div>
+
+      <div class="sf-my-jobs__stat">
+        <span class="sf-my-jobs__stat-label">Applicants</span>
+        <strong>{{ total_applications }}</strong>
+        <span>Applications received</span>
+      </div>
+
+    </div>
 
 
+    <!-- SECTION TITLE -->
+    <div class="sf-my-jobs__section-head">
+      <div>
+        <h2>Your listings</h2>
+        <p>Manage every project you've posted.</p>
+      </div>
 
-<div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+      {% if jobs %}
+        <span>{{ jobs|length }} listing{{ jobs|length|pluralize }}</span>
+      {% endif %}
+    </div>
 
-    <h2>📊 Job Overview</h2>
 
-    <p>
-        📋 <strong>Total Jobs:</strong>
-        {{ total_jobs }}
-    </p>
+    <!-- JOB LIST -->
+    <div class="sf-my-jobs__list">
 
-    <p>
-        🟢 <strong>Open Jobs:</strong>
-        {{ open_jobs }}
-    </p>
+      {% if jobs %}
 
-    <p>
-        🔴 <strong>Closed Jobs:</strong>
-        {{ closed_jobs }}
-    </p>
+        {% for job in jobs %}
 
-    <p>
-        👥 <strong>Total Applicants:</strong>
-        {{ total_applications }}
-    </p>
+          <article class="sf-my-job-card">
 
-</div>
-{% if jobs %}
+            <div class="sf-my-job-card__top">
 
-    {% for job in jobs %}
+              <div>
+                <span class="sf-my-job-card__category">
+                  {{ job.category }}
+                </span>
 
-        <div style="border:1px solid #ccc; padding:20px; margin:20px 0;">
+                <h3>{{ job.title }}</h3>
+              </div>
 
-            <h2>
-                {{ job.title }}
-            </h2>
+              {% if job.status == "Open" %}
 
-            <p>
-                <strong>Status:</strong>
+                <span class="sf-my-job-card__status sf-my-job-card__status--open">
+                  <i></i>
+                  Open
+                </span>
 
-                {% if job.status == "Open" %}
-                    🟢 Open
-                {% else %}
-                    🔴 Closed
-                {% endif %}
-            </p>
+              {% else %}
 
-            <p>
-                <strong>Budget:</strong>
-                ₹{{ job.budget }}
-            </p>
+                <span class="sf-my-job-card__status sf-my-job-card__status--closed">
+                  <i></i>
+                  Closed
+                </span>
 
-            <p>
-                <strong>Location:</strong>
-                {{ job.location }}
-            </p>
+              {% endif %}
 
-            <p>
-                <strong>Posted:</strong>
-                {{ job.created_at|date:"d M Y, h:i A" }}
-            </p>
+            </div>
 
-            <hr>
 
-            <p>
-                <strong>👥 Applicants:</strong>
-                {{ job.application_set.count }}
-            </p>
+            <div class="sf-my-job-card__meta">
 
-            <p>
-                <strong>⭐ Saved:</strong>
-                {{ job.savedjob_set.count }}
-            </p>
+              <div>
+                <span>Budget</span>
+                <strong>₹{{ job.budget }}</strong>
+              </div>
 
-            <hr>
+              <div>
+                <span>Location</span>
+                <strong>{{ job.location }}</strong>
+              </div>
 
-            {% if job.status == "Open" %}
+              <div>
+                <span>Posted</span>
+                <strong>{{ job.created_at|date:"d M Y, h:i A" }}</strong>
+              </div>
 
-                <form method="POST"
-                      action="{% url 'toggle_job_status' job.id %}"
-                      style="display:inline;">
+            </div>
 
-                    {% csrf_token %}
 
-                    <button type="submit">
-                        🔒 Close Job
-                    </button>
+            <div class="sf-my-job-card__activity">
+
+              <div>
+                <span class="sf-my-job-card__activity-icon">👥</span>
+                <div>
+                  <strong>{{ job.application_set.count }}</strong>
+                  <span>Applicants</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="sf-my-job-card__activity-icon">☆</span>
+                <div>
+                  <strong>{{ job.savedjob_set.count }}</strong>
+                  <span>Saves</span>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="sf-my-job-card__actions">
+
+              <a
+                href="{% url 'job_detail' job.id %}"
+                class="sf-my-job-card__action"
+              >
+                View Job →
+              </a>
+
+              <a
+                href="{% url 'view_applicants' job.id %}"
+                class="sf-my-job-card__action"
+              >
+                Applicants
+              </a>
+
+              <a
+                href="{% url 'edit_job' job.id %}"
+                class="sf-my-job-card__action"
+              >
+                Edit
+              </a>
+
+
+              {% if job.status == "Open" %}
+
+                <form
+                  method="POST"
+                  action="{% url 'toggle_job_status' job.id %}"
+                >
+                  {% csrf_token %}
+
+                  <button
+                    type="submit"
+                    class="sf-my-job-card__action sf-my-job-card__action--muted"
+                  >
+                    Close Job
+                  </button>
+                </form>
+
+              {% else %}
+
+                <form
+                  method="POST"
+                  action="{% url 'toggle_job_status' job.id %}"
+                >
+                  {% csrf_token %}
+
+                  <button
+                    type="submit"
+                    class="sf-my-job-card__action sf-my-job-card__action--open"
+                  >
+                    Reopen
+                  </button>
 
                 </form>
 
-            {% else %}
+              {% endif %}
 
-                <form method="POST"
-                      action="{% url 'toggle_job_status' job.id %}"
-                      style="display:inline;">
 
-                    {% csrf_token %}
+              <a
+                href="{% url 'delete_job' job.id %}"
+                class="sf-my-job-card__action sf-my-job-card__action--danger"
+              >
+                Delete
+              </a>
 
-                    <button type="submit">
-                        🔓 Reopen Job
-                    </button>
+            </div>
 
-                </form>
+          </article>
 
-            {% endif %}
+        {% endfor %}
 
-            <br><br>
+      {% else %}
 
-            <a href="{% url 'job_detail' job.id %}">
-                <button type="button">👀 View Job</button>
-            </a>
+        <div class="sf-my-jobs__empty">
 
-            <a href="{% url 'view_applicants' job.id %}">
-                <button type="button">👥 View Applicants</button>
-            </a>
+          <div class="sf-my-jobs__empty-icon">＋</div>
 
-            <a href="{% url 'edit_job' job.id %}">
-                <button type="button">✏️ Edit Job</button>
-            </a>
+          <h3>No jobs yet</h3>
 
-            <a href="{% url 'delete_job' job.id %}">
-                <button type="button">🗑️ Delete Job</button>
-            </a>
+          <p>
+            You haven't posted any projects yet. Create your first listing
+            and start receiving applications.
+          </p>
+
+          <a href="{% url 'post_job' %}" class="btn btn--primary">
+            Post Your First Job
+          </a>
 
         </div>
 
-    {% endfor %}
+      {% endif %}
 
-{% else %}
+    </div>
 
-    <p>You haven't posted any jobs yet.</p>
-
-{% endif %}
+  </div>
+</section>
 
 {% endblock %}
+
