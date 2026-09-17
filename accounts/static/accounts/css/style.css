@@ -3124,3 +3124,255 @@ body{
 }
 
 
+/* ==========================================================================
+   SkillForge — Post Job
+   ========================================================================== */
+
+.sf-post-job{
+  min-height:calc(100vh - 72px);
+  padding:58px 0 90px;
+  background:
+    radial-gradient(circle at 85% 5%,rgba(91,141,239,.07),transparent 28%),
+    var(--sf-bg);
+}
+
+.sf-post-job__header{
+  max-width:700px;
+  margin-bottom:34px;
+}
+
+.sf-post-job__eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:11px;
+  color:var(--sf-accent-strong);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+}
+
+.sf-post-job__eyebrow::before{
+  content:"";
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--sf-accent);
+}
+
+.sf-post-job__header h1{
+  margin:0;
+  color:var(--sf-text);
+  font-family:var(--sf-font-head);
+  font-size:clamp(32px,4vw,46px);
+  font-weight:600;
+  line-height:1.1;
+  letter-spacing:-.04em;
+}
+
+.sf-post-job__header p{
+  margin:11px 0 0;
+  color:var(--sf-text-dim);
+  font-size:14px;
+  line-height:1.7;
+}
+
+.sf-post-job__layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 300px;
+  gap:20px;
+  align-items:start;
+}
+
+.sf-post-job__form-card{
+  background:var(--sf-surface);
+  border:1px solid var(--sf-border);
+  border-radius:18px;
+  padding:28px;
+}
+
+.sf-post-job__card-head{
+  padding-bottom:22px;
+  margin-bottom:24px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.sf-post-job__card-head h2{
+  margin:0;
+  color:var(--sf-text);
+  font-family:var(--sf-font-head);
+  font-size:19px;
+  font-weight:600;
+  letter-spacing:-.025em;
+}
+
+.sf-post-job__card-head p{
+  margin:6px 0 0;
+  color:var(--sf-text-faint);
+  font-size:12.5px;
+}
+
+.sf-post-job__form{
+  display:flex;
+  flex-direction:column;
+  gap:19px;
+}
+
+.sf-post-job__field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.sf-post-job__field label{
+  color:var(--sf-text-dim);
+  font-size:12.5px;
+  font-weight:500;
+}
+
+.sf-post-job__field input,
+.sf-post-job__field textarea,
+.sf-post-job__field select{
+  width:100%;
+  box-sizing:border-box;
+  background:var(--sf-surface-inset);
+  border:1px solid var(--sf-border);
+  border-radius:11px;
+  outline:none;
+  color:var(--sf-text);
+  font-family:var(--sf-font-body);
+  font-size:14px;
+  padding:12px 14px;
+  transition:border-color .2s ease,box-shadow .2s ease;
+}
+
+.sf-post-job__field textarea{
+  min-height:150px;
+  resize:vertical;
+  line-height:1.6;
+}
+
+.sf-post-job__field select{
+  cursor:pointer;
+}
+
+.sf-post-job__field input:focus,
+.sf-post-job__field textarea:focus,
+.sf-post-job__field select:focus{
+  border-color:var(--sf-accent);
+  box-shadow:0 0 0 3px rgba(91,141,239,.14);
+}
+
+.sf-post-job__field input::placeholder,
+.sf-post-job__field textarea::placeholder{
+  color:var(--sf-text-faint);
+}
+
+.sf-post-job__help{
+  color:var(--sf-text-faint);
+  font-size:11.5px;
+  line-height:1.5;
+}
+
+.sf-post-job__field-error{
+  color:#f29b9b;
+  font-size:12px;
+}
+
+.sf-post-job__error{
+  margin-bottom:20px;
+  padding:11px 14px;
+  border:1px solid rgba(239,91,91,.28);
+  border-radius:10px;
+  background:rgba(239,91,91,.07);
+  color:#f29b9b;
+  font-size:12.5px;
+}
+
+.sf-post-job__actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  padding-top:8px;
+}
+
+.sf-post-job__side{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.sf-post-job__tip{
+  padding:20px;
+  background:var(--sf-surface);
+  border:1px solid var(--sf-border);
+  border-radius:16px;
+}
+
+.sf-post-job__tip-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:32px;
+  height:32px;
+  margin-bottom:13px;
+  border-radius:9px;
+  background:rgba(91,141,239,.10);
+  color:var(--sf-accent);
+  font-size:13px;
+  font-weight:700;
+}
+
+.sf-post-job__tip h3{
+  margin:0;
+  color:var(--sf-text);
+  font-family:var(--sf-font-head);
+  font-size:14px;
+  font-weight:600;
+}
+
+.sf-post-job__tip p{
+  margin:7px 0 0;
+  color:var(--sf-text-faint);
+  font-size:12px;
+  line-height:1.65;
+}
+
+@media(max-width:850px){
+
+  .sf-post-job__layout{
+    grid-template-columns:1fr;
+  }
+
+  .sf-post-job__side{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+  }
+
+}
+
+@media(max-width:620px){
+
+  .sf-post-job{
+    padding:40px 0 65px;
+  }
+
+  .sf-post-job__form-card{
+    padding:20px;
+  }
+
+  .sf-post-job__side{
+    grid-template-columns:1fr;
+  }
+
+  .sf-post-job__actions{
+    flex-direction:column-reverse;
+  }
+
+  .sf-post-job__actions .btn{
+    width:100%;
+    text-align:center;
+  }
+
+}

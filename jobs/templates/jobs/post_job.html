@@ -1,13 +1,133 @@
-<h1>Post a Job</h1>
+{% extends "accounts/base.html" %}
 
-<form method="POST">
+{% block title %}Post a Job — SkillForge{% endblock %}
 
-    {% csrf_token %}
+{% block content %}
 
-    {{ form.as_p }}
+<section class="sf-post-job">
+  <div class="container">
 
-    <button type="submit">
-        Post Job
-    </button>
+    <div class="sf-post-job__header">
+      <span class="sf-post-job__eyebrow">SkillForge Marketplace</span>
 
-</form>
+      <h1>Post a new project.</h1>
+
+      <p>
+        Tell skilled professionals what you need and start receiving applications.
+      </p>
+    </div>
+
+    <div class="sf-post-job__layout">
+
+      <div class="sf-post-job__form-card">
+
+        <div class="sf-post-job__card-head">
+          <div>
+            <h2>Project details</h2>
+            <p>Give freelancers everything they need to understand the work.</p>
+          </div>
+        </div>
+
+        {% if form.non_field_errors %}
+          <div class="sf-post-job__error">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <form method="POST" class="sf-post-job__form">
+          {% csrf_token %}
+
+          {% for field in form %}
+            <div class="sf-post-job__field">
+
+              <label for="{{ field.id_for_label }}">
+                {{ field.label }}
+              </label>
+
+              {{ field }}
+
+              {% if field.help_text %}
+                <span class="sf-post-job__help">
+                  {{ field.help_text }}
+                </span>
+              {% endif %}
+
+              {% if field.errors %}
+                <div class="sf-post-job__field-error">
+                  {{ field.errors|striptags }}
+                </div>
+              {% endif %}
+
+            </div>
+          {% endfor %}
+
+          <div class="sf-post-job__actions">
+
+            <a href="{% url 'browse_jobs' %}" class="btn btn--ghost">
+              Cancel
+            </a>
+
+            <button type="submit" class="btn btn--primary">
+              Post Job →
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+
+      <aside class="sf-post-job__side">
+
+        <div class="sf-post-job__tip">
+
+          <span class="sf-post-job__tip-icon">✦</span>
+
+          <h3>Write a clear brief</h3>
+
+          <p>
+            Clear project descriptions attract better applications.
+            Include the goal, expected work, important skills and your
+            preferred timeline.
+          </p>
+
+        </div>
+
+
+        <div class="sf-post-job__tip">
+
+          <span class="sf-post-job__tip-icon">₹</span>
+
+          <h3>Set a realistic budget</h3>
+
+          <p>
+            A clear budget helps professionals quickly decide whether
+            your project matches their expectations.
+          </p>
+
+        </div>
+
+
+        <div class="sf-post-job__tip">
+
+          <span class="sf-post-job__tip-icon">✓</span>
+
+          <h3>Review applications</h3>
+
+          <p>
+            Once your job is live, you can review applicants and manage
+            their application status from SkillForge.
+          </p>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
