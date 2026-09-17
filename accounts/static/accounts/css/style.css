@@ -5162,3 +5162,411 @@ body{
 }
 
 
+
+/* ==========================================================================
+   SkillForge — Applicants
+   ========================================================================== */
+
+.sf-applicants{
+  min-height:calc(100vh - 72px);
+  padding:56px 0 80px;
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(91,141,239,.07),
+      transparent 30%
+    ),
+    var(--sf-bg);
+}
+
+
+/* Header */
+
+.sf-applicants__header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:34px;
+}
+
+.sf-applicants__eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:var(--sf-accent-strong);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+
+.sf-applicants__eyebrow::before{
+  content:"";
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--sf-accent);
+}
+
+.sf-applicants__title{
+  margin:0;
+  font-family:var(--sf-font-head);
+  font-size:clamp(29px,4vw,42px);
+  line-height:1.1;
+  letter-spacing:-.04em;
+  font-weight:600;
+  color:var(--sf-text);
+}
+
+.sf-applicants__title span{
+  color:var(--sf-accent);
+}
+
+.sf-applicants__subtitle{
+  margin:10px 0 0;
+  color:var(--sf-text-dim);
+  font-size:14px;
+}
+
+
+/* Applicant list */
+
+.sf-applicants__list{
+  display:grid;
+  gap:15px;
+}
+
+
+/* Applicant card */
+
+.sf-applicant-card{
+  background:var(--sf-surface);
+  border:1px solid var(--sf-border);
+  border-radius:16px;
+  overflow:hidden;
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease;
+}
+
+.sf-applicant-card:hover{
+  border-color:rgba(91,141,239,.25);
+  box-shadow:0 18px 45px -30px rgba(0,0,0,.85);
+  transform:translateY(-1px);
+}
+
+
+/* Applicant header */
+
+.sf-applicant-card__header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:21px 23px;
+  border-bottom:1px solid var(--sf-border);
+}
+
+.sf-applicant-card__identity{
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.sf-applicant-card__avatar{
+  width:42px;
+  height:42px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:rgba(91,141,239,.12);
+  border:1px solid rgba(91,141,239,.16);
+  color:var(--sf-accent);
+  font-family:var(--sf-font-head);
+  font-size:16px;
+  font-weight:600;
+}
+
+.sf-applicant-card__identity h2{
+  margin:0;
+  color:var(--sf-text);
+  font-family:var(--sf-font-head);
+  font-size:16px;
+  font-weight:600;
+  letter-spacing:-.02em;
+}
+
+.sf-applicant-card__identity p{
+  margin:4px 0 0;
+  color:var(--sf-text-faint);
+  font-size:11.5px;
+}
+
+
+/* Status */
+
+.sf-applicant-status{
+  display:inline-flex;
+  align-items:center;
+  min-height:27px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:rgba(148,163,184,.09);
+  color:var(--sf-text-dim);
+  font-size:11px;
+  font-weight:600;
+}
+
+.sf-applicant-status--pending{
+  background:rgba(251,191,36,.10);
+  color:#fbbf24;
+}
+
+.sf-applicant-status--accepted{
+  background:rgba(52,211,153,.10);
+  color:#34d399;
+}
+
+.sf-applicant-status--rejected{
+  background:rgba(248,113,113,.10);
+  color:#f87171;
+}
+
+
+/* Body */
+
+.sf-applicant-card__body{
+  padding:22px 23px;
+}
+
+.sf-cover-letter{
+  padding:17px 18px;
+  background:var(--sf-surface-inset);
+  border:1px solid rgba(255,255,255,.045);
+  border-radius:11px;
+}
+
+.sf-cover-letter__label{
+  margin-bottom:9px;
+  color:var(--sf-text);
+  font-size:11px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+}
+
+.sf-cover-letter p{
+  margin:0;
+  color:var(--sf-text-dim);
+  font-size:13px;
+  line-height:1.7;
+}
+
+
+/* Footer */
+
+.sf-applicant-card__footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:16px 23px;
+  border-top:1px solid var(--sf-border);
+}
+
+.sf-applicant-card__links{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.sf-applicant-action{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:36px;
+  padding:8px 12px;
+  border-radius:9px;
+  border:1px solid var(--sf-border);
+  background:var(--sf-surface-inset);
+  color:var(--sf-text-dim);
+  text-decoration:none;
+  font-size:11.5px;
+  font-weight:500;
+  transition:
+    color .2s ease,
+    border-color .2s ease,
+    background .2s ease;
+}
+
+.sf-applicant-action:hover{
+  color:var(--sf-text);
+  border-color:rgba(91,141,239,.3);
+  background:rgba(91,141,239,.06);
+}
+
+
+/* Accept / reject */
+
+.sf-applicant-card__decision{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.sf-applicant-card__decision form{
+  margin:0;
+}
+
+.sf-decision{
+  min-height:36px;
+  padding:8px 13px;
+  border-radius:9px;
+  font-family:inherit;
+  font-size:11.5px;
+  font-weight:600;
+  cursor:pointer;
+  transition:
+    transform .15s ease,
+    background .2s ease,
+    border-color .2s ease;
+}
+
+.sf-decision:hover{
+  transform:translateY(-1px);
+}
+
+.sf-decision--reject{
+  background:transparent;
+  border:1px solid rgba(248,113,113,.25);
+  color:#f87171;
+}
+
+.sf-decision--reject:hover{
+  background:rgba(248,113,113,.08);
+  border-color:rgba(248,113,113,.4);
+}
+
+.sf-decision--accept{
+  background:rgba(52,211,153,.11);
+  border:1px solid rgba(52,211,153,.25);
+  color:#34d399;
+}
+
+.sf-decision--accept:hover{
+  background:rgba(52,211,153,.17);
+  border-color:rgba(52,211,153,.4);
+}
+
+
+/* Result */
+
+.sf-applicant-card__result{
+  font-size:11.5px;
+  font-weight:600;
+}
+
+.sf-applicant-card__result--accepted{
+  color:#34d399;
+}
+
+.sf-applicant-card__result--rejected{
+  color:#f87171;
+}
+
+
+/* Empty */
+
+.sf-applicants-empty{
+  padding:70px 25px;
+  text-align:center;
+  background:var(--sf-surface);
+  border:1px solid var(--sf-border);
+  border-radius:16px;
+}
+
+.sf-applicants-empty__icon{
+  width:52px;
+  height:52px;
+  margin:0 auto 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:14px;
+  background:rgba(91,141,239,.10);
+  font-size:21px;
+}
+
+.sf-applicants-empty h2{
+  margin:0;
+  color:var(--sf-text);
+  font-family:var(--sf-font-head);
+  font-size:20px;
+}
+
+.sf-applicants-empty p{
+  max-width:430px;
+  margin:9px auto 20px;
+  color:var(--sf-text-dim);
+  font-size:13px;
+  line-height:1.6;
+}
+
+
+/* Responsive */
+
+@media (max-width:700px){
+
+  .sf-applicants{
+    padding:38px 0 60px;
+  }
+
+  .sf-applicants__header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .sf-applicant-card__header{
+    align-items:flex-start;
+    flex-direction:column;
+    padding:18px;
+  }
+
+  .sf-applicant-card__body{
+    padding:18px;
+  }
+
+  .sf-applicant-card__footer{
+    align-items:stretch;
+    flex-direction:column;
+    padding:15px 18px;
+  }
+
+  .sf-applicant-card__links{
+    width:100%;
+  }
+
+  .sf-applicant-action{
+    flex:1;
+  }
+
+  .sf-applicant-card__decision{
+    width:100%;
+  }
+
+  .sf-applicant-card__decision form{
+    flex:1;
+  }
+
+  .sf-decision{
+    width:100%;
+  }
+
+}
+
+

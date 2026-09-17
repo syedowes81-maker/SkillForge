@@ -1,104 +1,221 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}Applicants — {{ job.title }} — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>Applicants for {{ job.title }}</h1>
+<section class="sf-applicants">
 
-{% if applications %}
+  <div class="container">
 
-    {% for application in applications %}
+    <!-- HEADER -->
+    <div class="sf-applicants__header">
 
-        <div style="border:1px solid #ccc; padding:15px; margin:15px;">
+      <div>
+        <span class="sf-applicants__eyebrow">
+          Application Management
+        </span>
 
-            <h3>
-                👤 {{ application.freelancer.username }}
-            </h3>
+        <h1 class="sf-applicants__title">
+          Applicants for <span>{{ job.title }}</span>
+        </h1>
 
-            <p>
-                <strong>Applied:</strong>
-                {{ application.applied_at|date:"d M Y, h:i A" }}
-            </p>
+        <p class="sf-applicants__subtitle">
+          Review applications and choose the right freelancer for your project.
+        </p>
+      </div>
 
-            <p>
-                <strong>Status:</strong>
-                {{ application.status }}
-            </p>
+      <a href="{% url 'my_jobs' %}" class="btn btn--ghost">
+        ← Back to My Jobs
+      </a>
 
-            <hr>
+    </div>
 
-            <p>
-                <strong>Cover Letter:</strong>
-            </p>
 
-            <p>
-                {{ application.cover_letter }}
-            </p>
+    <!-- APPLICANTS -->
+    {% if applications %}
 
-            <hr>
+      <div class="sf-applicants__list">
 
-     {% if application.status == "Pending" %}
+        {% for application in applications %}
 
-    <form method="POST"
-          action="{% url 'update_application_status' application.id 'Accepted' %}"
-          style="display:inline;">
+          <article class="sf-applicant-card">
 
-        {% csrf_token %}
+            <!-- APPLICANT HEADER -->
+            <div class="sf-applicant-card__header">
 
-        <button type="submit">
-            ✅ Accept
-        </button>
+              <div class="sf-applicant-card__identity">
 
-    </form>
+                <div class="sf-applicant-card__avatar">
+                  {{ application.freelancer.username|first|upper }}
+                </div>
 
-    <form method="POST"
-          action="{% url 'update_application_status' application.id 'Rejected' %}"
-          style="display:inline;">
+                <div>
+                  <h2>
+                    {{ application.freelancer.username }}
+                  </h2>
 
-        {% csrf_token %}
+                  <p>
+                    Applied {{ application.applied_at|date:"d M Y, h:i A" }}
+                  </p>
+                </div>
 
-        <button type="submit">
-            ❌ Reject
-        </button>
+              </div>
 
-    </form>
-            {% elif application.status == "Accepted" %}
+
+              <!-- STATUS -->
+              {% if application.status == "Pending" %}
+
+                <span class="sf-applicant-status sf-applicant-status--pending">
+                  Pending
+                </span>
+
+              {% elif application.status == "Accepted" %}
+
+                <span class="sf-applicant-status sf-applicant-status--accepted">
+                  Accepted
+                </span>
+
+              {% elif application.status == "Rejected" %}
+
+                <span class="sf-applicant-status sf-applicant-status--rejected">
+                  Rejected
+                </span>
+
+              {% else %}
+
+                <span class="sf-applicant-status">
+                  {{ application.status }}
+                </span>
+
+              {% endif %}
+
+            </div>
+
+
+            <!-- COVER LETTER -->
+            <div class="sf-applicant-card__body">
+
+              <div class="sf-cover-letter">
+
+                <div class="sf-cover-letter__label">
+                  Cover Letter
+                </div>
 
                 <p>
-                    <strong>✅ This applicant has been accepted.</strong>
+                  {{ application.cover_letter }}
                 </p>
 
-            {% elif application.status == "Rejected" %}
+              </div>
 
-                <p>
-                    <strong>❌ This applicant has been rejected.</strong>
-                </p>
+            </div>
 
-            {% endif %}
 
-            <a href="{% url 'send_message' application.freelancer.id %}">
-                <button type="button">
-                    💬 Message Applicant
-                </button>
-            </a>
-          <a href="{% url 'freelancer_detail' application.freelancer.freelancerprofile.id %}">
-    <button type="button">
-        👀 View Profile
-    </button>
-</a>
+            <!-- ACTIONS -->
+            <div class="sf-applicant-card__footer">
+
+              <div class="sf-applicant-card__links">
+
+                <a
+                  href="{% url 'freelancer_detail' application.freelancer.freelancerprofile.id %}"
+                  class="sf-applicant-action"
+                >
+                  👤 View Profile
+                </a>
+
+                <a
+                  href="{% url 'send_message' application.freelancer.id %}"
+                  class="sf-applicant-action"
+                >
+                  💬 Message
+                </a>
+
+              </div>
+
+
+              {% if application.status == "Pending" %}
+
+                <div class="sf-applicant-card__decision">
+
+                  <form
+                    method="POST"
+                    action="{% url 'update_application_status' application.id 'Rejected' %}"
+                  >
+                    {% csrf_token %}
+
+                    <button
+                      type="submit"
+                      class="sf-decision sf-decision--reject"
+                    >
+                      Reject
+                    </button>
+                  </form>
+
+
+                  <form
+                    method="POST"
+                    action="{% url 'update_application_status' application.id 'Accepted' %}"
+                  >
+                    {% csrf_token %}
+
+                    <button
+                      type="submit"
+                      class="sf-decision sf-decision--accept"
+                    >
+                      ✓ Accept Applicant
+                    </button>
+                  </form>
+
+                </div>
+
+              {% elif application.status == "Accepted" %}
+
+                <span class="sf-applicant-card__result sf-applicant-card__result--accepted">
+                  ✓ Applicant accepted
+                </span>
+
+              {% elif application.status == "Rejected" %}
+
+                <span class="sf-applicant-card__result sf-applicant-card__result--rejected">
+                  Applicant rejected
+                </span>
+
+              {% endif %}
+
+            </div>
+
+          </article>
+
+        {% endfor %}
+
+      </div>
+
+    {% else %}
+
+      <!-- EMPTY STATE -->
+      <div class="sf-applicants-empty">
+
+        <div class="sf-applicants-empty__icon">
+          👥
         </div>
 
-    {% endfor %}
+        <h2>No applicants yet</h2>
 
-{% else %}
+        <p>
+          Applications for this project will appear here when freelancers apply.
+        </p>
 
-    <p>No applicants yet.</p>
+        <a href="{% url 'my_jobs' %}" class="btn btn--ghost">
+          ← Back to My Jobs
+        </a>
 
-{% endif %}
+      </div>
 
-<br>
+    {% endif %}
 
-<a href="{% url 'my_jobs' %}">
-    <button>← Back to My Jobs</button>
-</a>
+  </div>
+
+</section>
 
 {% endblock %}
+
