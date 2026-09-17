@@ -1,150 +1,304 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}My Applications — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>📋 My Applications</h1>
+<section class="sf-applications">
+  <div class="container">
 
-<div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+    <!-- HEADER -->
+    <div class="sf-applications__header">
+      <div>
+        <span class="sf-applications__eyebrow">Your Applications</span>
 
-    <h2>📊 Application Overview</h2>
+        <h1 class="sf-applications__title">
+          My Applications
+        </h1>
 
-    <p>📋 <strong>All:</strong> {{ total_applications }}</p>
-    <p>⏳ <strong>Pending:</strong> {{ pending_applications }}</p>
-    <p>✅ <strong>Accepted:</strong> {{ accepted_applications }}</p>
-    <p>❌ <strong>Rejected:</strong> {{ rejected_applications }}</p>
+        <p class="sf-applications__subtitle">
+          Track the projects you've applied for and monitor their progress.
+        </p>
+      </div>
 
-</div>
+      <a href="{% url 'browse_jobs' %}" class="btn btn--primary">
+        Browse Jobs
+      </a>
+    </div>
 
-<div>
 
-    <a href="{% url 'my_applications' %}">
-        <button type="button">All</button>
-    </a>
+    <!-- OVERVIEW -->
+    <div class="sf-applications__stats">
 
-    <a href="?status=Pending">
-        <button type="button">⏳ Pending</button>
-    </a>
+      <div class="sf-application-stat">
+        <span class="sf-application-stat__label">All Applications</span>
+        <strong>{{ total_applications }}</strong>
+        <span>Applications submitted</span>
+      </div>
 
-    <a href="?status=Accepted">
-        <button type="button">✅ Accepted</button>
-    </a>
+      <div class="sf-application-stat">
+        <span class="sf-application-stat__label">Pending</span>
+        <strong>{{ pending_applications }}</strong>
+        <span>Awaiting response</span>
+      </div>
 
-    <a href="?status=Rejected">
-        <button type="button">❌ Rejected</button>
-    </a>
+      <div class="sf-application-stat">
+        <span class="sf-application-stat__label">Accepted</span>
+        <strong>{{ accepted_applications }}</strong>
+        <span>Projects awarded</span>
+      </div>
 
-</div>
-
-<br>
-
-{% if applications %}
-
-    {% for application in applications %}
-
-        <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
-
-            <h2>{{ application.job.title }}</h2>
-
-            <p>
-                <strong>Budget:</strong>
-                ₹{{ application.job.budget }}
-            </p>
-
-            <p>
-                <strong>Location:</strong>
-                {{ application.job.location }}
-            </p>
-
-            <p>
-                <strong>Applied:</strong>
-                {{ application.applied_at|date:"d M Y, h:i A" }}
-            </p>
-
-            <p>
-                <strong>Status:</strong>
-
-                {% if application.status == "Pending" %}
-                    ⏳ Pending
-
-                {% elif application.status == "Accepted" %}
-                    🟢 Accepted
-
-                {% elif application.status == "Rejected" %}
-                    ❌ Rejected
-
-                {% elif application.status == "Completed" %}
-                    🟡 Completed - Waiting for Confirmation
-
-                {% elif application.status == "Confirmed" %}
-                    ✅ Project Confirmed
-
-                {% endif %}
-
-            </p>
-
-            {% if application.status == "Pending" %}
-
-                <a href="{% url 'withdraw_application' application.id %}">
-                    <button type="button">
-                        ❌ Withdraw Application
-                    </button>
-                </a>
-
-            {% endif %}
-
-            <a href="{% url 'job_detail' application.job.id %}">
-                <button type="button">
-                    View Job
-                </button>
-            </a>
-
-        </div>
-
-    {% endfor %}
-
-{% else %}
-
-    <p>No applications found.</p>
-
-    <a href="{% url 'browse_jobs' %}">
-        <button type="button">
-            🔎 Browse Jobs
-        </button>
-    </a>
-
-{% endif %}
-
-<br>
-{% if applications.has_other_pages %}
-
-    <div style="margin:20px;">
-
-        {% if applications.has_previous %}
-
-            <a href="?status={{ status|urlencode }}&page={{ applications.previous_page_number }}">
-                <button type="button">← Previous</button>
-            </a>
-
-        {% endif %}
-
-        <span style="margin:0 15px;">
-            Page {{ applications.number }}
-            of {{ applications.paginator.num_pages }}
-        </span>
-
-        {% if applications.has_next %}
-
-            <a href="?status={{ status|urlencode }}&page={{ applications.next_page_number }}">
-                <button type="button">Next →</button>
-            </a>
-
-        {% endif %}
+      <div class="sf-application-stat">
+        <span class="sf-application-stat__label">Rejected</span>
+        <strong>{{ rejected_applications }}</strong>
+        <span>Not selected</span>
+      </div>
 
     </div>
 
-{% endif %}
-<a href="{% url 'dashboard' %}">
-    ← Back to Dashboard
-</a>
+
+    <!-- FILTERS -->
+    <div class="sf-applications__filters">
+
+      <div class="sf-applications__filter-label">
+        <span>Filter applications</span>
+      </div>
+
+      <div class="sf-applications__filter-buttons">
+
+        <a
+          href="{% url 'my_applications' %}"
+          class="sf-application-filter {% if not status %}sf-application-filter--active{% endif %}"
+        >
+          All
+        </a>
+
+        <a
+          href="?status=Pending"
+          class="sf-application-filter {% if status == 'Pending' %}sf-application-filter--active{% endif %}"
+        >
+          <span class="sf-filter-dot sf-filter-dot--pending"></span>
+          Pending
+        </a>
+
+        <a
+          href="?status=Accepted"
+          class="sf-application-filter {% if status == 'Accepted' %}sf-application-filter--active{% endif %}"
+        >
+          <span class="sf-filter-dot sf-filter-dot--accepted"></span>
+          Accepted
+        </a>
+
+        <a
+          href="?status=Rejected"
+          class="sf-application-filter {% if status == 'Rejected' %}sf-application-filter--active{% endif %}"
+        >
+          <span class="sf-filter-dot sf-filter-dot--rejected"></span>
+          Rejected
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <!-- APPLICATION LIST -->
+    <div class="sf-applications__list">
+
+      {% if applications %}
+
+        {% for application in applications %}
+
+          <article class="sf-application-card">
+
+            <div class="sf-application-card__main">
+
+              <div class="sf-application-card__top">
+
+                <span class="sf-application-card__category">
+                  {{ application.job.category }}
+                </span>
+
+                {% if application.status == "Pending" %}
+
+                  <span class="sf-application-status sf-application-status--pending">
+                    <span></span>
+                    Pending
+                  </span>
+
+                {% elif application.status == "Accepted" %}
+
+                  <span class="sf-application-status sf-application-status--accepted">
+                    <span></span>
+                    Accepted
+                  </span>
+
+                {% elif application.status == "Rejected" %}
+
+                  <span class="sf-application-status sf-application-status--rejected">
+                    <span></span>
+                    Rejected
+                  </span>
+
+                {% elif application.status == "Completed" %}
+
+                  <span class="sf-application-status sf-application-status--completed">
+                    <span></span>
+                    Completed
+                  </span>
+
+                {% elif application.status == "Confirmed" %}
+
+                  <span class="sf-application-status sf-application-status--confirmed">
+                    <span></span>
+                    Confirmed
+                  </span>
+
+                {% endif %}
+
+              </div>
+
+
+              <h2 class="sf-application-card__title">
+                {{ application.job.title }}
+              </h2>
+
+
+              <div class="sf-application-card__meta">
+
+                <span>
+                  <b>₹</b>
+                  ₹{{ application.job.budget }}
+                </span>
+
+                <span>
+                  <b>⌖</b>
+                  {{ application.job.location }}
+                </span>
+
+                <span>
+                  <b>◷</b>
+                  Applied {{ application.applied_at|date:"d M Y" }}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="sf-application-card__actions">
+
+              <a
+                href="{% url 'job_detail' application.job.id %}"
+                class="sf-application-card__view"
+              >
+                View Job →
+              </a>
+
+              {% if application.status == "Pending" %}
+
+                <a
+                  href="{% url 'withdraw_application' application.id %}"
+                  class="sf-application-card__withdraw"
+                >
+                  Withdraw
+                </a>
+
+              {% endif %}
+
+            </div>
+
+          </article>
+
+        {% endfor %}
+
+
+      {% else %}
+
+        <div class="sf-applications__empty">
+
+          <div class="sf-applications__empty-icon">
+            ○
+          </div>
+
+          <h2>No applications found</h2>
+
+          <p>
+            You haven't applied to any projects yet.
+            Explore available jobs and find your next opportunity.
+          </p>
+
+          <a href="{% url 'browse_jobs' %}" class="btn btn--primary">
+            Browse Jobs →
+          </a>
+
+        </div>
+
+      {% endif %}
+
+    </div>
+
+
+    <!-- PAGINATION -->
+    {% if applications.has_other_pages %}
+
+      <div class="sf-applications__pagination">
+
+        {% if applications.has_previous %}
+
+          <a
+            href="?status={{ status|urlencode }}&page={{ applications.previous_page_number }}"
+            class="sf-page-button"
+          >
+            ← Previous
+          </a>
+
+        {% else %}
+
+          <span class="sf-page-button sf-page-button--disabled">
+            ← Previous
+          </span>
+
+        {% endif %}
+
+
+        <span class="sf-page-number">
+          {{ applications.number }}
+          <small>
+            / {{ applications.paginator.num_pages }}
+          </small>
+        </span>
+
+
+        {% if applications.has_next %}
+
+          <a
+            href="?status={{ status|urlencode }}&page={{ applications.next_page_number }}"
+            class="sf-page-button"
+          >
+            Next →
+          </a>
+
+        {% else %}
+
+          <span class="sf-page-button sf-page-button--disabled">
+            Next →
+          </span>
+
+        {% endif %}
+
+      </div>
+
+    {% endif %}
+
+
+    <div class="sf-applications__back">
+      <a href="{% url 'dashboard' %}">
+        ← Back to Dashboard
+      </a>
+    </div>
+
+  </div>
+</section>
 
 {% endblock %}
