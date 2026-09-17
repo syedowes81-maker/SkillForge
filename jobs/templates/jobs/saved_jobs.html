@@ -1,38 +1,166 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}Saved Jobs — SkillForge{% endblock %}
+
 {% block content %}
 
-<h2>My Saved Jobs ({{ saved|length }})</h2>
-{% if saved %}
+<section class="sf-saved">
 
-    {% for item in saved %}
+  <div class="container">
 
-    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+    <!-- HEADER -->
+    <div class="sf-saved__header">
 
-        <h3>
-            <a href="{% url 'job_detail' item.job.id %}">
-                {{ item.job.title }}
-            </a>
-        </h3>
+      <div>
+        <span class="sf-saved__eyebrow">Your Shortlist</span>
 
-        <p>
- <p><strong>Budget:</strong> ₹{{ item.job.budget }}</p>
+        <h1 class="sf-saved__title">
+          Saved <span>Jobs.</span>
+        </h1>
 
-<p><strong>Location:</strong> {{ item.job.location }}</p>
+        <p class="sf-saved__subtitle">
+          Keep track of opportunities you want to come back to.
+        </p>
+      </div>
 
-<p><strong>Posted by:</strong> {{ item.job.client.username }}</p>
-        <a href="{% url 'unsave_job' item.job.id %}">
-            <button>❌ Remove</button>
-        </a>
+      <a href="{% url 'browse_jobs' %}" class="btn btn--primary">
+        Browse Jobs
+      </a>
 
     </div>
 
-    {% endfor %}
 
-{% else %}
+    <!-- COUNT -->
+    <div class="sf-saved__summary">
+      <strong>{{ saved|length }}</strong>
+      <span>
+        {% if saved|length == 1 %}
+          saved opportunity
+        {% else %}
+          saved opportunities
+        {% endif %}
+      </span>
+    </div>
 
-    <p>No saved jobs yet.</p>
 
-{% endif %}
+    <!-- SAVED JOBS -->
+    {% if saved %}
+
+      <div class="sf-saved__list">
+
+        {% for item in saved %}
+
+          <article class="sf-saved-card">
+
+            <div class="sf-saved-card__main">
+
+              <div class="sf-saved-card__top">
+
+                <span class="sf-saved-card__category">
+                  {{ item.job.category }}
+                </span>
+
+                {% if item.job.status %}
+                  <span class="sf-saved-card__status">
+                    {{ item.job.status }}
+                  </span>
+                {% endif %}
+
+              </div>
+
+
+              <h2 class="sf-saved-card__title">
+                <a href="{% url 'job_detail' item.job.id %}">
+                  {{ item.job.title }}
+                </a>
+              </h2>
+
+
+              <p class="sf-saved-card__description">
+                {{ item.job.description|truncatewords:28 }}
+              </p>
+
+
+              <div class="sf-saved-card__meta">
+
+                <span>
+                  <strong>₹</strong>
+                  ₹{{ item.job.budget }}
+                </span>
+
+                <span>
+                  ⌖ {{ item.job.location }}
+                </span>
+
+                <span>
+                  Client: {{ item.job.client.username }}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+            <div class="sf-saved-card__actions">
+
+              <a
+                href="{% url 'job_detail' item.job.id %}"
+                class="sf-saved-card__view"
+              >
+                View Job →
+              </a>
+
+              <a
+                href="{% url 'unsave_job' item.job.id %}"
+                class="sf-saved-card__remove"
+              >
+                Remove
+              </a>
+
+            </div>
+
+          </article>
+
+        {% endfor %}
+
+      </div>
+
+
+    {% else %}
+
+      <!-- EMPTY STATE -->
+      <div class="sf-saved-empty">
+
+        <div class="sf-saved-empty__icon">
+          ☆
+        </div>
+
+        <h2>No saved jobs yet</h2>
+
+        <p>
+          When you find an opportunity you're interested in,
+          save it here so you can easily return to it later.
+        </p>
+
+        <a href="{% url 'browse_jobs' %}" class="btn btn--primary">
+          Explore Jobs
+        </a>
+
+      </div>
+
+    {% endif %}
+
+
+    <!-- BACK -->
+    <div class="sf-saved__back">
+      <a href="{% url 'dashboard' %}">
+        ← Back to Dashboard
+      </a>
+    </div>
+
+  </div>
+
+</section>
 
 {% endblock %}

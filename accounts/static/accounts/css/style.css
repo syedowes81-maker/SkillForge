@@ -4812,3 +4812,353 @@ body{
   }
 
 }
+
+
+/* ==========================================================================
+   SkillForge — Saved Jobs
+   ========================================================================== */
+
+.sf-saved{
+  min-height:calc(100vh - 72px);
+  padding:56px 0 80px;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(91,141,239,.08),transparent 30%),
+    var(--sf-bg);
+}
+
+/* Header */
+
+.sf-saved__header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:28px;
+}
+
+.sf-saved__eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:var(--sf-accent-strong);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+
+.sf-saved__eyebrow::before{
+  content:"";
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--sf-accent);
+}
+
+.sf-saved__title{
+  margin:0;
+  font-family:var(--sf-font-head);
+  font-size:clamp(30px,4vw,44px);
+  line-height:1.1;
+  letter-spacing:-.04em;
+  font-weight:600;
+  color:var(--sf-text);
+}
+
+.sf-saved__title span{
+  color:var(--sf-accent);
+}
+
+.sf-saved__subtitle{
+  margin:10px 0 0;
+  color:var(--sf-text-dim);
+  font-size:14px;
+}
+
+
+/* Summary */
+
+.sf-saved__summary{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  margin-bottom:18px;
+  color:var(--sf-text-dim);
+  font-size:13px;
+}
+
+.sf-saved__summary strong{
+  color:var(--sf-text);
+  font-family:var(--sf-font-head);
+  font-size:24px;
+}
+
+
+/* List */
+
+.sf-saved__list{
+  display:grid;
+  gap:14px;
+}
+
+
+/* Card */
+
+.sf-saved-card{
+  display:flex;
+  justify-content:space-between;
+  gap:28px;
+  padding:24px;
+  background:var(--sf-surface);
+  border:1px solid var(--sf-border);
+  border-radius:16px;
+  transition:
+    transform .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease;
+}
+
+.sf-saved-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(91,141,239,.32);
+  box-shadow:0 14px 35px -24px rgba(0,0,0,.8);
+}
+
+.sf-saved-card__main{
+  min-width:0;
+  flex:1;
+}
+
+.sf-saved-card__top{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-bottom:12px;
+}
+
+.sf-saved-card__category{
+  padding:5px 9px;
+  border-radius:7px;
+  background:rgba(91,141,239,.09);
+  color:var(--sf-accent);
+  font-size:10px;
+  font-weight:600;
+}
+
+.sf-saved-card__status{
+  padding:5px 9px;
+  border-radius:7px;
+  background:rgba(52,211,153,.08);
+  color:#34d399;
+  font-size:10px;
+  font-weight:600;
+}
+
+.sf-saved-card__title{
+  margin:0;
+  font-family:var(--sf-font-head);
+  font-size:19px;
+  font-weight:600;
+  letter-spacing:-.025em;
+}
+
+.sf-saved-card__title a{
+  color:var(--sf-text);
+  text-decoration:none;
+}
+
+.sf-saved-card__title a:hover{
+  color:var(--sf-accent);
+}
+
+.sf-saved-card__description{
+  max-width:720px;
+  margin:9px 0 15px;
+  color:var(--sf-text-dim);
+  font-size:13px;
+  line-height:1.65;
+}
+
+.sf-saved-card__meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  color:var(--sf-text-faint);
+  font-size:11.5px;
+}
+
+.sf-saved-card__meta span{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+
+.sf-saved-card__meta strong{
+  color:var(--sf-accent);
+}
+
+
+/* Actions */
+
+.sf-saved-card__actions{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:stretch;
+  gap:9px;
+  min-width:120px;
+}
+
+.sf-saved-card__view,
+.sf-saved-card__remove{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  padding:8px 13px;
+  border-radius:9px;
+  text-decoration:none;
+  font-size:11.5px;
+  font-weight:500;
+  transition:
+    background .2s ease,
+    color .2s ease,
+    border-color .2s ease;
+}
+
+.sf-saved-card__view{
+  background:var(--sf-accent);
+  color:white;
+}
+
+.sf-saved-card__view:hover{
+  background:var(--sf-accent-strong);
+}
+
+.sf-saved-card__remove{
+  border:1px solid var(--sf-border);
+  color:var(--sf-text-faint);
+}
+
+.sf-saved-card__remove:hover{
+  color:#f87171;
+  border-color:rgba(248,113,113,.3);
+  background:rgba(248,113,113,.05);
+}
+
+
+/* Empty state */
+
+.sf-saved-empty{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:360px;
+  padding:40px;
+  background:var(--sf-surface);
+  border:1px solid var(--sf-border);
+  border-radius:18px;
+}
+
+.sf-saved-empty__icon{
+  width:58px;
+  height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:18px;
+  border-radius:16px;
+  background:rgba(91,141,239,.09);
+  color:var(--sf-accent);
+  font-size:29px;
+}
+
+.sf-saved-empty h2{
+  margin:0;
+  font-family:var(--sf-font-head);
+  color:var(--sf-text);
+  font-size:20px;
+}
+
+.sf-saved-empty p{
+  max-width:480px;
+  margin:10px 0 22px;
+  color:var(--sf-text-dim);
+  font-size:13px;
+  line-height:1.65;
+}
+
+
+/* Back */
+
+.sf-saved__back{
+  margin-top:25px;
+}
+
+.sf-saved__back a{
+  color:var(--sf-text-faint);
+  font-size:12px;
+  text-decoration:none;
+}
+
+.sf-saved__back a:hover{
+  color:var(--sf-accent);
+}
+
+
+/* Responsive */
+
+@media (max-width:700px){
+
+  .sf-saved{
+    padding:38px 0 60px;
+  }
+
+  .sf-saved__header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .sf-saved__header .btn{
+    width:100%;
+  }
+
+  .sf-saved-card{
+    flex-direction:column;
+    gap:20px;
+  }
+
+  .sf-saved-card__actions{
+    flex-direction:row;
+    min-width:0;
+  }
+
+  .sf-saved-card__view,
+  .sf-saved-card__remove{
+    flex:1;
+  }
+
+}
+
+@media (max-width:480px){
+
+  .sf-saved-card{
+    padding:19px;
+  }
+
+  .sf-saved-card__meta{
+    flex-direction:column;
+    gap:7px;
+  }
+
+  .sf-saved-empty{
+    min-height:320px;
+    padding:25px;
+  }
+
+}
+
+
