@@ -4,97 +4,102 @@
 
 {% block content %}
 
-<section class="sf-auth-page">
-  <div class="sf-auth-shell">
+<section class="sf-auth">
 
-    <div class="sf-auth-visual">
-      <div class="sf-auth-visual__content">
-        <span class="sf-auth-visual__eyebrow">SKILLFORGE</span>
+    <div class="sf-auth__card">
 
-        <h1>Build meaningful work.<br>Find the right people.</h1>
+        <span class="sf-eyebrow">WELCOME BACK</span>
 
-        <p>
-          Connect with skilled professionals and opportunities
-          built around real work.
+        <h1>Log in to SkillForge</h1>
+
+        <p class="sf-auth__subtitle">
+            Welcome back. Continue finding work or hiring talented professionals.
         </p>
 
-        <div class="sf-auth-visual__line"></div>
 
-        <span class="sf-auth-visual__note">
-          Your work. Your skills. Your next opportunity.
-        </span>
-      </div>
-    </div>
+        <form method="POST">
 
-    <div class="sf-auth-panel">
+            {% csrf_token %}
 
-      <div class="sf-auth-panel__head">
-        <span class="sf-auth__eyebrow">Welcome back</span>
 
-        <h2>Log in to SkillForge</h2>
+            <!-- USERNAME -->
 
-        <p>
-          Continue where you left off.
-        </p>
-      </div>
+            <div class="sf-field">
 
-      {% if form.non_field_errors %}
-        <div class="sf-auth-error">
-          {{ form.non_field_errors|striptags }}
-        </div>
-      {% endif %}
+                <label for="{{ form.username.id_for_label }}">
+                    Username
+                </label>
 
-      <form method="post" action="{% url 'login' %}" class="sf-auth-form" novalidate>
+                {{ form.username }}
 
-        {% csrf_token %}
+                {% if form.username.errors %}
+                    <small class="sf-error">
+                        {{ form.username.errors|striptags }}
+                    </small>
+                {% endif %}
 
-        {% for field in form %}
-          <div class="sf-auth-field">
+            </div>
 
-            <label for="{{ field.id_for_label }}">
-              {{ field.label }}
-            </label>
 
-            {{ field }}
+            <!-- PASSWORD -->
 
-            {% if field.errors %}
-              <span class="sf-auth-field__error">
-                {{ field.errors|striptags }}
-              </span>
+            <div class="sf-field">
+
+                <label for="{{ form.password.id_for_label }}">
+                    Password
+                </label>
+
+                {{ form.password }}
+
+                {% if form.password.errors %}
+                    <small class="sf-error">
+                        {{ form.password.errors|striptags }}
+                    </small>
+                {% endif %}
+
+            </div>
+
+
+            {% if form.non_field_errors %}
+
+                <div class="sf-error sf-error--box">
+                    Invalid username or password.
+                </div>
+
             {% endif %}
 
-          </div>
-        {% endfor %}
 
-        <div class="sf-auth-options">
-          <span></span>
+            <button
+                type="submit"
+                class="btn btn--primary btn--block sf-auth__submit"
+            >
+                Log In
+            </button>
 
-          <a href="{% url 'password_reset' %}">
-            Forgot password?
-          </a>
-        </div>
+        </form>
 
-        <button type="submit" class="sf-auth-submit">
-          Log In
-        </button>
 
-      </form>
+        <p class="sf-auth__forgot">
 
-      <div class="sf-auth-divider">
-        <span>or</span>
-      </div>
+            <a href="{% url 'password_reset' %}">
+                Forgot your password?
+            </a>
 
-      <p class="sf-auth-switch">
-        Don't have an account?
-        <a href="{% url 'register' %}">
-          Create one
-        </a>
-      </p>
+        </p>
+
+
+        <p class="sf-auth__foot">
+
+            Don't have an account?
+
+            <a href="{% url 'register' %}">
+                Create an account
+            </a>
+
+        </p>
 
     </div>
 
-  </div>
 </section>
 
 {% endblock %}
-

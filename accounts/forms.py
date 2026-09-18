@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, FreelancerProfile, Review
+from .models import User, FreelancerProfile, ClientProfile, Review
 
 
 class RegistrationForm(forms.ModelForm):
@@ -10,6 +10,17 @@ class RegistrationForm(forms.ModelForm):
 
     confirm_password = forms.CharField(
         widget=forms.PasswordInput
+    )
+
+    ROLE_CHOICES = [
+        ("freelancer", "I want to find work"),
+        ("client", "I want to hire people"),
+        ("both", "Both"),
+    ]
+
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        widget=forms.RadioSelect
     )
 
     class Meta:
@@ -31,7 +42,6 @@ class RegistrationForm(forms.ModelForm):
             )
 
         return cleaned_data
-
 
 class LoginForm(forms.Form):
 
@@ -139,3 +149,15 @@ class ReviewForm(forms.ModelForm):
             )
 
         return comment
+
+class ClientProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = ClientProfile
+        fields = [
+            "full_name",
+            "company_name",
+            "bio",
+            "location",
+            "profile_picture",
+        ]

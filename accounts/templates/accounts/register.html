@@ -4,117 +4,192 @@
 
 {% block content %}
 
-<section class="sf-auth-page">
-  <div class="sf-auth-shell">
+<section class="sf-auth">
 
-    <div class="sf-auth-visual">
-      <div class="sf-auth-visual__content">
+    <div class="sf-auth__card">
 
-        <span class="sf-auth-visual__eyebrow">SKILLFORGE</span>
+        <span class="sf-eyebrow">GET STARTED</span>
 
-        <h1>Turn your skills<br>into opportunity.</h1>
+        <h1>Create your account</h1>
 
-        <p>
-          Join a focused marketplace where independent
-          professionals meet teams that need their expertise.
+        <p class="sf-auth__subtitle">
+            Join SkillForge and connect with opportunities that match your skills.
         </p>
 
-        <div class="sf-auth-visual__line"></div>
 
-        <span class="sf-auth-visual__note">
-          One account. Real opportunities.
-        </span>
+        <form method="POST" action="{% url 'register' %}" novalidate>
 
-      </div>
-    </div>
+            {% csrf_token %}
 
 
-    <div class="sf-auth-panel">
+            <!-- USERNAME -->
 
-      <div class="sf-auth-panel__head">
+            <div class="sf-field">
 
-        <span class="sf-auth__eyebrow">
-          Get started
-        </span>
+                <label for="{{ form.username.id_for_label }}">
+                    Username
+                </label>
 
-        <h2>Create your account</h2>
+                {{ form.username }}
 
-        <p>
-          Join SkillForge as a freelancer or client.
+                {% if form.username.errors %}
+                    <small class="sf-error">
+                        {{ form.username.errors|striptags }}
+                    </small>
+                {% endif %}
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="sf-field">
+
+                <label for="{{ form.email.id_for_label }}">
+                    Email address
+                </label>
+
+                {{ form.email }}
+
+                {% if form.email.errors %}
+                    <small class="sf-error">
+                        {{ form.email.errors|striptags }}
+                    </small>
+                {% endif %}
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="sf-field">
+
+                <label for="{{ form.password.id_for_label }}">
+                    Password
+                </label>
+
+                {{ form.password }}
+
+                {% if form.password.errors %}
+                    <small class="sf-error">
+                        {{ form.password.errors|striptags }}
+                    </small>
+                {% endif %}
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="sf-field">
+
+                <label for="{{ form.confirm_password.id_for_label }}">
+                    Confirm password
+                </label>
+
+                {{ form.confirm_password }}
+
+                {% if form.confirm_password.errors %}
+                    <small class="sf-error">
+                        {{ form.confirm_password.errors|striptags }}
+                    </small>
+                {% endif %}
+
+            </div>
+
+
+            <!-- ROLE -->
+
+            <div class="sf-role">
+
+                <div class="sf-role__heading">
+                    <label>How will you use SkillForge?</label>
+
+                    <span>
+                        Choose what you want to do
+                    </span>
+                </div>
+
+
+                <div class="sf-role__options">
+
+                    {% for radio in form.role %}
+
+                        <label class="sf-role__option">
+
+                            {{ radio.tag }}
+
+                            <span class="sf-role__content">
+
+                                <strong>
+                                    {% if forloop.counter == 1 %}
+                                        Find Work
+                                    {% elif forloop.counter == 2 %}
+                                        Hire Talent
+                                    {% else %}
+                                        Both
+                                    {% endif %}
+                                </strong>
+
+                                <small>
+                                    {% if forloop.counter == 1 %}
+                                        Find projects and build your career.
+                                    {% elif forloop.counter == 2 %}
+                                        Post projects and find skilled professionals.
+                                    {% else %}
+                                        Work as a freelancer and hire professionals.
+                                    {% endif %}
+                                </small>
+
+                            </span>
+
+                        </label>
+
+                    {% endfor %}
+
+                </div>
+
+
+                {% if form.role.errors %}
+                    <small class="sf-error">
+                        {{ form.role.errors|striptags }}
+                    </small>
+                {% endif %}
+
+            </div>
+
+
+            {% if form.non_field_errors %}
+
+                <div class="sf-error sf-error--box">
+                    {{ form.non_field_errors|striptags }}
+                </div>
+
+            {% endif %}
+
+
+            <button
+                type="submit"
+                class="btn btn--primary btn--block sf-auth__submit"
+            >
+                Create Account
+            </button>
+
+        </form>
+
+
+        <p class="sf-auth__foot">
+
+            Already have an account?
+
+            <a href="{% url 'login' %}">
+                Log in
+            </a>
+
         </p>
 
-      </div>
-
-
-      {% if form.non_field_errors %}
-        <div class="sf-auth-error">
-          {{ form.non_field_errors|striptags }}
-        </div>
-      {% endif %}
-
-
-      <form
-        method="post"
-        action="{% url 'register' %}"
-        class="sf-auth-form"
-        novalidate
-      >
-
-        {% csrf_token %}
-
-        {% for field in form %}
-
-          <div class="sf-auth-field">
-
-            <label for="{{ field.id_for_label }}">
-              {{ field.label }}
-            </label>
-
-            {{ field }}
-
-            {% if field.help_text %}
-              <span class="sf-auth-field__help">
-                {{ field.help_text|striptags }}
-              </span>
-            {% endif %}
-
-            {% if field.errors %}
-              <span class="sf-auth-field__error">
-                {{ field.errors|striptags }}
-              </span>
-            {% endif %}
-
-          </div>
-
-        {% endfor %}
-
-
-        <button type="submit" class="sf-auth-submit">
-          Create Account
-        </button>
-
-      </form>
-
-
-      <div class="sf-auth-divider">
-        <span>or</span>
-      </div>
-
-
-      <p class="sf-auth-switch">
-
-        Already have an account?
-
-        <a href="{% url 'login' %}">
-          Log in
-        </a>
-
-      </p>
-
     </div>
 
-  </div>
 </section>
 
 {% endblock %}
-

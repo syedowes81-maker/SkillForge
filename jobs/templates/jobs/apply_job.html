@@ -1,11 +1,132 @@
-<h1>Apply for Job</h1>
+{% extends "accounts/base.html" %}
 
-<h2>{{ job.title }}</h2>
+{% block title %}Apply — {{ job.title }}{% endblock %}
 
-<form method="POST">
-    {% csrf_token %}
+{% block content %}
 
-    {{ form.as_p }}
+<section class="sf-apply">
+  <div class="container">
 
-    <button type="submit">Submit Application</button>
-</form>
+    <div class="sf-apply__header">
+      <span class="sf-apply__eyebrow">Project Application</span>
+
+      <h1 class="sf-apply__title">
+        Apply for this project
+      </h1>
+
+      <p class="sf-apply__subtitle">
+        Submit your proposal for <strong>{{ job.title }}</strong>.
+      </p>
+    </div>
+
+
+    <div class="sf-apply__layout">
+
+      <!-- PROJECT SUMMARY -->
+      <aside class="sf-apply__project">
+
+        <span class="sf-apply__project-label">
+          Project
+        </span>
+
+        <h2>{{ job.title }}</h2>
+
+        <p class="sf-apply__description">
+          {{ job.description }}
+        </p>
+
+        <div class="sf-apply__details">
+
+          <div>
+            <span>Budget</span>
+            <strong>₹{{ job.budget }}</strong>
+          </div>
+
+          <div>
+            <span>Category</span>
+            <strong>{{ job.category }}</strong>
+          </div>
+
+          <div>
+            <span>Location</span>
+            <strong>{{ job.location }}</strong>
+          </div>
+
+        </div>
+
+      </aside>
+
+
+      <!-- APPLICATION FORM -->
+      <div class="sf-apply__form-card">
+
+        <div class="sf-apply__form-header">
+          <h2>Your proposal</h2>
+
+          <p>
+            Make your proposal specific to the project, highlight relevant
+            skills, and explain how you would approach the work.
+          </p>
+        </div>
+
+
+        <form method="POST">
+
+          {% csrf_token %}
+
+          <div class="sf-apply__field">
+
+            <label for="{{ form.cover_letter.id_for_label }}">
+              Cover Letter / Proposal
+            </label>
+
+            {{ form.cover_letter }}
+
+            {% if form.cover_letter.errors %}
+              <div class="sf-apply__error">
+                {{ form.cover_letter.errors|striptags }}
+              </div>
+            {% endif %}
+
+            <small>
+              Tell the client why you're a good fit for this project.
+            </small>
+
+          </div>
+
+
+          {% if form.non_field_errors %}
+            <div class="sf-apply__error">
+              {{ form.non_field_errors|striptags }}
+            </div>
+          {% endif %}
+
+
+          <div class="sf-apply__actions">
+
+            <a
+              href="{% url 'job_detail' job.id %}"
+              class="btn btn--ghost"
+            >
+              Cancel
+            </a>
+
+            <button
+              type="submit"
+              class="btn btn--primary"
+            >
+              Submit Proposal →
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

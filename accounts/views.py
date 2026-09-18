@@ -1,37 +1,62 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import RegistrationForm, LoginForm
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from .models import FreelancerProfile
 from django.shortcuts import get_object_or_404
-from .forms import FreelancerProfileForm
 from django.contrib.auth.decorators import login_required
 from .models import FreelancerProfile, Review, Message
-from .forms import FreelancerProfileForm, ReviewForm
+from .forms import (FreelancerProfileForm, ClientProfileForm, ReviewForm,)
 from django.db.models import Avg, Count
-from .models import User, FreelancerProfile, Review, Notification, Message
+from .models import (User, FreelancerProfile,ClientProfile,Review,Notification,Message,)
 from jobs.models import Job,Application
 
 
 def register(request):
+
     if request.method == "POST":
+
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
+
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data["password"])
+
+            user.set_password(
+                form.cleaned_data["password"]
+            )
+
+            role = form.cleaned_data["role"]
+
+            if role == "freelancer":
+                user.can_freelance = True
+                user.can_hire = False
+
+            elif role == "client":
+                user.can_freelance = False
+                user.can_hire = True
+
+            elif role == "both":
+                user.can_freelance = True
+                user.can_hire = True
+
             user.save()
-            FreelancerProfile.objects.create(user=user)
+
+            FreelancerProfile.objects.create(
+                user=user
+            )
 
             return redirect("login")
 
     else:
+
         form = RegistrationForm()
 
-    return render(request, "accounts/register.html", {"form": form})
-
+    return render(
+        request,
+        "accounts/register.html",
+        {"form": form}
+    )
 
 def login_view(request):
     if request.method == "POST":
@@ -227,6 +252,18 @@ def edit_profile(request):
     })
 
 @login_required
+def client_profile(request):
+    profile = request.user.clientprofile
+
+    return render(
+        request,
+        "accounts/client_profile.html",
+        {
+            "profile": profile,
+        }
+    )
+
+@login_required
 def add_review(request, id):
 
     freelancer = get_object_or_404(
@@ -344,7 +381,6 @@ def send_message(request, id):
     )
 
 @login_required
-@login_required
 def messages_view(request):
 
     messages = Message.objects.filter(
@@ -404,4 +440,34 @@ def conversation(request, id):
             "other_user": other_user,
             "messages": messages,
         },
+    )
+
+@login_required
+def edit_client_profile(request):
+
+    profile = request.user.clientprofile
+
+    if request.method == "POST":
+
+        form = ClientProfileForm(
+            request.POST,
+            request.FILES,
+            instance=profile
+        )
+
+        if form.is_valid():
+            form.save()
+            return redirect("client_profile")
+
+    else:
+        form = ClientProfileForm(
+            instance=profile
+        )
+
+    return render(
+        request,
+        "accounts/edit_client_profile.html",
+        {
+            "form": form,
+        }
     )
