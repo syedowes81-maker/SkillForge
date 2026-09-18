@@ -9,233 +9,154 @@
 
     <!-- HEADER -->
     <div class="sf-dashboard__head">
+
       <div>
         <span class="sf-dashboard__eyebrow">Your Workspace</span>
+
         <h1 class="sf-dashboard__title">
           Welcome, {{ user.username }}
         </h1>
+
         <p class="sf-dashboard__subtitle">
-          Here's what's happening with your work today.
+          Manage your work, projects, and hiring activity from one place.
         </p>
       </div>
 
-      <div class="sf-dashboard__head-actions">
-        <a href="{% url 'browse_jobs' %}" class="btn btn--ghost">
+    </div>
+
+
+    <!-- FIND WORK -->
+    {% if user.can_freelance %}
+
+    <section class="sf-dashboard__section">
+
+      <div class="sf-dashboard__section-head">
+        <div>
+          <span class="sf-dashboard__eyebrow">
+            FREELANCER
+          </span>
+
+          <h2>
+            Find Work
+          </h2>
+
+          <p>
+            Discover projects, manage applications, and track your work.
+          </p>
+        </div>
+
+        <a href="{% url 'browse_jobs' %}" class="btn btn--primary">
           Browse Jobs
         </a>
-
-        <a href="{% url 'post_job' %}" class="btn btn--primary">
-          Post a Job
-        </a>
-      </div>
-    </div>
-
-
-    <!-- STATS -->
-    <div class="sf-dashboard__stats">
-
-      <div class="sf-stat">
-        <span class="sf-stat__label">Jobs Posted</span>
-        <strong class="sf-stat__value">{{ jobs_posted }}</strong>
-        <span class="sf-stat__meta">Total jobs created</span>
       </div>
 
-      <div class="sf-stat">
-        <span class="sf-stat__label">Open Jobs</span>
-        <strong class="sf-stat__value">{{ open_jobs }}</strong>
-        <span class="sf-stat__meta">Currently accepting work</span>
-      </div>
 
-      <div class="sf-stat">
-        <span class="sf-stat__label">Applications</span>
-        <strong class="sf-stat__value">{{ applications_received }}</strong>
-        <span class="sf-stat__meta">Applications received</span>
-      </div>
+      <!-- FREELANCER STATS -->
+      <div class="sf-dashboard__stats">
 
-      <div class="sf-stat">
-        <span class="sf-stat__label">Total Earnings</span>
-        <strong class="sf-stat__value">₹{{ total_earnings }}</strong>
-        <span class="sf-stat__meta">From completed work</span>
-      </div>
+        <div class="sf-stat">
+          <span class="sf-stat__label">
+            Applications
+          </span>
 
-    </div>
+          <strong class="sf-stat__value">
+            {{ total_projects }}
+          </strong>
 
-
-    <!-- MAIN DASHBOARD GRID -->
-    <div class="sf-dashboard__grid">
-
-      <!-- JOB OVERVIEW -->
-      <div class="sf-dashboard__card">
-
-        <div class="sf-dashboard__card-head">
-          <h2>Job Overview</h2>
-          <span>Marketplace activity</span>
+          <span class="sf-stat__meta">
+            Projects applied for
+          </span>
         </div>
 
-        <div class="sf-overview-list">
 
-          <div class="sf-overview">
-            <div class="sf-overview__left">
-              <span class="sf-overview__icon">J</span>
-              <span class="sf-overview__name">Jobs Posted</span>
-            </div>
-            <strong class="sf-overview__value">
-              {{ jobs_posted }}
-            </strong>
-          </div>
+        <div class="sf-stat">
+          <span class="sf-stat__label">
+            Active Projects
+          </span>
 
-          <div class="sf-overview">
-            <div class="sf-overview__left">
-              <span class="sf-overview__icon">O</span>
-              <span class="sf-overview__name">Open Jobs</span>
-            </div>
-            <strong class="sf-overview__value">
-              {{ open_jobs }}
-            </strong>
-          </div>
+          <strong class="sf-stat__value">
+            {{ active_projects }}
+          </strong>
 
-          <div class="sf-overview">
-            <div class="sf-overview__left">
-              <span class="sf-overview__icon">C</span>
-              <span class="sf-overview__name">Closed Jobs</span>
-            </div>
-            <strong class="sf-overview__value">
-              {{ closed_jobs }}
-            </strong>
-          </div>
+          <span class="sf-stat__meta">
+            Currently in progress
+          </span>
+        </div>
 
+
+        <div class="sf-stat">
+          <span class="sf-stat__label">
+            Completed
+          </span>
+
+          <strong class="sf-stat__value">
+            {{ completed_projects }}
+          </strong>
+
+          <span class="sf-stat__meta">
+            Work completed
+          </span>
+        </div>
+
+
+        <div class="sf-stat">
+          <span class="sf-stat__label">
+            Earnings
+          </span>
+
+          <strong class="sf-stat__value">
+            ₹{{ total_earnings }}
+          </strong>
+
+          <span class="sf-stat__meta">
+            Confirmed earnings
+          </span>
         </div>
 
       </div>
 
 
-      <!-- APPLICATIONS -->
-      <div class="sf-dashboard__card">
-
-        <div class="sf-dashboard__card-head">
-          <h2>Applications</h2>
-          <span>Current status</span>
-        </div>
-
-        <div class="sf-status-list">
-
-          <div class="sf-status">
-            <div class="sf-status__left">
-              <span class="sf-status__dot sf-status__dot--yellow"></span>
-              Pending
-            </div>
-            <strong class="sf-status__value">
-              {{ pending_applications }}
-            </strong>
-          </div>
-
-          <div class="sf-status">
-            <div class="sf-status__left">
-              <span class="sf-status__dot sf-status__dot--green"></span>
-              Accepted
-            </div>
-            <strong class="sf-status__value">
-              {{ accepted_applications }}
-            </strong>
-          </div>
-
-          <div class="sf-status">
-            <div class="sf-status__left">
-              <span class="sf-status__dot sf-status__dot--red"></span>
-              Rejected
-            </div>
-            <strong class="sf-status__value">
-              {{ rejected_applications }}
-            </strong>
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- FREELANCER OVERVIEW -->
+      <!-- FREELANCER ACTIONS -->
       <div class="sf-dashboard__card sf-dashboard__card--wide">
 
         <div class="sf-dashboard__card-head">
-          <h2>Freelancer Overview</h2>
-          <span>Your work at a glance</span>
+          <h2>Freelancer Workspace</h2>
+
+          <span>
+            Manage your freelance activity
+          </span>
         </div>
 
-        <div class="sf-overview-list">
-
-          <div class="sf-overview">
-            <div class="sf-overview__left">
-              <span class="sf-overview__icon">P</span>
-              <span class="sf-overview__name">Total Projects</span>
-            </div>
-            <strong class="sf-overview__value">
-              {{ total_projects }}
-            </strong>
-          </div>
-
-          <div class="sf-overview">
-            <div class="sf-overview__left">
-              <span class="sf-overview__icon">A</span>
-              <span class="sf-overview__name">Active Projects</span>
-            </div>
-            <strong class="sf-overview__value">
-              {{ active_projects }}
-            </strong>
-          </div>
-
-          <div class="sf-overview">
-            <div class="sf-overview__left">
-              <span class="sf-overview__icon">✓</span>
-              <span class="sf-overview__name">Completed Projects</span>
-            </div>
-            <strong class="sf-overview__value">
-              {{ completed_projects }}
-            </strong>
-          </div>
-
-          <div class="sf-overview">
-            <div class="sf-overview__left">
-              <span class="sf-overview__icon">✓</span>
-              <span class="sf-overview__name">Confirmed Projects</span>
-            </div>
-            <strong class="sf-overview__value">
-              {{ confirmed_projects }}
-            </strong>
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- QUICK ACTIONS -->
-      <div class="sf-dashboard__card sf-dashboard__card--wide">
-
-        <div class="sf-dashboard__card-head">
-          <h2>Quick Actions</h2>
-          <span>Jump back into SkillForge</span>
-        </div>
 
         <div class="sf-dashboard__actions">
 
-          <a href="{% url 'saved_jobs' %}" class="sf-dashboard__action">
-            Saved Jobs
-          </a>
-
-          <a href="{% url 'browse_jobs' %}" class="sf-dashboard__action">
+          <a href="{% url 'browse_jobs' %}"
+             class="sf-dashboard__action">
             Browse Jobs
           </a>
 
-          <a href="{% url 'post_job' %}" class="sf-dashboard__action">
-            Post a Job
+          <a href="{% url 'my_applications' %}"
+             class="sf-dashboard__action">
+            My Applications
           </a>
 
-          <a href="{% url 'notifications' %}" class="sf-dashboard__action">
-            Notifications
+          <a href="{% url 'saved_jobs' %}"
+             class="sf-dashboard__action">
+            Saved Jobs
           </a>
 
-          <a href="{% url 'earnings' %}" class="sf-dashboard__action">
+          <a href="{% url 'my_work' %}"
+             class="sf-dashboard__action">
+            My Work
+          </a>
+
+          <a href="{% url 'profile' %}"
+             class="sf-dashboard__action">
+            Freelancer Profile
+          </a>
+
+          <a href="{% url 'earnings' %}"
+             class="sf-dashboard__action">
             My Earnings
           </a>
 
@@ -243,10 +164,188 @@
 
       </div>
 
-    </div>
+    </section>
+
+    {% endif %}
+
+
+    <!-- HIRE TALENT -->
+    {% if user.can_hire %}
+
+    <section class="sf-dashboard__section">
+
+      <div class="sf-dashboard__section-head">
+
+        <div>
+          <span class="sf-dashboard__eyebrow">
+            CLIENT
+          </span>
+
+          <h2>
+            Hire Talent
+          </h2>
+
+          <p>
+            Post projects, review applicants, and manage your work.
+          </p>
+        </div>
+
+        <a href="{% url 'post_job' %}" class="btn btn--primary">
+          Post a Job
+        </a>
+
+      </div>
+
+
+      <!-- CLIENT STATS -->
+      <div class="sf-dashboard__stats">
+
+        <div class="sf-stat">
+          <span class="sf-stat__label">
+            Jobs Posted
+          </span>
+
+          <strong class="sf-stat__value">
+            {{ jobs_posted }}
+          </strong>
+
+          <span class="sf-stat__meta">
+            Total projects created
+          </span>
+        </div>
+
+
+        <div class="sf-stat">
+          <span class="sf-stat__label">
+            Open Jobs
+          </span>
+
+          <strong class="sf-stat__value">
+            {{ open_jobs }}
+          </strong>
+
+          <span class="sf-stat__meta">
+            Accepting applications
+          </span>
+        </div>
+
+
+        <div class="sf-stat">
+          <span class="sf-stat__label">
+            Applications
+          </span>
+
+          <strong class="sf-stat__value">
+            {{ applications_received }}
+          </strong>
+
+          <span class="sf-stat__meta">
+            Applicants received
+          </span>
+        </div>
+
+
+        <div class="sf-stat">
+          <span class="sf-stat__label">
+            Pending
+          </span>
+
+          <strong class="sf-stat__value">
+            {{ pending_applications }}
+          </strong>
+
+          <span class="sf-stat__meta">
+            Applications to review
+          </span>
+        </div>
+
+      </div>
+
+
+      <!-- CLIENT ACTIONS -->
+      <div class="sf-dashboard__card sf-dashboard__card--wide">
+
+        <div class="sf-dashboard__card-head">
+
+          <h2>
+            Client Workspace
+          </h2>
+
+          <span>
+            Manage your hiring activity
+          </span>
+
+        </div>
+
+
+        <div class="sf-dashboard__actions">
+
+          <a href="{% url 'post_job' %}"
+             class="sf-dashboard__action">
+            Post a Job
+          </a>
+
+          <a href="{% url 'my_jobs' %}"
+             class="sf-dashboard__action">
+            My Jobs
+          </a>
+
+          <a href="{% url 'freelancers' %}"
+             class="sf-dashboard__action">
+            Find Talent
+          </a>
+
+          <a href="{% url 'client_profile' %}"
+             class="sf-dashboard__action">
+            Client Profile
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- COMMON ACTIONS -->
+    <section class="sf-dashboard__section">
+
+      <div class="sf-dashboard__card sf-dashboard__card--wide">
+
+        <div class="sf-dashboard__card-head">
+
+          <h2>
+            Account
+          </h2>
+
+          <span>
+            Communication and account activity
+          </span>
+
+        </div>
+
+
+        <div class="sf-dashboard__actions">
+
+          <a href="{% url 'notifications' %}"
+             class="sf-dashboard__action">
+            Notifications
+          </a>
+
+          <a href="{% url 'messages' %}"
+             class="sf-dashboard__action">
+            Messages
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
 
   </div>
 </section>
 
 {% endblock %}
-EOF

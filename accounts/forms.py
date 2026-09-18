@@ -4,6 +4,12 @@ from .models import User, FreelancerProfile, ClientProfile, Review
 
 class RegistrationForm(forms.ModelForm):
 
+    ROLE_CHOICES = [
+        ("freelancer", "Find Work"),
+        ("client", "Hire Talent"),
+        ("both", "Both"),
+    ]
+
     password = forms.CharField(
         widget=forms.PasswordInput
     )
@@ -12,17 +18,31 @@ class RegistrationForm(forms.ModelForm):
         widget=forms.PasswordInput
     )
 
-    ROLE_CHOICES = [
-        ("freelancer", "I want to find work"),
-        ("client", "I want to hire people"),
-        ("both", "Both"),
-    ]
-
     role = forms.ChoiceField(
         choices=ROLE_CHOICES,
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
+        required=True
     )
 
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "email",
+        ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password != confirm_password:
+            raise forms.ValidationError(
+                "Passwords do not match."
+            )
+
+        return cleaned_data
     class Meta:
         model = User
         fields = [

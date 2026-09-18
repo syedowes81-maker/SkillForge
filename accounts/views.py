@@ -13,13 +13,10 @@ from jobs.models import Job,Application
 
 
 def register(request):
-
     if request.method == "POST":
-
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-
             user = form.save(commit=False)
 
             user.set_password(
@@ -49,7 +46,6 @@ def register(request):
             return redirect("login")
 
     else:
-
         form = RegistrationForm()
 
     return render(
