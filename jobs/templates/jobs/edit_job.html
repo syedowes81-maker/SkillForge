@@ -1,15 +1,113 @@
-<h1>Edit Job</h1>
+{% extends "accounts/base.html" %}
 
-<form method="POST">
-    {% csrf_token %}
+{% block title %}Edit Job — SkillForge{% endblock %}
 
-    {{ form.as_p }}
+{% block content %}
 
-    <button type="submit">Save Changes</button>
-</form>
+<section class="sf-edit-job">
+  <div class="container">
 
-<br>
+    <div class="sf-edit-job__header">
+      <div>
+        <span class="sf-edit-job__eyebrow">Manage Listing</span>
+        <h1 class="sf-edit-job__title">Edit your job</h1>
+        <p class="sf-edit-job__subtitle">
+          Update the details of your project listing.
+        </p>
+      </div>
 
-<a href="{% url 'my_jobs' %}">
-    Cancel
-</a>
+      <a href="{% url 'my_jobs' %}" class="btn btn--ghost">
+        ← Back to My Jobs
+      </a>
+    </div>
+
+
+    <div class="sf-edit-job__layout">
+
+      <div class="sf-edit-job__card">
+
+        <div class="sf-edit-job__card-head">
+          <div>
+            <h2>Job details</h2>
+            <p>Make any changes you need before saving.</p>
+          </div>
+        </div>
+
+
+        <form method="POST" class="sf-edit-job__form">
+
+          {% csrf_token %}
+
+          {% for field in form %}
+
+            <div class="sf-edit-job__field">
+
+              <label for="{{ field.id_for_label }}">
+                {{ field.label }}
+              </label>
+
+              {{ field }}
+
+              {% if field.help_text %}
+                <small class="sf-edit-job__help">
+                  {{ field.help_text }}
+                </small>
+              {% endif %}
+
+              {% if field.errors %}
+                <div class="sf-edit-job__error">
+                  {{ field.errors|striptags }}
+                </div>
+              {% endif %}
+
+            </div>
+
+          {% endfor %}
+
+          {% if form.non_field_errors %}
+            <div class="sf-edit-job__error">
+              {{ form.non_field_errors|striptags }}
+            </div>
+          {% endif %}
+
+
+          <div class="sf-edit-job__actions">
+
+            <a href="{% url 'my_jobs' %}" class="btn btn--ghost">
+              Cancel
+            </a>
+
+            <button type="submit" class="btn btn--primary">
+              Save Changes
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+
+      <aside class="sf-edit-job__side">
+
+        <div class="sf-edit-job__tip">
+          <span class="sf-edit-job__tip-icon">✦</span>
+
+          <div>
+            <h3>Keep your listing clear</h3>
+            <p>
+              Make sure your project requirements, budget and location
+              accurately describe the work you're looking for.
+            </p>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
