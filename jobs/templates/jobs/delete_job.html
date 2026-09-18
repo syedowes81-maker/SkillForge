@@ -1,18 +1,54 @@
-<h1>Delete Job</h1>
+{% extends "accounts/base.html" %}
 
-<p>
-    Are you sure you want to delete
-    <strong>{{ job.title }}</strong>?
-</p>
+{% block title %}Delete Job — SkillForge{% endblock %}
 
-<form method="POST">
-    {% csrf_token %}
+{% block content %}
 
-    <button type="submit">
-        Yes, Delete
-    </button>
+<section class="sf-delete-job">
+  <div class="container">
 
-    <a href="{% url 'my_jobs' %}">
-        Cancel
-    </a>
-</form>
+    <div class="sf-delete-job__card">
+
+      <div class="sf-delete-job__icon">
+        !
+      </div>
+
+      <span class="sf-delete-job__eyebrow">Danger Zone</span>
+
+      <h1>Delete this job?</h1>
+
+      <p class="sf-delete-job__message">
+        You're about to permanently delete
+        <strong>{{ job.title }}</strong>.
+        This action cannot be undone.
+      </p>
+
+      <div class="sf-delete-job__warning">
+        <span>⚠</span>
+        <p>
+          Any applications associated with this job may also become
+          unavailable.
+        </p>
+      </div>
+
+      <form method="POST" class="sf-delete-job__actions">
+
+        {% csrf_token %}
+
+        <a href="{% url 'my_jobs' %}" class="btn btn--ghost">
+          Cancel
+        </a>
+
+        <button type="submit" class="sf-delete-job__confirm">
+          Delete Job
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+

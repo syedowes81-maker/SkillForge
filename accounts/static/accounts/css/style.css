@@ -5816,3 +5816,146 @@ body{
 }
 
 
+
+/* ==========================================================================
+   SkillForge — Delete Job
+   ========================================================================== */
+
+.sf-delete-job{
+  min-height:calc(100vh - 72px);
+  display:flex;
+  align-items:center;
+  padding:50px 0 80px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(248,113,113,.06),transparent 32%),
+    var(--sf-bg);
+}
+
+.sf-delete-job__card{
+  width:min(100%,520px);
+  margin:0 auto;
+  padding:36px;
+  text-align:center;
+  background:var(--sf-surface);
+  border:1px solid var(--sf-border);
+  border-radius:18px;
+  box-sizing:border-box;
+}
+
+.sf-delete-job__icon{
+  width:52px;
+  height:52px;
+  margin:0 auto 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(248,113,113,.10);
+  border:1px solid rgba(248,113,113,.20);
+  color:#f87171;
+  font-size:22px;
+  font-weight:700;
+}
+
+.sf-delete-job__eyebrow{
+  display:block;
+  margin-bottom:9px;
+  color:#f87171;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.sf-delete-job__card h1{
+  margin:0;
+  color:var(--sf-text);
+  font-family:var(--sf-font-head);
+  font-size:30px;
+  letter-spacing:-.035em;
+}
+
+.sf-delete-job__message{
+  margin:12px auto 22px;
+  max-width:420px;
+  color:var(--sf-text-dim);
+  font-size:13px;
+  line-height:1.65;
+}
+
+.sf-delete-job__message strong{
+  color:var(--sf-text);
+}
+
+.sf-delete-job__warning{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:13px 15px;
+  margin-bottom:25px;
+  text-align:left;
+  border:1px solid rgba(248,113,113,.15);
+  border-radius:11px;
+  background:rgba(248,113,113,.05);
+}
+
+.sf-delete-job__warning span{
+  color:#f87171;
+  font-size:14px;
+}
+
+.sf-delete-job__warning p{
+  margin:0;
+  color:var(--sf-text-dim);
+  font-size:11.5px;
+  line-height:1.5;
+}
+
+.sf-delete-job__actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
+
+.sf-delete-job__confirm{
+  min-height:42px;
+  padding:0 18px;
+  border:1px solid rgba(248,113,113,.3);
+  border-radius:10px;
+  background:#7f1d1d;
+  color:#fff;
+  font-family:inherit;
+  font-size:12.5px;
+  font-weight:600;
+  cursor:pointer;
+  transition:
+    background .2s ease,
+    transform .15s ease;
+}
+
+.sf-delete-job__confirm:hover{
+  background:#991b1b;
+  transform:translateY(-1px);
+}
+
+@media (max-width:620px){
+
+  .sf-delete-job{
+    padding:35px 0 60px;
+  }
+
+  .sf-delete-job__card{
+    padding:27px 20px;
+  }
+
+  .sf-delete-job__actions{
+    flex-direction:column-reverse;
+  }
+
+  .sf-delete-job__actions .btn,
+  .sf-delete-job__confirm{
+    width:100%;
+  }
+
+}
+
