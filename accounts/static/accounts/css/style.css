@@ -6579,3 +6579,451 @@ body{
 }
 
 
+/* =========================================================
+   SKILLFORGE — FINAL LOGIN PAGE
+   ========================================================= */
+
+.sf-login-page {
+    min-height: calc(100vh - 72px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 70px 24px;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(91, 141, 239, 0.10),
+            transparent 42%
+        ),
+        var(--sf-bg);
+}
+
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
+
+.sf-login-card {
+    width: 100%;
+    max-width: 460px;
+
+    padding: 42px;
+
+    background: rgba(21, 24, 30, 0.94);
+
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 22px;
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(255,255,255,0.015);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.sf-login-header {
+    text-align: center;
+    margin-bottom: 34px;
+}
+
+
+.sf-login-eyebrow {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 6px 11px;
+    margin-bottom: 15px;
+
+    border: 1px solid rgba(91,141,239,0.25);
+    border-radius: 999px;
+
+    background: rgba(91,141,239,0.08);
+
+    color: var(--sf-accent);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+}
+
+
+.sf-login-header h1 {
+    margin: 0;
+
+    color: var(--sf-text);
+
+    font-size: 30px;
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    letter-spacing: -0.025em;
+}
+
+
+.sf-login-header p {
+    max-width: 390px;
+
+    margin: 12px auto 0;
+
+    color: var(--sf-text-dim);
+
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.sf-login-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+
+.sf-login-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+
+.sf-login-field label {
+    color: var(--sf-text);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* LABEL + FORGOT PASSWORD */
+
+.sf-login-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+
+.sf-login-forgot {
+    color: var(--sf-accent);
+
+    font-size: 11.5px;
+    font-weight: 500;
+
+    text-decoration: none;
+}
+
+
+.sf-login-forgot:hover {
+    text-decoration: underline;
+}
+
+
+/* INPUTS */
+
+.sf-login-field input {
+    width: 100%;
+    height: 47px;
+
+    box-sizing: border-box;
+
+    padding: 0 14px;
+
+    background: var(--sf-surface-inset);
+
+    border: 1px solid var(--sf-border);
+    border-radius: 10px;
+
+    color: var(--sf-text);
+
+    font-family: var(--sf-font-body);
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.sf-login-field input::placeholder {
+    color: rgba(255,255,255,0.28);
+}
+
+
+.sf-login-field input:focus {
+    border-color: var(--sf-accent);
+
+    background: rgba(255,255,255,0.025);
+
+    box-shadow:
+        0 0 0 3px rgba(91,141,239,0.10);
+}
+
+
+/* =========================================================
+   ERRORS
+   ========================================================= */
+
+.sf-login-error {
+    color: #f29b9b;
+
+    font-size: 11.5px;
+}
+
+
+.sf-login-error-box {
+    padding: 11px 13px;
+
+    border: 1px solid rgba(239,91,91,0.28);
+    border-radius: 10px;
+
+    background: rgba(239,91,91,0.07);
+
+    color: #f29b9b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.sf-login-submit {
+    width: 100%;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin-top: 2px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--sf-accent);
+    color: #fff;
+
+    font-family: var(--sf-font-body);
+
+    font-size: 14px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        filter .2s ease,
+        transform .15s ease,
+        box-shadow .2s ease;
+}
+
+
+.sf-login-submit:hover {
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 10px 28px rgba(91,141,239,0.25);
+}
+
+
+.sf-login-submit:active {
+    transform: scale(0.99);
+}
+
+
+.sf-login-submit span {
+    font-size: 18px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   REGISTER LINK
+   ========================================================= */
+
+.sf-login-register {
+    margin: 22px 0 0;
+
+    text-align: center;
+
+    color: var(--sf-text-dim);
+
+    font-size: 13px;
+}
+
+
+.sf-login-register a {
+    margin-left: 4px;
+
+    color: var(--sf-accent);
+
+    font-weight: 600;
+
+    text-decoration: none;
+}
+
+
+.sf-login-register a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.sf-login-divider {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin: 30px 0 20px;
+}
+
+
+.sf-login-divider::before,
+.sf-login-divider::after {
+    content: "";
+
+    flex: 1;
+
+    height: 1px;
+
+    background: rgba(255,255,255,0.07);
+}
+
+
+.sf-login-divider span {
+    color: rgba(255,255,255,0.30);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.16em;
+}
+
+
+/* =========================================================
+   ROLE INFORMATION
+   ========================================================= */
+
+.sf-login-role-hint {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+}
+
+
+.sf-login-role-item {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px;
+
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 11px;
+
+    background: rgba(255,255,255,0.018);
+}
+
+
+.sf-login-role-icon {
+    width: 30px;
+    height: 30px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: rgba(91,141,239,0.10);
+
+    color: var(--sf-accent);
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+.sf-login-role-item div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.sf-login-role-item strong {
+    color: var(--sf-text);
+
+    font-size: 11.5px;
+    font-weight: 600;
+}
+
+
+.sf-login-role-item small {
+    color: var(--sf-text-dim);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .sf-login-page {
+        min-height: calc(100vh - 64px);
+
+        padding: 40px 16px;
+    }
+
+
+    .sf-login-card {
+        padding: 30px 21px;
+
+        border-radius: 17px;
+    }
+
+
+    .sf-login-header h1 {
+        font-size: 26px;
+    }
+
+
+    .sf-login-role-hint {
+        grid-template-columns: 1fr;
+    }
+
+}
