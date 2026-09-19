@@ -4,102 +4,188 @@
 
 {% block content %}
 
-<section class="sf-auth">
+<section class="sf-auth"><div class="sf-auth__card">
 
-    <div class="sf-auth__card">
+    <span class="sf-eyebrow">
+        WELCOME BACK
+    </span>
 
-        <span class="sf-eyebrow">WELCOME BACK</span>
+    <h1>
+        Log in to SkillForge
+    </h1>
 
-        <h1>Log in to SkillForge</h1>
-
-        <p class="sf-auth__subtitle">
-            Welcome back. Continue finding work or hiring talented professionals.
-        </p>
-
-
-        <form method="POST">
-
-            {% csrf_token %}
+    <p class="sf-auth__subtitle">
+        Welcome back. Continue finding work or hiring talented professionals.
+    </p>
 
 
-            <!-- USERNAME -->
+    <form method="POST">
 
-            <div class="sf-field">
-
-                <label for="{{ form.username.id_for_label }}">
-                    Username
-                </label>
-
-                {{ form.username }}
-
-                {% if form.username.errors %}
-                    <small class="sf-error">
-                        {{ form.username.errors|striptags }}
-                    </small>
-                {% endif %}
-
-            </div>
+        {% csrf_token %}
 
 
-            <!-- PASSWORD -->
+        <!-- USERNAME -->
 
-            <div class="sf-field">
+        <div class="sf-field">
 
-                <label for="{{ form.password.id_for_label }}">
-                    Password
-                </label>
+            <label for="{{ form.username.id_for_label }}">
+                Username
+            </label>
 
-                {{ form.password }}
+            {{ form.username }}
 
-                {% if form.password.errors %}
-                    <small class="sf-error">
-                        {{ form.password.errors|striptags }}
-                    </small>
-                {% endif %}
+            {% if form.username.errors %}
 
-            </div>
-
-
-            {% if form.non_field_errors %}
-
-                <div class="sf-error sf-error--box">
-                    Invalid username or password.
-                </div>
+                <small class="sf-error">
+                    {{ form.username.errors|striptags }}
+                </small>
 
             {% endif %}
 
-
-            <button
-                type="submit"
-                class="btn btn--primary btn--block sf-auth__submit"
-            >
-                Log In
-            </button>
-
-        </form>
+        </div>
 
 
-        <p class="sf-auth__forgot">
+        <!-- PASSWORD -->
 
-            <a href="{% url 'password_reset' %}">
-                Forgot your password?
-            </a>
+        <div class="sf-field">
 
-        </p>
+            <label for="{{ form.password.id_for_label }}">
+                Password
+            </label>
+
+            {{ form.password }}
+
+            {% if form.password.errors %}
+
+                <small class="sf-error">
+                    {{ form.password.errors|striptags }}
+                </small>
+
+            {% endif %}
+
+        </div>
 
 
-        <p class="sf-auth__foot">
+        <!-- ROLE -->
 
-            Don't have an account?
+        <div class="sf-role">
 
-            <a href="{% url 'register' %}">
-                Create an account
-            </a>
+            <div class="sf-role__heading">
 
-        </p>
+                <label>
+                    Log in as
+                </label>
 
-    </div>
+                <span>
+                    Choose how you want to use SkillForge
+                </span>
 
-</section>
+            </div>
 
-{% endblock %}
+
+            <div class="sf-role__options">
+
+                {% for radio in form.role %}
+
+                    <label class="sf-role__option">
+
+                        {{ radio.tag }}
+
+                        <span class="sf-role__content">
+
+                            <strong>
+
+                                {% if forloop.counter == 1 %}
+                                    Freelancer
+                                {% else %}
+                                    Client
+                                {% endif %}
+
+                            </strong>
+
+
+                            <small>
+
+                                {% if forloop.counter == 1 %}
+
+                                    Find projects and work with clients.
+
+                                {% else %}
+
+                                    Post projects and hire professionals.
+
+                                {% endif %}
+
+                            </small>
+
+                        </span>
+
+                    </label>
+
+                {% endfor %}
+
+            </div>
+
+
+            {% if form.role.errors %}
+
+                <small class="sf-error">
+                    {{ form.role.errors|striptags }}
+                </small>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- GENERAL LOGIN ERROR -->
+
+        {% if form.non_field_errors %}
+
+            <div class="sf-error sf-error--box">
+
+                {{ form.non_field_errors|striptags }}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- LOGIN BUTTON -->
+
+        <button
+            type="submit"
+            class="btn btn--primary btn--block sf-auth__submit"
+        >
+            Log In
+        </button>
+
+    </form>
+
+
+    <!-- FORGOT PASSWORD -->
+
+    <p class="sf-auth__forgot">
+
+        <a href="{% url 'password_reset' %}">
+            Forgot your password?
+        </a>
+
+    </p>
+
+
+    <!-- REGISTER -->
+
+    <p class="sf-auth__foot">
+
+        Don't have an account?
+
+        <a href="{% url 'register' %}">
+            Create an account
+        </a>
+
+    </p>
+
+</div>
+
+</section>{% endblock %}

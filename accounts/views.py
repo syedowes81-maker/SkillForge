@@ -74,12 +74,16 @@ def register(request):
     )
 
 def login_view(request):
+
     if request.method == "POST":
+
         form = LoginForm(request.POST)
 
         if form.is_valid():
+
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
+            role = form.cleaned_data["role"]
 
             user = authenticate(
                 request,
@@ -88,14 +92,52 @@ def login_view(request):
             )
 
             if user is not None:
-                login(request, user)
-                return redirect("/dashboard/")
 
-        return render(request, "accounts/login.html", {"form": form})
+                # Check whether the user is allowed
+                # to enter the selected workspace.
 
-    form = LoginForm()
-    return render(request, "accounts/login.html", {"form": form})
+                if role == "freelancer" and not user.can_freelance:
 
+                    form.add_error(
+                        None,
+                        "This account cannot be used as a freelancer."
+                    )
+
+                elif role == "client" and not user.can_hire:
+
+                    form.add_error(
+                        None,
+                        "This account cannot be used as a client."
+                    )
+
+                else:
+
+                    login(request, user)
+
+                    # Remember the active workspace
+                    # for this login session.
+                    request.session["active_role"] = role
+
+                    return redirect("dashboard")
+
+            else:
+
+                form.add_error(
+                    None,
+                    "Invalid username or password."
+                )
+
+    else:
+
+        form = LoginForm()
+
+    return render(
+        request,
+        "accounts/login.html",
+        {
+            "form": form
+        }
+    )
 @login_required
 def dashboard(request):
 

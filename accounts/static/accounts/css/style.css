@@ -300,138 +300,413 @@
 .sf-link:hover{ text-decoration:underline; }
 
 /* =========================================================
-   Role selection — Register
+   SKILLFORGE — FINAL REGISTER PAGE
    ========================================================= */
 
-.sf-role{
-  margin-top:6px;
+.sf-register-page {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 70px 24px;
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(91, 141, 239, 0.10),
+            transparent 42%
+        ),
+        var(--sf-bg);
 }
 
-.sf-role__heading{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  margin-bottom:10px;
+
+.sf-register-card {
+    width: 100%;
+    max-width: 720px;
+    padding: 42px;
+    background: rgba(21, 24, 30, 0.92);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 22px;
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(255,255,255,0.015);
 }
 
-.sf-role__heading label{
-  font-size:14px;
-  font-weight:600;
-  color:var(--sf-text);
+
+/* HEADER */
+
+.sf-register-header {
+    text-align: center;
+    margin-bottom: 34px;
 }
 
-.sf-role__heading span{
-  font-size:12px;
-  color:var(--sf-text-dim);
+
+.sf-register-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 11px;
+    margin-bottom: 15px;
+
+    border: 1px solid rgba(91,141,239,0.25);
+    border-radius: 999px;
+
+    background: rgba(91,141,239,0.08);
+
+    color: var(--sf-accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
 }
 
-.sf-role__options{
-  display:flex;
-  gap:10px;
+
+.sf-register-header h1 {
+    margin: 0;
+    color: var(--sf-text);
+    font-size: 30px;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.025em;
 }
 
-.sf-role__option{
-  flex:1;
-  position:relative;
-  cursor:pointer;
 
-  display:flex;
-  flex-direction:column;
+.sf-register-header p {
+    max-width: 520px;
+    margin: 12px auto 0;
 
-  background:var(--sf-surface-inset);
-  border:1px solid var(--sf-border);
-  border-radius:var(--sf-radius-md);
-
-  padding:14px;
-
-  transition:
-    border-color .2s ease,
-    background .2s ease,
-    box-shadow .2s ease,
-    transform .15s ease;
+    color: var(--sf-text-dim);
+    font-size: 14px;
+    line-height: 1.65;
 }
 
-/* Hide the real radio but keep it functional */
-.sf-role__option input{
-  position:absolute;
-  opacity:0;
-  pointer-events:none;
+
+/* FORM */
+
+.sf-register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
 }
 
-/* Text */
-.sf-role__content{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
+
+.sf-register-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
 }
 
-.sf-role__content strong{
-  font-size:13.5px;
-  font-weight:600;
-  color:var(--sf-text);
+
+.sf-register-field label,
+.sf-register-role-header label {
+    color: var(--sf-text);
+    font-size: 13px;
+    font-weight: 600;
 }
 
-.sf-role__content small{
-  font-size:12px;
-  line-height:1.45;
-  color:var(--sf-text-dim);
+
+.sf-register-field input {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+
+    box-sizing: border-box;
+
+    background: var(--sf-surface-inset);
+    border: 1px solid var(--sf-border);
+    border-radius: 10px;
+
+    color: var(--sf-text);
+    font-family: var(--sf-font-body);
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
 }
 
-/* Selected card */
-.sf-role__option:has(input:checked){
-  border-color:var(--sf-accent);
-  background:rgba(91,141,239,0.08);
-  box-shadow:0 0 0 3px rgba(91,141,239,0.12);
+
+.sf-register-field input::placeholder {
+    color: rgba(255,255,255,0.28);
 }
 
-/* Hover */
-.sf-role__option:hover{
-  border-color:var(--sf-accent);
-  transform:translateY(-1px);
+
+.sf-register-field input:focus {
+    border-color: var(--sf-accent);
+    background: rgba(255,255,255,0.025);
+
+    box-shadow:
+        0 0 0 3px rgba(91,141,239,0.10);
 }
 
-/* Keyboard accessibility */
-.sf-role__option:has(input:focus-visible){
-  outline:2px solid var(--sf-accent);
-  outline-offset:2px;
-}
-.sf-submit{
-  margin-top:6px;
-  width:100%;
-  background:var(--sf-accent);
-  color:#fff;
-  border:none;
-  font-family:var(--sf-font-body); font-size:14.5px; font-weight:600;
-  padding:14px; border-radius:var(--sf-radius-md);
-  cursor:pointer;
-  box-shadow:0 0 0 0 rgba(91,141,239,0.5);
-  transition:filter .2s ease, transform .15s ease, box-shadow .3s ease;
-}
-.sf-submit:hover{ filter:brightness(1.08); box-shadow:0 8px 24px -6px rgba(91,141,239,0.55); }
-.sf-submit:active{ transform:scale(0.99); }
 
-.sf-switch{ text-align:center; font-size:13.5px; color:var(--sf-text-dim); margin:22px 0 0; }
-.sf-switch__link{ color:var(--sf-accent); font-weight:500; text-decoration:none; }
-.sf-switch__link:hover{ text-decoration:underline; }
+/* PASSWORDS */
 
-.sf-error{
-  background:rgba(239,91,91,0.08);
-  border:1px solid rgba(239,91,91,0.3);
-  color:#F29B9B;
-  font-size:13px;
-  padding:10px 14px;
-  border-radius:var(--sf-radius-md);
-  margin-bottom:18px;
+.sf-register-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
 }
 
-@media (max-width: 880px){
-  .sf-auth__stage{ grid-template-columns:1fr; max-width:460px; }
-  .sf-visual{ display:none; }
-  .sf-panel{ padding:40px 28px 32px; }
+
+/* ROLE SECTION */
+
+.sf-register-role {
+    margin-top: 5px;
 }
 
-@media (prefers-reduced-motion: reduce){
-  .sf-float, .sf-tabs__indicator, .sf-panel-inner{ animation:none !important; transition:none !important; }
+
+.sf-register-role-header {
+    margin-bottom: 11px;
+}
+
+
+.sf-register-role-header div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+
+.sf-register-role-header span {
+    color: var(--sf-text-dim);
+    font-size: 12px;
+}
+
+
+/* ROLE CARDS */
+
+.sf-register-role-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+
+.sf-register-role-option {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+
+.sf-register-role-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+.sf-register-role-card {
+    min-height: 128px;
+    padding: 17px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+
+    box-sizing: border-box;
+
+    background: var(--sf-surface-inset);
+    border: 1px solid var(--sf-border);
+    border-radius: 13px;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease,
+        transform .15s ease;
+}
+
+
+.sf-register-role-option:hover .sf-register-role-card {
+    border-color: rgba(91,141,239,0.40);
+    transform: translateY(-1px);
+}
+
+
+.sf-register-role-option input:checked
++ .sf-register-role-card {
+    border-color: var(--sf-accent);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(91,141,239,0.13),
+            rgba(91,141,239,0.045)
+        );
+
+    box-shadow:
+        0 0 0 3px rgba(91,141,239,0.09);
+}
+
+
+.sf-register-role-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: rgba(91,141,239,0.10);
+    color: var(--sf-accent);
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+
+.sf-register-role-text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+
+.sf-register-role-text strong {
+    color: var(--sf-text);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+
+.sf-register-role-text small {
+    color: var(--sf-text-dim);
+    font-size: 11.5px;
+    line-height: 1.5;
+}
+
+
+/* SUBMIT */
+
+.sf-register-submit {
+    width: 100%;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    margin-top: 4px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--sf-accent);
+    color: #fff;
+
+    font-family: var(--sf-font-body);
+    font-size: 14px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        filter .2s ease,
+        transform .15s ease,
+        box-shadow .2s ease;
+}
+
+
+.sf-register-submit:hover {
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 10px 28px rgba(91,141,239,0.25);
+}
+
+
+.sf-register-submit:active {
+    transform: scale(0.99);
+}
+
+
+.sf-register-submit span {
+    font-size: 18px;
+    line-height: 1;
+}
+
+
+/* LOGIN LINK */
+
+.sf-register-login {
+    margin: 2px 0 0;
+
+    text-align: center;
+
+    color: var(--sf-text-dim);
+    font-size: 13px;
+}
+
+
+.sf-register-login a {
+    margin-left: 4px;
+
+    color: var(--sf-accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+.sf-register-login a:hover {
+    text-decoration: underline;
+}
+
+
+/* ERRORS */
+
+.sf-register-error {
+    color: #f29b9b;
+    font-size: 11.5px;
+}
+
+
+.sf-register-error-box {
+    padding: 11px 13px;
+
+    border: 1px solid rgba(239,91,91,0.28);
+    border-radius: 10px;
+
+    background: rgba(239,91,91,0.07);
+
+    color: #f29b9b;
+    font-size: 12px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .sf-register-page {
+        padding: 40px 16px;
+    }
+
+    .sf-register-card {
+        padding: 28px 20px;
+        border-radius: 17px;
+    }
+
+    .sf-register-header h1 {
+        font-size: 25px;
+    }
+
+    .sf-register-row {
+        grid-template-columns: 1fr;
+    }
+
+    .sf-register-role-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sf-register-role-card {
+        min-height: auto;
+    }
+
 }
 
 
