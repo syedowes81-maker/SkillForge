@@ -1,0 +1,295 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Delete Job — SkillForge{% endblock %}
+
+{% block content %}
+
+<style>
+    .delete-page {
+        min-height: calc(100vh - 72px);
+        padding: 55px 24px 70px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .delete-container {
+        width: 100%;
+        max-width: 620px;
+    }
+
+    .delete-card {
+        padding: 34px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 18px;
+
+        background: rgba(20,24,32,.94);
+
+        box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    }
+
+    .delete-icon {
+        width: 54px;
+        height: 54px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 22px;
+
+        border-radius: 14px;
+
+        background: rgba(239,68,68,.10);
+        border: 1px solid rgba(239,68,68,.20);
+
+        color: #f87171;
+        font-size: 23px;
+        font-weight: 700;
+    }
+
+    .delete-eyebrow {
+        display: block;
+        margin-bottom: 8px;
+
+        color: #f87171;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .delete-title {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 28px;
+        line-height: 1.2;
+    }
+
+    .delete-description {
+        margin: 12px 0 0;
+
+        color: #8b95a7;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .delete-job {
+        margin: 25px 0;
+
+        padding: 18px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 12px;
+
+        background: #11151c;
+    }
+
+    .delete-job-label {
+        display: block;
+        margin-bottom: 7px;
+
+        color: #697487;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: .6px;
+        text-transform: uppercase;
+    }
+
+    .delete-job-title {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .delete-warning {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+
+        margin-bottom: 28px;
+        padding: 15px;
+
+        border: 1px solid rgba(245,158,11,.15);
+        border-radius: 11px;
+
+        background: rgba(245,158,11,.06);
+    }
+
+    .delete-warning-icon {
+        color: #fbbf24;
+        font-size: 15px;
+        line-height: 1.4;
+    }
+
+    .delete-warning p {
+        margin: 0;
+
+        color: #aeb6c5;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .delete-cancel,
+    .delete-confirm {
+        min-height: 44px;
+        padding: 0 19px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 10px;
+
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .delete-cancel {
+        flex: 1;
+
+        border: 1px solid rgba(255,255,255,.08);
+
+        background: #11151c;
+        color: #aeb6c5;
+    }
+
+    .delete-cancel:hover {
+        border-color: rgba(255,255,255,.16);
+        color: #ffffff;
+    }
+
+    .delete-confirm {
+        flex: 1;
+
+        border: 1px solid rgba(239,68,68,.25);
+
+        background: rgba(239,68,68,.12);
+        color: #f87171;
+    }
+
+    .delete-confirm:hover {
+        background: #dc2626;
+        border-color: #dc2626;
+        color: #ffffff;
+    }
+
+    @media (max-width: 600px) {
+
+        .delete-page {
+            padding: 35px 16px 50px;
+        }
+
+        .delete-card {
+            padding: 24px;
+        }
+
+        .delete-title {
+            font-size: 24px;
+        }
+
+        .delete-actions {
+            flex-direction: column;
+        }
+
+        .delete-cancel,
+        .delete-confirm {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<section class="delete-page">
+
+    <div class="delete-container">
+
+        <div class="delete-card">
+
+            <div class="delete-icon">
+                !
+            </div>
+
+            <span class="delete-eyebrow">
+                Danger Zone
+            </span>
+
+            <h1 class="delete-title">
+                Delete this job?
+            </h1>
+
+            <p class="delete-description">
+                You're about to permanently remove this job posting.
+                This action cannot be undone.
+            </p>
+
+
+            <div class="delete-job">
+
+                <span class="delete-job-label">
+                    Job posting
+                </span>
+
+                <h2 class="delete-job-title">
+                    {{ job.title }}
+                </h2>
+
+            </div>
+
+
+            <div class="delete-warning">
+
+                <span class="delete-warning-icon">
+                    ⚠
+                </span>
+
+                <p>
+                    Applications and other information associated with
+                    this job may become unavailable after deletion.
+                </p>
+
+            </div>
+
+
+            <form method="POST" class="delete-actions">
+
+                {% csrf_token %}
+
+                <a
+                    href="{% url 'my_jobs' %}"
+                    class="delete-cancel"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="delete-confirm"
+                >
+                    Delete Job
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+

@@ -1,15 +1,339 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}Leave a Review — SkillForge{% endblock %}
+
 {% block content %}
 
-<h2>Review {{ freelancer.user.username }}</h2>
+<style>
+    .review-page {
+        min-height: calc(100vh - 72px);
+        padding: 55px 24px 70px;
+    }
 
-<form method="POST">
-    {% csrf_token %}
+    .review-container {
+        max-width: 720px;
+        margin: 0 auto;
+    }
 
-    {{ form.as_p }}
+    .review-card {
+        padding: 32px;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 18px;
+        background: rgba(20,24,32,.94);
+    }
 
-    <button type="submit">Submit Review</button>
-</form>
+    .review-header {
+        margin-bottom: 28px;
+    }
+
+    .review-eyebrow {
+        display: block;
+        margin-bottom: 8px;
+
+        color: #5b8def;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .review-title {
+        margin: 0;
+        color: #ffffff;
+        font-size: 28px;
+        line-height: 1.2;
+    }
+
+    .review-subtitle {
+        margin: 9px 0 0;
+        color: #7f899b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .review-freelancer {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        margin-bottom: 28px;
+        padding: 16px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 12px;
+        background: #11151c;
+    }
+
+    .review-avatar {
+        width: 48px;
+        height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        overflow: hidden;
+
+        border-radius: 12px;
+        background: #1b2330;
+
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .review-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .review-freelancer-name {
+        margin: 0;
+        color: #ffffff;
+        font-size: 15px;
+    }
+
+    .review-freelancer-label {
+        margin: 4px 0 0;
+        color: #697487;
+        font-size: 12px;
+    }
+
+    .review-form p {
+        margin: 0 0 20px;
+    }
+
+    .review-form label {
+        display: block;
+        margin-bottom: 8px;
+
+        color: #dce1ea;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .review-form input,
+    .review-form select,
+    .review-form textarea {
+        width: 100%;
+        box-sizing: border-box;
+
+        padding: 12px 13px;
+
+        border: 1px solid rgba(255,255,255,.09);
+        border-radius: 10px;
+
+        background: #11151c;
+        color: #ffffff;
+
+        font-family: inherit;
+        font-size: 13px;
+
+        outline: none;
+    }
+
+    .review-form textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .review-form input:focus,
+    .review-form select:focus,
+    .review-form textarea:focus {
+        border-color: rgba(91,141,239,.65);
+    }
+
+    .review-form select option {
+        background: #11151c;
+        color: #ffffff;
+    }
+
+    .review-form ul.errorlist {
+        margin: 7px 0 0;
+        padding: 0;
+
+        list-style: none;
+
+        color: #f87171;
+        font-size: 12px;
+    }
+
+    .review-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    .review-submit,
+    .review-cancel {
+        min-height: 44px;
+        padding: 0 18px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+        font-weight: 600;
+
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .review-submit {
+        border: 0;
+        background: #5b8def;
+        color: #ffffff;
+    }
+
+    .review-submit:hover {
+        background: #6b9af2;
+    }
+
+    .review-cancel {
+        border: 1px solid rgba(255,255,255,.08);
+        background: #11151c;
+        color: #aeb6c5;
+    }
+
+    .review-cancel:hover {
+        border-color: rgba(255,255,255,.16);
+        color: #ffffff;
+    }
+
+    .review-note {
+        margin-top: 24px;
+        padding-top: 18px;
+
+        border-top: 1px solid rgba(255,255,255,.06);
+
+        color: #697487;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+        .review-page {
+            padding: 35px 16px 50px;
+        }
+
+        .review-card {
+            padding: 22px;
+        }
+
+        .review-title {
+            font-size: 24px;
+        }
+
+        .review-actions {
+            flex-direction: column;
+        }
+
+        .review-submit,
+        .review-cancel {
+            width: 100%;
+        }
+    }
+</style>
+
+<section class="review-page">
+
+    <div class="review-container">
+
+        <div class="review-card">
+
+            <div class="review-header">
+
+                <span class="review-eyebrow">
+                    Completed Work
+                </span>
+
+                <h1 class="review-title">
+                    Leave a Review
+                </h1>
+
+                <p class="review-subtitle">
+                    Share your experience and help other clients
+                    understand what it is like to work with this freelancer.
+                </p>
+
+            </div>
+
+
+            <div class="review-freelancer">
+
+                <div class="review-avatar">
+
+                    {% if freelancer.profile_picture %}
+
+                        <img
+                            src="{{ freelancer.profile_picture.url }}"
+                            alt="{{ freelancer.user.username }}"
+                        >
+
+                    {% else %}
+
+                        {{ freelancer.user.username|first|upper }}
+
+                    {% endif %}
+
+                </div>
+
+                <div>
+
+                    <h2 class="review-freelancer-name">
+                        {{ freelancer.user.username }}
+                    </h2>
+
+                    <p class="review-freelancer-label">
+                        Freelancer on SkillForge
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form method="POST" class="review-form">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <div class="review-actions">
+
+                    <a
+                        href="{% url 'freelancer_detail' freelancer.id %}"
+                        class="review-cancel"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="review-submit"
+                    >
+                        Submit Review
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <p class="review-note">
+                Reviews can only be submitted after completed work.
+                Please keep your feedback honest and respectful.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
 
 {% endblock %}
+
