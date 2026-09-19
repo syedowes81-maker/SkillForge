@@ -1,161 +1,869 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}{{ freelancer.user.username }} — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>{{ freelancer.user.username }}</h1>
+<style>
+    .fp-page {
+        min-height: calc(100vh - 72px);
+        padding: 45px 24px 70px;
+    }
 
-{% if average_rating %}
-    <p>
-        <strong>⭐ Average Rating:</strong>
-        {{ average_rating|floatformat:1 }}/5
-        ({{ review_count }} reviews)
-    </p>
+    .fp-container {
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
 
-    <h3>Rating Breakdown</h3>
+    .fp-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 28px;
 
-    <p>
-        ⭐⭐⭐⭐⭐
-        {{ rating_distribution.5 }}
-    </p>
+        color: #7f899b;
+        font-size: 13px;
+        text-decoration: none;
 
-    <p>
-        ⭐⭐⭐⭐
-        {{ rating_distribution.4 }}
-    </p>
+        transition: color .2s ease;
+    }
 
-    <p>
-        ⭐⭐⭐
-        {{ rating_distribution.3 }}
-    </p>
+    .fp-back:hover {
+        color: #ffffff;
+    }
 
-    <p>
-        ⭐⭐
-        {{ rating_distribution.2 }}
-    </p>
+    /* PROFILE HEADER */
 
-    <p>
-        ⭐
-        {{ rating_distribution.1 }}
-    </p>
+    .fp-hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 30px;
 
-{% else %}
+        padding: 30px;
 
-    <p>
-        <strong>⭐ Average Rating:</strong>
-        No ratings yet
-    </p>
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 18px;
 
-{% endif %}
+        background: rgba(20,24,32,.94);
+        box-shadow: 0 15px 45px rgba(0,0,0,.15);
+    }
 
-<hr>
+    .fp-identity {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
 
-<h2>About the Freelancer</h2>
+    .fp-avatar {
+        width: 76px;
+        height: 76px;
 
-<p>
-    <strong>Bio:</strong>
-    {{ freelancer.bio }}
-</p>
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-<p>
-    <strong>Skills:</strong>
-    {{ freelancer.skills }}
-</p>
+        border-radius: 20px;
 
-<p>
-    <strong>Experience:</strong>
-    {{ freelancer.experience }} years
-</p>
+        background: linear-gradient(
+            135deg,
+            #5b8def,
+            #7c6bea
+        );
 
-<p>
-    <strong>Hourly Rate:</strong>
-    ₹{{ freelancer.hourly_rate }}/hr
-</p>
+        color: white;
+        font-size: 30px;
+        font-weight: 700;
 
-<p>
-    <strong>Location:</strong>
-    {{ freelancer.location }}
-</p>
+        box-shadow: 0 10px 30px rgba(91,141,239,.2);
+    }
 
-{% if freelancer.portfolio %}
-    <p>
-        <strong>Portfolio:</strong>
-        <a href="{{ freelancer.portfolio }}" target="_blank">
-            View Portfolio
+    .fp-eyebrow {
+        display: block;
+        margin-bottom: 7px;
+
+        color: #5b8def;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .fp-name {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 30px;
+        letter-spacing: -.5px;
+    }
+
+    .fp-location {
+        margin-top: 7px;
+
+        color: #7f899b;
+        font-size: 13px;
+    }
+
+    /* RATING */
+
+    .fp-rating {
+        min-width: 190px;
+        padding: 18px 22px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 13px;
+
+        background: #11151c;
+
+        text-align: center;
+    }
+
+    .fp-rating__value {
+        display: block;
+
+        color: #ffffff;
+        font-size: 27px;
+        font-weight: 700;
+    }
+
+    .fp-rating__stars {
+        margin-top: 4px;
+        color: #e6b65c;
+        letter-spacing: 2px;
+    }
+
+    .fp-rating__count {
+        display: block;
+        margin-top: 5px;
+
+        color: #697487;
+        font-size: 11px;
+    }
+
+    /* MAIN GRID */
+
+    .fp-grid {
+        display: grid;
+        grid-template-columns: 1.4fr .6fr;
+        gap: 20px;
+
+        margin-top: 20px;
+    }
+
+    .fp-card {
+        padding: 25px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 16px;
+
+        background: rgba(20,24,32,.94);
+    }
+
+    .fp-card--wide {
+        grid-column: 1 / -1;
+    }
+
+    .fp-card__title {
+        margin: 0 0 18px;
+
+        color: #ffffff;
+        font-size: 17px;
+    }
+
+    .fp-card__subtitle {
+        margin: -8px 0 20px;
+
+        color: #697487;
+        font-size: 12px;
+    }
+
+    .fp-bio {
+        color: #aeb6c5;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    /* SKILLS */
+
+    .fp-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .fp-skill {
+        padding: 7px 11px;
+
+        border: 1px solid rgba(91,141,239,.18);
+        border-radius: 8px;
+
+        background: rgba(91,141,239,.07);
+
+        color: #9db9f5;
+        font-size: 12px;
+    }
+
+    /* DETAILS */
+
+    .fp-details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .fp-detail {
+        padding: 15px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 11px;
+
+        background: #11151c;
+    }
+
+    .fp-detail span {
+        display: block;
+
+        color: #697487;
+        font-size: 11px;
+    }
+
+    .fp-detail strong {
+        display: block;
+        margin-top: 6px;
+
+        color: #ffffff;
+        font-size: 14px;
+    }
+
+    /* ACTIONS */
+
+    .fp-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .fp-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 45px;
+        padding: 0 16px;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+
+        transition:
+            transform .15s ease,
+            background .2s ease,
+            border-color .2s ease;
+    }
+
+    .fp-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .fp-btn--primary {
+        background: #5b8def;
+        color: #ffffff;
+    }
+
+    .fp-btn--primary:hover {
+        background: #6b9af2;
+    }
+
+    .fp-btn--secondary {
+        border: 1px solid rgba(255,255,255,.08);
+        background: #11151c;
+        color: #dce1ea;
+    }
+
+    .fp-btn--secondary:hover {
+        border-color: rgba(91,141,239,.45);
+    }
+
+    .fp-btn--review {
+        border: 1px solid rgba(230,182,92,.2);
+        background: rgba(230,182,92,.06);
+        color: #e6c878;
+    }
+
+    /* PORTFOLIO */
+
+    .fp-resource {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 15px 16px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 11px;
+
+        background: #11151c;
+    }
+
+    .fp-resource span {
+        color: #aeb6c5;
+        font-size: 13px;
+    }
+
+    .fp-resource a {
+        color: #78a3f5;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .fp-resource a:hover {
+        color: #ffffff;
+    }
+
+    /* RATING BREAKDOWN */
+
+    .fp-breakdown {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .fp-rating-row {
+        display: grid;
+        grid-template-columns: 45px 1fr 30px;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .fp-rating-row__label {
+        color: #9da6b6;
+        font-size: 12px;
+    }
+
+    .fp-rating-bar {
+        height: 6px;
+
+        overflow: hidden;
+
+        border-radius: 10px;
+        background: #0d1117;
+    }
+
+    .fp-rating-bar span {
+        display: block;
+        height: 100%;
+
+        border-radius: inherit;
+        background: #e6b65c;
+    }
+
+    .fp-rating-row__count {
+        color: #697487;
+        font-size: 11px;
+        text-align: right;
+    }
+
+    /* REVIEWS */
+
+    .fp-reviews {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .fp-review {
+        padding: 18px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 12px;
+
+        background: #11151c;
+    }
+
+    .fp-review__top {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .fp-review__author {
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .fp-review__date {
+        color: #626d7f;
+        font-size: 11px;
+    }
+
+    .fp-review__rating {
+        margin-top: 6px;
+        color: #e6b65c;
+        font-size: 12px;
+    }
+
+    .fp-review__comment {
+        margin: 12px 0 0;
+
+        color: #9da6b6;
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    .fp-empty {
+        padding: 30px;
+
+        border: 1px dashed rgba(255,255,255,.08);
+        border-radius: 12px;
+
+        color: #697487;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    @media (max-width: 850px) {
+
+        .fp-hero {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .fp-rating {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .fp-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .fp-card--wide {
+            grid-column: auto;
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        .fp-page {
+            padding: 30px 16px 50px;
+        }
+
+        .fp-identity {
+            align-items: flex-start;
+        }
+
+        .fp-avatar {
+            width: 58px;
+            height: 58px;
+            font-size: 23px;
+            border-radius: 15px;
+        }
+
+        .fp-name {
+            font-size: 24px;
+        }
+
+        .fp-details {
+            grid-template-columns: 1fr;
+        }
+
+        .fp-review__top {
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+</style>
+
+
+<section class="fp-page">
+
+    <div class="fp-container">
+
+        <a href="{% url 'freelancers' %}" class="fp-back">
+            ← Back to Freelancers
         </a>
-    </p>
-{% endif %}
 
-{% if freelancer.resume %}
-    <p>
-        <a href="{{ freelancer.resume.url }}">
-            <button type="button">
-                📄 Download Resume
-            </button>
-        </a>
-    </p>
-{% endif %}
 
-<hr>
+        <!-- PROFILE HEADER -->
 
-<h2>Actions</h2>
+        <header class="fp-hero">
 
-<button type="button">
-    Hire Me
-</button>
+            <div class="fp-identity">
 
-<a href="{% url 'send_message' freelancer.user.id %}">
-    <button type="button">
-        💬 Message
-    </button>
-</a>
+                <div class="fp-avatar">
+                    {{ freelancer.user.username|first|upper }}
+                </div>
 
-<a href="{% url 'add_review' freelancer.id %}">
-    <button type="button">
-        ⭐ Leave Review
-    </button>
-</a>
+                <div>
 
-<hr>
+                    <span class="fp-eyebrow">
+                        Freelancer Profile
+                    </span>
 
-<h2>Reviews</h2>
+                    <h1 class="fp-name">
+                        {{ freelancer.user.username }}
+                    </h1>
 
-{% if reviews %}
+                    <div class="fp-location">
+                        📍 {{ freelancer.location }}
+                    </div>
 
-    {% for review in reviews %}
+                </div>
 
-        <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+            </div>
 
-            <strong>
-                {{ review.client.username }}
-            </strong>
 
-            <br>
+            <div class="fp-rating">
 
-            ⭐ Rating:
-            {{ review.rating }}/5
+                {% if average_rating %}
 
-            <p>
-                {{ review.comment }}
-            </p>
+                    <strong class="fp-rating__value">
+                        {{ average_rating|floatformat:1 }}/5
+                    </strong>
 
-            <small>
-                {{ review.created_at|date:"d M Y, h:i A" }}
-            </small>
+                    <div class="fp-rating__stars">
+                        ★★★★★
+                    </div>
+
+                    <span class="fp-rating__count">
+                        {{ review_count }} review{{ review_count|pluralize }}
+                    </span>
+
+                {% else %}
+
+                    <strong class="fp-rating__value">
+                        New
+                    </strong>
+
+                    <span class="fp-rating__count">
+                        No ratings yet
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </header>
+
+
+        <div class="fp-grid">
+
+
+            <!-- ABOUT -->
+
+            <div class="fp-card">
+
+                <h2 class="fp-card__title">
+                    About this freelancer
+                </h2>
+
+                <p class="fp-bio">
+                    {{ freelancer.bio|default:"This freelancer hasn't added a bio yet." }}
+                </p>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="fp-card">
+
+                <h2 class="fp-card__title">
+                    Work together
+                </h2>
+
+                <div class="fp-actions">
+
+                    <a
+                        href="{% url 'send_message' freelancer.user.id %}"
+                        class="fp-btn fp-btn--primary"
+                    >
+                        💬 Message Freelancer
+                    </a>
+
+                    <a
+                        href="{% url 'add_review' freelancer.id %}"
+                        class="fp-btn fp-btn--review"
+                    >
+                        ⭐ Leave Review
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROFESSIONAL DETAILS -->
+
+            <div class="fp-card">
+
+                <h2 class="fp-card__title">
+                    Professional Details
+                </h2>
+
+                <div class="fp-details">
+
+                    <div class="fp-detail">
+                        <span>Experience</span>
+                        <strong>
+                            {{ freelancer.experience }} years
+                        </strong>
+                    </div>
+
+                    <div class="fp-detail">
+                        <span>Hourly Rate</span>
+                        <strong>
+                            ₹{{ freelancer.hourly_rate }}/hr
+                        </strong>
+                    </div>
+
+                    <div class="fp-detail">
+                        <span>Location</span>
+                        <strong>
+                            {{ freelancer.location }}
+                        </strong>
+                    </div>
+
+                    <div class="fp-detail">
+                        <span>Availability</span>
+                        <strong>
+                            Available for work
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SKILLS -->
+
+            <div class="fp-card">
+
+                <h2 class="fp-card__title">
+                    Skills
+                </h2>
+
+                {% if freelancer.skills %}
+
+                    <div class="fp-skills">
+
+                        {% for skill in freelancer.skills.split %}
+                            <span class="fp-skill">
+                                {{ skill }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="fp-empty">
+                        No skills listed yet.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- RESOURCES -->
+
+            {% if freelancer.portfolio or freelancer.resume %}
+
+                <div class="fp-card fp-card--wide">
+
+                    <h2 class="fp-card__title">
+                        Portfolio & Resume
+                    </h2>
+
+                    <div class="fp-actions">
+
+                        {% if freelancer.portfolio %}
+
+                            <div class="fp-resource">
+
+                                <span>
+                                    🌐 Portfolio
+                                </span>
+
+                                <a
+                                    href="{{ freelancer.portfolio }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    View Portfolio →
+                                </a>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if freelancer.resume %}
+
+                            <div class="fp-resource">
+
+                                <span>
+                                    📄 Resume
+                                </span>
+
+                                <a href="{{ freelancer.resume.url }}">
+                                    Download Resume →
+                                </a>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- RATING BREAKDOWN -->
+
+            <div class="fp-card">
+
+                <h2 class="fp-card__title">
+                    Rating Breakdown
+                </h2>
+
+                {% if average_rating %}
+
+                    <div class="fp-breakdown">
+
+                        <div class="fp-rating-row">
+                            <span class="fp-rating-row__label">5 ★</span>
+                            <div class="fp-rating-bar">
+                                <span style="width: {{ rating_distribution.5 }}%;"></span>
+                            </div>
+                            <span class="fp-rating-row__count">
+                                {{ rating_distribution.5 }}
+                            </span>
+                        </div>
+
+                        <div class="fp-rating-row">
+                            <span class="fp-rating-row__label">4 ★</span>
+                            <div class="fp-rating-bar">
+                                <span style="width: {{ rating_distribution.4 }}%;"></span>
+                            </div>
+                            <span class="fp-rating-row__count">
+                                {{ rating_distribution.4 }}
+                            </span>
+                        </div>
+
+                        <div class="fp-rating-row">
+                            <span class="fp-rating-row__label">3 ★</span>
+                            <div class="fp-rating-bar">
+                                <span style="width: {{ rating_distribution.3 }}%;"></span>
+                            </div>
+                            <span class="fp-rating-row__count">
+                                {{ rating_distribution.3 }}
+                            </span>
+                        </div>
+
+                        <div class="fp-rating-row">
+                            <span class="fp-rating-row__label">2 ★</span>
+                            <div class="fp-rating-bar">
+                                <span style="width: {{ rating_distribution.2 }}%;"></span>
+                            </div>
+                            <span class="fp-rating-row__count">
+                                {{ rating_distribution.2 }}
+                            </span>
+                        </div>
+
+                        <div class="fp-rating-row">
+                            <span class="fp-rating-row__label">1 ★</span>
+                            <div class="fp-rating-bar">
+                                <span style="width: {{ rating_distribution.1 }}%;"></span>
+                            </div>
+                            <span class="fp-rating-row__count">
+                                {{ rating_distribution.1 }}
+                            </span>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="fp-empty">
+                        No ratings available yet.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- REVIEWS -->
+
+            <div class="fp-card">
+
+                <h2 class="fp-card__title">
+                    Reviews
+                </h2>
+
+                {% if reviews %}
+
+                    <div class="fp-reviews">
+
+                        {% for review in reviews %}
+
+                            <article class="fp-review">
+
+                                <div class="fp-review__top">
+
+                                    <span class="fp-review__author">
+                                        {{ review.client.username }}
+                                    </span>
+
+                                    <span class="fp-review__date">
+                                        {{ review.created_at|date:"d M Y, h:i A" }}
+                                    </span>
+
+                                </div>
+
+                                <div class="fp-review__rating">
+                                    {% if review.rating >= 1 %}★{% endif %}
+                                    {% if review.rating >= 2 %}★{% endif %}
+                                    {% if review.rating >= 3 %}★{% endif %}
+                                    {% if review.rating >= 4 %}★{% endif %}
+                                    {% if review.rating >= 5 %}★{% endif %}
+                                    &nbsp; {{ review.rating }}/5
+                                </div>
+
+                                <p class="fp-review__comment">
+                                    {{ review.comment }}
+                                </p>
+
+                            </article>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="fp-empty">
+                        No reviews yet. Be the first to work with this freelancer.
+                    </div>
+
+                {% endif %}
+
+            </div>
 
         </div>
 
-    {% endfor %}
+    </div>
 
-{% else %}
-
-    <p>No reviews yet.</p>
-
-{% endif %}
-
-<br>
-
-<a href="{% url 'freelancers' %}">
-    ← Back to Freelancers
-</a>
+</section>
 
 {% endblock %}

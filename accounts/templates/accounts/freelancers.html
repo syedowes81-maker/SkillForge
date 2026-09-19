@@ -1,47 +1,522 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}Find Freelancers — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>Browse Freelancers</h1>
-<form method="GET" style="margin-bottom:20px;">
+<style>
+    .fl-page {
+        min-height: calc(100vh - 72px);
+        padding: 55px 24px 70px;
+    }
 
-    <input
-        type="text"
-        name="q"
-        placeholder="Search by skill..."
-        value="{{ query }}">
+    .fl-container {
+        width: 100%;
+        max-width: 1160px;
+        margin: 0 auto;
+    }
 
-    <button type="submit">
-        Search
-    </button>
+    .fl-header {
+        margin-bottom: 30px;
+    }
 
-</form>
+    .fl-eyebrow {
+        display: block;
+        margin-bottom: 8px;
+        color: #5b8def;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
 
-<hr>
+    .fl-title {
+        margin: 0;
+        color: #ffffff;
+        font-size: 34px;
+        line-height: 1.15;
+        letter-spacing: -0.8px;
+    }
 
-{% for freelancer in freelancers %}
+    .fl-subtitle {
+        margin: 10px 0 0;
+        color: #8d96a8;
+        font-size: 14px;
+        line-height: 1.6;
+    }
 
-<div style="padding:20px; border:1px solid #ddd; margin-bottom:20px; border-radius:10px;">
+    /* SEARCH */
 
-    <h3>{{ freelancer.user.username }}</h3>
+    .fl-search {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 35px;
+        padding: 16px;
 
-    <p>{{ freelancer.bio }}</p>
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 15px;
+        background: rgba(20,24,32,.92);
+    }
 
-    <p><strong>Skills:</strong> {{ freelancer.skills }}</p>
+    .fl-search input {
+        flex: 1;
+        min-height: 46px;
+        padding: 0 15px;
 
-    <p><strong>Experience:</strong> {{ freelancer.experience }}</p>
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 10px;
 
-    <p><strong>Rate:</strong> ₹{{ freelancer.hourly_rate }}/hr</p>
-  
-    <a href="{% url 'freelancer_detail' freelancer.id %}">
-    View Profile
-</a>
-</div>
+        outline: none;
+        background: #11151c;
+        color: #ffffff;
+        font-size: 13px;
+    }
 
-{% empty %}
+    .fl-search input::placeholder {
+        color: #697487;
+    }
 
-<p>No freelancers found.</p>
+    .fl-search input:focus {
+        border-color: rgba(91,141,239,.65);
+    }
 
-{% endfor %}
+    .fl-search button {
+        min-width: 110px;
+        border: 0;
+        border-radius: 10px;
+
+        background: #5b8def;
+        color: #ffffff;
+
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+
+        transition: background .2s ease, transform .15s ease;
+    }
+
+    .fl-search button:hover {
+        background: #6b9af2;
+        transform: translateY(-1px);
+    }
+
+    /* RESULTS */
+
+    .fl-results-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .fl-results-head h2 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 17px;
+    }
+
+    .fl-results-head span {
+        color: #697487;
+        font-size: 12px;
+    }
+
+    .fl-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .fl-card {
+        padding: 23px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 16px;
+
+        background: rgba(20,24,32,.92);
+
+        transition:
+            transform .18s ease,
+            border-color .2s ease,
+            box-shadow .2s ease;
+    }
+
+    .fl-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(91,141,239,.35);
+        box-shadow: 0 18px 40px rgba(0,0,0,.16);
+    }
+
+    .fl-card-top {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin-bottom: 18px;
+    }
+
+    .fl-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+
+        border-radius: 13px;
+
+        background: rgba(91,141,239,.12);
+        color: #7da5f5;
+
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .fl-name {
+        margin: 0;
+        color: #ffffff;
+        font-size: 17px;
+    }
+
+    .fl-role {
+        display: block;
+        margin-top: 4px;
+        color: #687387;
+        font-size: 11px;
+    }
+
+    .fl-bio {
+        min-height: 45px;
+        margin: 0 0 17px;
+
+        color: #9aa3b3;
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    .fl-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-bottom: 19px;
+    }
+
+    .fl-skill {
+        padding: 6px 9px;
+
+        border: 1px solid rgba(91,141,239,.15);
+        border-radius: 7px;
+
+        background: rgba(91,141,239,.07);
+        color: #9eb9f1;
+
+        font-size: 11px;
+    }
+
+    .fl-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+
+        padding-top: 16px;
+        border-top: 1px solid rgba(255,255,255,.05);
+    }
+
+    .fl-meta-item span {
+        display: block;
+        margin-bottom: 4px;
+        color: #697487;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .fl-meta-item strong {
+        color: #dce1ea;
+        font-size: 13px;
+    }
+
+    .fl-card-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 18px;
+    }
+
+    .fl-profile-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 40px;
+        padding: 0 15px;
+
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 9px;
+
+        background: #11151c;
+        color: #dce1ea;
+
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+
+        transition:
+            background .2s ease,
+            border-color .2s ease,
+            color .2s ease;
+    }
+
+    .fl-profile-btn:hover {
+        border-color: rgba(91,141,239,.5);
+        background: rgba(91,141,239,.08);
+        color: #ffffff;
+    }
+
+    /* EMPTY */
+
+    .fl-empty {
+        padding: 60px 25px;
+        text-align: center;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 16px;
+
+        background: rgba(20,24,32,.92);
+    }
+
+    .fl-empty-icon {
+        margin-bottom: 15px;
+        font-size: 30px;
+    }
+
+    .fl-empty h2 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 19px;
+    }
+
+    .fl-empty p {
+        margin: 8px 0 0;
+        color: #727d90;
+        font-size: 13px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 800px) {
+        .fl-list {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .fl-page {
+            padding: 35px 16px 50px;
+        }
+
+        .fl-title {
+            font-size: 28px;
+        }
+
+        .fl-search {
+            flex-direction: column;
+        }
+
+        .fl-search button {
+            min-height: 44px;
+        }
+    }
+</style>
+
+
+<section class="fl-page">
+
+    <div class="fl-container">
+
+        <!-- HEADER -->
+
+        <header class="fl-header">
+
+            <span class="fl-eyebrow">
+                SkillForge Talent
+            </span>
+
+            <h1 class="fl-title">
+                Find Freelancers
+            </h1>
+
+            <p class="fl-subtitle">
+                Discover skilled professionals for your next project.
+            </p>
+
+        </header>
+
+
+        <!-- SEARCH -->
+
+        <form method="GET" class="fl-search">
+
+            <input
+                type="text"
+                name="q"
+                placeholder="Search by skill, e.g. Python, React, SQL..."
+                value="{{ query|default:'' }}"
+            >
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+
+        <!-- RESULTS -->
+
+        <div class="fl-results-head">
+
+            <h2>
+                Available Freelancers
+            </h2>
+
+            {% if freelancers %}
+                <span>
+                    {{ freelancers|length }} result{{ freelancers|length|pluralize }}
+                </span>
+            {% endif %}
+
+        </div>
+
+
+        {% if freelancers %}
+
+            <div class="fl-list">
+
+                {% for freelancer in freelancers %}
+
+                    <article class="fl-card">
+
+                        <div class="fl-card-top">
+
+                            <div class="fl-avatar">
+                                {{ freelancer.user.username|first|upper }}
+                            </div>
+
+                            <div>
+
+                                <h2 class="fl-name">
+                                    {{ freelancer.user.username }}
+                                </h2>
+
+                                <span class="fl-role">
+                                    Freelancer
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="fl-bio">
+
+                            {% if freelancer.bio %}
+                                {{ freelancer.bio|truncatechars:150 }}
+                            {% else %}
+                                This freelancer hasn't added a bio yet.
+                            {% endif %}
+
+                        </p>
+
+
+                        <!-- SKILLS -->
+
+                        {% if freelancer.skills %}
+
+                            <div class="fl-skills">
+
+                                {% for skill in freelancer.skills|cut:" "|cut:","|slice:":5" %}
+                                {% endfor %}
+
+                                <span class="fl-skill">
+                                    {{ freelancer.skills }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- META -->
+
+                        <div class="fl-meta">
+
+                            <div class="fl-meta-item">
+
+                                <span>
+                                    Experience
+                                </span>
+
+                                <strong>
+                                    {{ freelancer.experience }} year{{ freelancer.experience|pluralize }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="fl-meta-item">
+
+                                <span>
+                                    Rate
+                                </span>
+
+                                <strong>
+                                    ₹{{ freelancer.hourly_rate }}/hr
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PROFILE -->
+
+                        <div class="fl-card-footer">
+
+                            <a
+                                href="{% url 'freelancer_detail' freelancer.id %}"
+                                class="fl-profile-btn"
+                            >
+                                View Profile →
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="fl-empty">
+
+                <div class="fl-empty-icon">
+                    🔎
+                </div>
+
+                <h2>
+                    No freelancers found
+                </h2>
+
+                <p>
+                    Try searching for another skill.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
 
 {% endblock %}

@@ -1,78 +1,473 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}Notifications — SkillForge{% endblock %}
+
 {% block content %}
 
-<h2>🔔 Notifications</h2>
+<style>
+    .nt-page {
+        min-height: calc(100vh - 72px);
+        padding: 45px 24px 70px;
+    }
 
-<p>
-    <strong>Unread:</strong> {{ unread_count }}
-</p>
+    .nt-container {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
 
-{% if unread_count > 0 %}
+    /* HEADER */
 
-    <form method="POST" action="{% url 'mark_notifications_read' %}">
-        {% csrf_token %}
+    .nt-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
 
-        <button type="submit">
-            ✅ Mark All as Read
-        </button>
-    </form>
+    .nt-eyebrow {
+        display: block;
+        margin-bottom: 7px;
 
-{% endif %}
+        color: #5b8def;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
 
-<hr>
+    .nt-title {
+        margin: 0;
 
-{% if notifications %}
+        color: #ffffff;
+        font-size: 32px;
+        letter-spacing: -.6px;
+    }
 
-    {% for notification in notifications %}
+    .nt-subtitle {
+        margin: 8px 0 0;
 
-        <div
-            style="
-                border:1px solid #ccc;
-                padding:10px;
-                margin:10px;
-                {% if not notification.is_read %}
-                    font-weight:bold;
-                {% endif %}
-            "
-        >
+        color: #7f899b;
+        font-size: 13px;
+    }
 
-            {% if not notification.is_read %}
-                🔵
-            {% else %}
-                ⚪
+    /* HEADER ACTION */
+
+    .nt-read-btn {
+        min-height: 42px;
+        padding: 0 16px;
+
+        border: 1px solid rgba(91,141,239,.2);
+        border-radius: 9px;
+
+        background: rgba(91,141,239,.07);
+        color: #8eaff2;
+
+        font-size: 12px;
+        font-weight: 600;
+
+        cursor: pointer;
+
+        transition:
+            background .2s ease,
+            border-color .2s ease,
+            transform .15s ease;
+    }
+
+    .nt-read-btn:hover {
+        transform: translateY(-1px);
+
+        border-color: rgba(91,141,239,.5);
+        background: rgba(91,141,239,.12);
+    }
+
+    /* SUMMARY */
+
+    .nt-summary {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        margin-bottom: 18px;
+
+        padding: 14px 17px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 11px;
+
+        background: #141820;
+    }
+
+    .nt-summary__dot {
+        width: 8px;
+        height: 8px;
+
+        border-radius: 50%;
+        background: #5b8def;
+        box-shadow: 0 0 10px rgba(91,141,239,.45);
+    }
+
+    .nt-summary strong {
+        color: #ffffff;
+        font-size: 13px;
+    }
+
+    .nt-summary span {
+        color: #697487;
+        font-size: 12px;
+    }
+
+    /* LIST */
+
+    .nt-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nt-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+
+        padding: 18px 20px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 13px;
+
+        background: rgba(20,24,32,.94);
+
+        transition:
+            border-color .2s ease,
+            background .2s ease,
+            transform .15s ease;
+    }
+
+    .nt-item:hover {
+        transform: translateY(-1px);
+
+        border-color: rgba(255,255,255,.11);
+        background: #171c25;
+    }
+
+    .nt-item--unread {
+        border-color: rgba(91,141,239,.18);
+        background: rgba(24,31,43,.96);
+    }
+
+    /* ICON */
+
+    .nt-icon {
+        flex-shrink: 0;
+
+        width: 40px;
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        background: #11151c;
+
+        color: #7ea4f0;
+        font-size: 17px;
+    }
+
+    .nt-item--unread .nt-icon {
+        background: rgba(91,141,239,.1);
+    }
+
+    /* CONTENT */
+
+    .nt-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .nt-message {
+        margin: 0;
+
+        color: #cbd1dc;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .nt-item--unread .nt-message {
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .nt-meta {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+
+        margin-top: 7px;
+    }
+
+    .nt-time {
+        color: #626d7f;
+        font-size: 11px;
+    }
+
+    .nt-status {
+        color: #5b8def;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    /* EMPTY */
+
+    .nt-empty {
+        padding: 65px 25px;
+
+        border: 1px dashed rgba(255,255,255,.08);
+        border-radius: 15px;
+
+        background: rgba(20,24,32,.7);
+
+        text-align: center;
+    }
+
+    .nt-empty__icon {
+        margin-bottom: 15px;
+
+        color: #596476;
+        font-size: 35px;
+    }
+
+    .nt-empty h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 18px;
+    }
+
+    .nt-empty p {
+        margin: 8px 0 0;
+
+        color: #697487;
+        font-size: 13px;
+    }
+
+    /* BACK */
+
+    .nt-back {
+        display: inline-flex;
+
+        margin-top: 22px;
+
+        color: #697487;
+        font-size: 12px;
+        text-decoration: none;
+
+        transition: color .2s ease;
+    }
+
+    .nt-back:hover {
+        color: #ffffff;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 650px) {
+
+        .nt-page {
+            padding: 30px 16px 50px;
+        }
+
+        .nt-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .nt-read-btn {
+            width: 100%;
+        }
+
+        .nt-title {
+            font-size: 27px;
+        }
+
+        .nt-item {
+            padding: 15px;
+        }
+
+        .nt-icon {
+            width: 36px;
+            height: 36px;
+        }
+    }
+</style>
+
+
+<section class="nt-page">
+
+    <div class="nt-container">
+
+        <!-- HEADER -->
+
+        <header class="nt-header">
+
+            <div>
+
+                <span class="nt-eyebrow">
+                    SkillForge Updates
+                </span>
+
+                <h1 class="nt-title">
+                    Notifications
+                </h1>
+
+                <p class="nt-subtitle">
+                    Stay updated on your applications, projects, and activity.
+                </p>
+
+            </div>
+
+
+            {% if unread_count > 0 %}
+
+                <form
+                    method="POST"
+                    action="{% url 'mark_notifications_read' %}"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="nt-read-btn"
+                    >
+                        ✓ Mark All as Read
+                    </button>
+
+                </form>
+
             {% endif %}
 
-            {{ notification.message }}
+        </header>
 
-            <br>
 
-            <small>
-                {{ notification.created_at|date:"d M Y, h:i A" }}
-            </small>
+        <!-- SUMMARY -->
 
-            <br>
+        <div class="nt-summary">
 
-            {% if not notification.is_read %}
-                <small>Unread</small>
+            {% if unread_count > 0 %}
+
+                <span class="nt-summary__dot"></span>
+
+                <strong>
+                    {{ unread_count }} unread
+                </strong>
+
+                <span>
+                    notification{{ unread_count|pluralize }}
+                </span>
+
             {% else %}
-                <small>Read</small>
+
+                <span class="nt-summary__dot"></span>
+
+                <strong>
+                    All caught up
+                </strong>
+
+                <span>
+                    No unread notifications
+                </span>
+
             {% endif %}
 
         </div>
 
-    {% endfor %}
 
-{% else %}
+        <!-- NOTIFICATIONS -->
 
-    <p>No notifications yet.</p>
+        {% if notifications %}
 
-{% endif %}
+            <div class="nt-list">
 
-<br>
+                {% for notification in notifications %}
 
-<a href="{% url 'dashboard' %}">
-    ← Back to Dashboard
-</a>
+                    <article
+                        class="nt-item {% if not notification.is_read %}nt-item--unread{% endif %}"
+                    >
+
+                        <div class="nt-icon">
+                            {% if not notification.is_read %}
+                                🔔
+                            {% else %}
+                                ✓
+                            {% endif %}
+                        </div>
+
+
+                        <div class="nt-content">
+
+                            <p class="nt-message">
+                                {{ notification.message }}
+                            </p>
+
+
+                            <div class="nt-meta">
+
+                                <span class="nt-time">
+                                    {{ notification.created_at|date:"d M Y, h:i A" }}
+                                </span>
+
+                                {% if not notification.is_read %}
+
+                                    <span class="nt-status">
+                                        Unread
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="nt-empty">
+
+                <div class="nt-empty__icon">
+                    🔔
+                </div>
+
+                <h2>
+                    You're all caught up
+                </h2>
+
+                <p>
+                    New updates about your projects and applications will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="nt-back"
+        >
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</section>
 
 {% endblock %}
