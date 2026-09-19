@@ -1,46 +1,465 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}My Profile — SkillForge{% endblock %}
+
 {% block content %}
 
-<h2>{{ request.user.username }}</h2>
+<style>
+    .fp-page {
+        min-height: calc(100vh - 72px);
+        padding: 55px 24px 70px;
+    }
 
-{% if profile.profile_picture %}
-    <img src="{{ profile.profile_picture.url }}" width="150" height="150">
-    <br><br>
-{% endif %}
+    .fp-container {
+        width: 100%;
+        max-width: 1050px;
+        margin: 0 auto;
+    }
 
-<p><strong>Bio:</strong> {{ profile.bio }}</p>
+    .fp-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 24px;
+    }
 
-<p><strong>Skills:</strong> {{ profile.skills }}</p>
+    .fp-identity {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
 
-<p><strong>Experience:</strong> {{ profile.experience }} years</p>
+    .fp-avatar {
+        width: 76px;
+        height: 76px;
+        flex-shrink: 0;
+        border-radius: 18px;
+        overflow: hidden;
 
-<p><strong>Hourly Rate:</strong> ₹{{ profile.hourly_rate }}</p>
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-<p><strong>Location:</strong> {{ profile.location }}</p>
+        background: #151a22;
+        border: 1px solid rgba(255,255,255,.08);
 
-<p><strong>Portfolio:</strong>
-    {% if profile.portfolio %}
-        <a href="{{ profile.portfolio }}" target="_blank">
-            {{ profile.portfolio }}
-        </a>
-    {% else %}
-        Not added
-    {% endif %}
-</p>
+        color: #ffffff;
+        font-size: 27px;
+        font-weight: 700;
+    }
 
-<p><strong>Resume:</strong>
-    {% if profile.resume %}
-        <a href="{{ profile.resume.url }}" target="_blank">
-            Download Resume
-        </a>
-    {% else %}
-        No resume uploaded
-    {% endif %}
-</p>
+    .fp-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-<a href="{% url 'edit_profile' %}">
-    <button>Edit Profile</button>
-</a>
+    .fp-eyebrow {
+        display: block;
+        margin-bottom: 6px;
+
+        color: #5b8def;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .fp-title {
+        margin: 0;
+        color: #ffffff;
+        font-size: 30px;
+        line-height: 1.15;
+    }
+
+    .fp-subtitle {
+        margin: 7px 0 0;
+        color: #7f899b;
+        font-size: 13px;
+    }
+
+    .fp-edit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 44px;
+        padding: 0 18px;
+
+        border-radius: 10px;
+        background: #5b8def;
+        color: #ffffff;
+
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+    .fp-edit:hover {
+        background: #6b9af2;
+        transform: translateY(-1px);
+    }
+
+    .fp-grid {
+        display: grid;
+        grid-template-columns: .85fr 1.15fr;
+        gap: 20px;
+    }
+
+    .fp-card {
+        padding: 25px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 16px;
+
+        background: rgba(20,24,32,.92);
+    }
+
+    .fp-card--full {
+        grid-column: 1 / -1;
+    }
+
+    .fp-card h2 {
+        margin: 0 0 18px;
+        color: #ffffff;
+        font-size: 17px;
+    }
+
+    .fp-bio {
+        margin: 0;
+        color: #aeb6c5;
+        font-size: 14px;
+        line-height: 1.75;
+    }
+
+    .fp-empty {
+        color: #626d7f;
+        font-size: 13px;
+    }
+
+    .fp-details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .fp-detail {
+        padding: 15px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 11px;
+
+        background: #11151c;
+    }
+
+    .fp-detail span {
+        display: block;
+        margin-bottom: 7px;
+
+        color: #697487;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: .6px;
+        text-transform: uppercase;
+    }
+
+    .fp-detail strong {
+        color: #ffffff;
+        font-size: 14px;
+    }
+
+    .fp-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+    }
+
+    .fp-skill {
+        padding: 8px 12px;
+
+        border: 1px solid rgba(91,141,239,.18);
+        border-radius: 999px;
+
+        background: rgba(91,141,239,.07);
+        color: #b9c9ef;
+
+        font-size: 12px;
+    }
+
+    .fp-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .fp-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 16px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 11px;
+
+        background: #11151c;
+        color: #dce1ea;
+
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+    .fp-link:hover {
+        border-color: rgba(91,141,239,.45);
+        background: rgba(91,141,239,.06);
+    }
+
+    .fp-link small {
+        color: #5b8def;
+    }
+
+    @media (max-width: 800px) {
+        .fp-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .fp-card--full {
+            grid-column: auto;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .fp-page {
+            padding: 35px 16px 50px;
+        }
+
+        .fp-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .fp-identity {
+            align-items: flex-start;
+        }
+
+        .fp-title {
+            font-size: 26px;
+        }
+
+        .fp-edit {
+            width: 100%;
+        }
+
+        .fp-details,
+        .fp-links {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<section class="fp-page">
+
+    <div class="fp-container">
+
+        <header class="fp-header">
+
+            <div class="fp-identity">
+
+                <div class="fp-avatar">
+
+                    {% if profile.profile_picture %}
+                        <img
+                            src="{{ profile.profile_picture.url }}"
+                            alt="{{ request.user.username }}"
+                        >
+                    {% else %}
+                        {{ request.user.username|first|upper }}
+                    {% endif %}
+
+                </div>
+
+                <div>
+
+                    <span class="fp-eyebrow">
+                        Freelancer Profile
+                    </span>
+
+                    <h1 class="fp-title">
+                        {{ request.user.username }}
+                    </h1>
+
+                    <p class="fp-subtitle">
+                        Your professional identity on SkillForge
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{% url 'edit_profile' %}"
+                class="fp-edit"
+            >
+                Edit Profile
+            </a>
+
+        </header>
+
+
+        <div class="fp-grid">
+
+
+            <section class="fp-card">
+
+                <h2>About Me</h2>
+
+                {% if profile.bio %}
+
+                    <p class="fp-bio">
+                        {{ profile.bio }}
+                    </p>
+
+                {% else %}
+
+                    <p class="fp-empty">
+                        No bio added yet. Add a short introduction
+                        to help clients understand your background.
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+
+            <section class="fp-card">
+
+                <h2>Professional Details</h2>
+
+                <div class="fp-details">
+
+                    <div class="fp-detail">
+                        <span>Experience</span>
+                        <strong>
+                            {{ profile.experience }} years
+                        </strong>
+                    </div>
+
+                    <div class="fp-detail">
+                        <span>Hourly Rate</span>
+                        <strong>
+                            ₹{{ profile.hourly_rate }}/hr
+                        </strong>
+                    </div>
+
+                    <div class="fp-detail">
+                        <span>Location</span>
+                        <strong>
+                            {{ profile.location|default:"Not added" }}
+                        </strong>
+                    </div>
+
+                    <div class="fp-detail">
+                        <span>Member</span>
+                        <strong>
+                            SkillForge Freelancer
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section class="fp-card fp-card--full">
+
+                <h2>Skills</h2>
+
+                {% if profile.skills %}
+
+                    <div class="fp-skills">
+
+                        <span class="fp-skill">
+                            {{ profile.skills }}
+                        </span>
+
+                    </div>
+
+                {% else %}
+
+                    <p class="fp-empty">
+                        No skills added yet.
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+
+            <section class="fp-card fp-card--full">
+
+                <h2>Professional Links</h2>
+
+                <div class="fp-links">
+
+                    {% if profile.portfolio %}
+
+                        <a
+                            href="{{ profile.portfolio }}"
+                            target="_blank"
+                            rel="noopener"
+                            class="fp-link"
+                        >
+                            <span>🌐 Portfolio</span>
+                            <small>Open →</small>
+                        </a>
+
+                    {% else %}
+
+                        <div class="fp-link">
+                            <span>🌐 Portfolio</span>
+                            <small>Not added</small>
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if profile.resume %}
+
+                        <a
+                            href="{{ profile.resume.url }}"
+                            target="_blank"
+                            class="fp-link"
+                        >
+                            <span>📄 Resume</span>
+                            <small>View →</small>
+                        </a>
+
+                    {% else %}
+
+                        <div class="fp-link">
+                            <span>📄 Resume</span>
+                            <small>Not uploaded</small>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</section>
 
 {% endblock %}
+

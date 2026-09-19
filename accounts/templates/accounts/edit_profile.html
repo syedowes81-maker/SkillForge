@@ -1,12 +1,478 @@
-<h1>Edit Profile</h1>
+{% extends "accounts/base.html" %}
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Profile</button>
-</form>
-<br>
+{% block title %}Edit Profile — SkillForge{% endblock %}
 
-<a href="{% url 'profile' %}">
-    Cancel
-</a>
+{% block content %}
+
+<style>
+    .ep-page {
+        min-height: calc(100vh - 72px);
+        padding: 55px 24px 70px;
+    }
+
+    .ep-container {
+        width: 100%;
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .ep-header {
+        margin-bottom: 28px;
+    }
+
+    .ep-eyebrow {
+        display: block;
+        margin-bottom: 7px;
+
+        color: #5b8def;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .ep-title {
+        margin: 0;
+        color: #ffffff;
+        font-size: 31px;
+    }
+
+    .ep-subtitle {
+        margin: 8px 0 0;
+        color: #7f899b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .ep-card {
+        padding: 28px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 16px;
+
+        background: rgba(20,24,32,.92);
+    }
+
+    .ep-section {
+        margin-bottom: 28px;
+    }
+
+    .ep-section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .ep-section h2 {
+        margin: 0 0 6px;
+
+        color: #ffffff;
+        font-size: 17px;
+    }
+
+    .ep-section-description {
+        margin: 0 0 20px;
+
+        color: #697487;
+        font-size: 12px;
+    }
+
+    .ep-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .ep-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .ep-field--full {
+        grid-column: 1 / -1;
+    }
+
+    .ep-field label {
+        color: #cbd1dc;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .ep-field input,
+    .ep-field textarea,
+    .ep-field select {
+        width: 100%;
+        box-sizing: border-box;
+
+        padding: 12px 13px;
+
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 10px;
+
+        background: #11151c;
+        color: #ffffff;
+
+        font: inherit;
+        font-size: 13px;
+
+        outline: none;
+        transition: .2s ease;
+    }
+
+    .ep-field textarea {
+        min-height: 135px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .ep-field input:focus,
+    .ep-field textarea:focus,
+    .ep-field select:focus {
+        border-color: rgba(91,141,239,.65);
+        box-shadow: 0 0 0 3px rgba(91,141,239,.08);
+    }
+
+    .ep-help {
+        color: #596476;
+        font-size: 11px;
+    }
+
+    .ep-file {
+        padding: 10px;
+    }
+
+    .ep-error {
+        color: #e66b73;
+        font-size: 11px;
+    }
+
+    .ep-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+
+        margin-top: 30px;
+        padding-top: 22px;
+
+        border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    .ep-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 44px;
+        padding: 0 18px;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .ep-btn--cancel {
+        border: 1px solid rgba(255,255,255,.08);
+        background: #151a22;
+        color: #cbd1dc;
+    }
+
+    .ep-btn--save {
+        border: 0;
+        background: #5b8def;
+        color: #ffffff;
+    }
+
+    .ep-btn--save:hover {
+        background: #6b9af2;
+        transform: translateY(-1px);
+    }
+
+    .ep-current-file {
+        padding: 10px 12px;
+
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 9px;
+
+        background: #11151c;
+        color: #7f899b;
+
+        font-size: 11px;
+    }
+
+    @media (max-width: 650px) {
+        .ep-page {
+            padding: 35px 16px 50px;
+        }
+
+        .ep-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .ep-field--full {
+            grid-column: auto;
+        }
+
+        .ep-actions {
+            flex-direction: column-reverse;
+        }
+
+        .ep-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<section class="ep-page">
+
+    <div class="ep-container">
+
+        <header class="ep-header">
+
+            <span class="ep-eyebrow">
+                Freelancer Workspace
+            </span>
+
+            <h1 class="ep-title">
+                Edit Profile
+            </h1>
+
+            <p class="ep-subtitle">
+                Keep your professional information updated so clients
+                can understand your skills and experience.
+            </p>
+
+        </header>
+
+
+        <div class="ep-card">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                {% csrf_token %}
+
+
+                <section class="ep-section">
+
+                    <h2>Professional Information</h2>
+
+                    <p class="ep-section-description">
+                        Tell clients what you do and what you can offer.
+                    </p>
+
+
+                    <div class="ep-grid">
+
+
+                        <div class="ep-field ep-field--full">
+
+                            <label for="{{ form.skills.id_for_label }}">
+                                Skills
+                            </label>
+
+                            {{ form.skills }}
+
+                            {% if form.skills.errors %}
+                                <span class="ep-error">
+                                    {{ form.skills.errors|striptags }}
+                                </span>
+                            {% endif %}
+
+                            <span class="ep-help">
+                                Example: Python, Django, SQL, React
+                            </span>
+
+                        </div>
+
+
+                        <div class="ep-field ep-field--full">
+
+                            <label for="{{ form.bio.id_for_label }}">
+                                Bio
+                            </label>
+
+                            {{ form.bio }}
+
+                            {% if form.bio.errors %}
+                                <span class="ep-error">
+                                    {{ form.bio.errors|striptags }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="ep-field">
+
+                            <label for="{{ form.experience.id_for_label }}">
+                                Experience
+                            </label>
+
+                            {{ form.experience }}
+
+                            {% if form.experience.errors %}
+                                <span class="ep-error">
+                                    {{ form.experience.errors|striptags }}
+                                </span>
+                            {% endif %}
+
+                            <span class="ep-help">
+                                Years of professional experience
+                            </span>
+
+                        </div>
+
+
+                        <div class="ep-field">
+
+                            <label for="{{ form.hourly_rate.id_for_label }}">
+                                Hourly Rate
+                            </label>
+
+                            {{ form.hourly_rate }}
+
+                            {% if form.hourly_rate.errors %}
+                                <span class="ep-error">
+                                    {{ form.hourly_rate.errors|striptags }}
+                                </span>
+                            {% endif %}
+
+                            <span class="ep-help">
+                                Your expected rate in ₹ per hour
+                            </span>
+
+                        </div>
+
+
+                        <div class="ep-field ep-field--full">
+
+                            <label for="{{ form.location.id_for_label }}">
+                                Location
+                            </label>
+
+                            {{ form.location }}
+
+                            {% if form.location.errors %}
+                                <span class="ep-error">
+                                    {{ form.location.errors|striptags }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="ep-section">
+
+                    <h2>Professional Links</h2>
+
+                    <p class="ep-section-description">
+                        Add your portfolio and professional documents.
+                    </p>
+
+
+                    <div class="ep-grid">
+
+
+                        <div class="ep-field ep-field--full">
+
+                            <label for="{{ form.portfolio.id_for_label }}">
+                                Portfolio URL
+                            </label>
+
+                            {{ form.portfolio }}
+
+                            {% if form.portfolio.errors %}
+                                <span class="ep-error">
+                                    {{ form.portfolio.errors|striptags }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="ep-field">
+
+                            <label for="{{ form.profile_picture.id_for_label }}">
+                                Profile Picture
+                            </label>
+
+                            {{ form.profile_picture }}
+
+                            {% if form.profile_picture.errors %}
+                                <span class="ep-error">
+                                    {{ form.profile_picture.errors|striptags }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="ep-field">
+
+                            <label for="{{ form.resume.id_for_label }}">
+                                Resume
+                            </label>
+
+                            {{ form.resume }}
+
+                            {% if form.resume.errors %}
+                                <span class="ep-error">
+                                    {{ form.resume.errors|striptags }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                {% if form.non_field_errors %}
+
+                    <div class="ep-error">
+                        {{ form.non_field_errors|striptags }}
+                    </div>
+
+                {% endif %}
+
+
+                <div class="ep-actions">
+
+                    <a
+                        href="{% url 'profile' %}"
+                        class="ep-btn ep-btn--cancel"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="ep-btn ep-btn--save"
+                    >
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
