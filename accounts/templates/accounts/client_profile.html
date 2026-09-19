@@ -1,0 +1,350 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Client Profile — SkillForge{% endblock %}
+
+{% block content %}
+
+<style>
+    .cp-page {
+        min-height: calc(100vh - 72px);
+        padding: 55px 24px 70px;
+    }
+
+    .cp-container {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .cp-card {
+        padding: 32px;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 18px;
+        background: rgba(20,24,32,.94);
+    }
+
+    .cp-header {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .cp-avatar {
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(91,141,239,.5);
+    }
+
+    .cp-avatar-placeholder {
+        width: 82px;
+        height: 82px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(91,141,239,.12);
+        color: #5b8def;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .cp-eyebrow {
+        display: block;
+        margin-bottom: 6px;
+        color: #5b8def;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .cp-name {
+        margin: 0;
+        color: #fff;
+        font-size: 27px;
+    }
+
+    .cp-username {
+        margin-top: 6px;
+        color: #727d90;
+        font-size: 13px;
+    }
+
+    .cp-section {
+        padding-top: 28px;
+    }
+
+    .cp-section h2 {
+        margin: 0 0 18px;
+        color: #fff;
+        font-size: 17px;
+    }
+
+    .cp-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .cp-info {
+        padding: 16px;
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 11px;
+        background: #11151c;
+    }
+
+    .cp-info__label {
+        display: block;
+        margin-bottom: 7px;
+        color: #697487;
+        font-size: 11px;
+    }
+
+    .cp-info__value {
+        color: #dce1ea;
+        font-size: 13px;
+    }
+
+    .cp-bio {
+        padding: 17px;
+        border-radius: 11px;
+        background: #11151c;
+        color: #aab2c0;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .cp-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 28px;
+    }
+
+    .cp-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .cp-btn--primary {
+        background: #5b8def;
+        color: #fff;
+    }
+
+    .cp-btn--secondary {
+        border: 1px solid rgba(255,255,255,.08);
+        background: #151a22;
+        color: #dce1ea;
+    }
+
+    @media (max-width: 650px) {
+
+        .cp-page {
+            padding: 35px 16px 50px;
+        }
+
+        .cp-card {
+            padding: 22px;
+        }
+
+        .cp-header {
+            align-items: flex-start;
+        }
+
+        .cp-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cp-actions {
+            flex-direction: column;
+        }
+
+        .cp-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<section class="cp-page">
+
+    <div class="cp-container">
+
+        <div class="cp-card">
+
+            <!-- PROFILE HEADER -->
+
+            <div class="cp-header">
+
+                {% if profile.profile_picture %}
+
+                    <img
+                        src="{{ profile.profile_picture.url }}"
+                        alt="Profile picture"
+                        class="cp-avatar"
+                    >
+
+                {% else %}
+
+                    <div class="cp-avatar-placeholder">
+                        {{ user.username|first|upper }}
+                    </div>
+
+                {% endif %}
+
+
+                <div>
+
+                    <span class="cp-eyebrow">
+                        Client Profile
+                    </span>
+
+                    <h1 class="cp-name">
+                        {% if profile.full_name %}
+                            {{ profile.full_name }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </h1>
+
+                    <div class="cp-username">
+                        @{{ user.username }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- INFORMATION -->
+
+            <div class="cp-section">
+
+                <h2>Profile Information</h2>
+
+                <div class="cp-info-grid">
+
+                    <div class="cp-info">
+
+                        <span class="cp-info__label">
+                            Full Name
+                        </span>
+
+                        <span class="cp-info__value">
+                            {% if profile.full_name %}
+                                {{ profile.full_name }}
+                            {% else %}
+                                Not added
+                            {% endif %}
+                        </span>
+
+                    </div>
+
+
+                    <div class="cp-info">
+
+                        <span class="cp-info__label">
+                            Company
+                        </span>
+
+                        <span class="cp-info__value">
+                            {% if profile.company_name %}
+                                {{ profile.company_name }}
+                            {% else %}
+                                Not added
+                            {% endif %}
+                        </span>
+
+                    </div>
+
+
+                    <div class="cp-info">
+
+                        <span class="cp-info__label">
+                            Location
+                        </span>
+
+                        <span class="cp-info__value">
+                            {% if profile.location %}
+                                {{ profile.location }}
+                            {% else %}
+                                Not added
+                            {% endif %}
+                        </span>
+
+                    </div>
+
+
+                    <div class="cp-info">
+
+                        <span class="cp-info__label">
+                            Email
+                        </span>
+
+                        <span class="cp-info__value">
+                            {{ user.email }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BIO -->
+
+            <div class="cp-section">
+
+                <h2>About</h2>
+
+                <div class="cp-bio">
+
+                    {% if profile.bio %}
+                        {{ profile.bio }}
+                    {% else %}
+                        No description added yet.
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="cp-actions">
+
+                <a
+                    href="{% url 'client_profile_edit' %}"
+                    class="cp-btn cp-btn--primary"
+                >
+                    Edit Profile
+                </a>
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="cp-btn cp-btn--secondary"
+                >
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

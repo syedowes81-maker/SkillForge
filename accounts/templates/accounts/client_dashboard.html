@@ -1,0 +1,511 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Client Dashboard — SkillForge{% endblock %}
+
+{% block content %}
+
+<style>
+.cd-page {
+    min-height: calc(100vh - 72px);
+    padding: 55px 24px 70px;
+}
+
+.cd-container {
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
+}
+
+.cd-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.cd-eyebrow {
+    display: block;
+    margin-bottom: 8px;
+    color: #5b8def;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.cd-title {
+    margin: 0;
+    color: #fff;
+    font-size: 34px;
+    line-height: 1.15;
+}
+
+.cd-subtitle {
+    margin: 10px 0 0;
+    color: #8d96a8;
+    font-size: 14px;
+}
+
+.cd-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.cd-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.cd-btn--primary {
+    background: #5b8def;
+    color: #fff;
+}
+
+.cd-btn--secondary {
+    background: #151a22;
+    border: 1px solid rgba(255,255,255,.09);
+    color: #dce1ea;
+}
+
+.cd-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.cd-stat {
+    padding: 21px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 15px;
+    background: rgba(20,24,32,.92);
+}
+
+.cd-stat__label {
+    display: block;
+    color: #858fa1;
+    font-size: 12px;
+}
+
+.cd-stat__value {
+    display: block;
+    margin-top: 9px;
+    color: #fff;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.cd-stat__meta {
+    display: block;
+    margin-top: 5px;
+    color: #626d7f;
+    font-size: 11px;
+}
+
+.cd-grid {
+    display: grid;
+    grid-template-columns: 1.25fr .75fr;
+    gap: 20px;
+}
+
+.cd-card {
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 16px;
+    background: rgba(20,24,32,.92);
+}
+
+.cd-wide {
+    grid-column: 1 / -1;
+}
+
+.cd-card__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.cd-card__head h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 17px;
+}
+
+.cd-card__head span {
+    color: #697487;
+    font-size: 11px;
+}
+
+.cd-status {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cd-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.cd-row:last-child {
+    border-bottom: 0;
+}
+
+.cd-row__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #cbd1dc;
+    font-size: 13px;
+}
+
+.cd-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.cd-blue {
+    background: #5b8def;
+}
+
+.cd-yellow {
+    background: #e6b65c;
+}
+
+.cd-green {
+    background: #56c596;
+}
+
+.cd-red {
+    background: #e66b73;
+}
+
+.cd-row strong {
+    color: #fff;
+    font-size: 14px;
+}
+
+.cd-action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.cd-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 62px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 11px;
+    background: #11151c;
+    color: #cbd1dc;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.cd-action:hover {
+    border-color: rgba(91,141,239,.55);
+    background: rgba(91,141,239,.07);
+    color: #fff;
+}
+
+@media (max-width: 900px) {
+    .cd-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cd-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cd-wide {
+        grid-column: auto;
+    }
+
+    .cd-action-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .cd-page {
+        padding: 35px 16px 50px;
+    }
+
+    .cd-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cd-actions {
+        width: 100%;
+    }
+
+    .cd-btn {
+        flex: 1;
+    }
+
+    .cd-stats,
+    .cd-action-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cd-title {
+        font-size: 28px;
+    }
+}
+</style>
+
+<section class="cd-page">
+
+    <div class="cd-container">
+
+        <header class="cd-header">
+
+            <div>
+                <span class="cd-eyebrow">
+                    Client Workspace
+                </span>
+
+                <h1 class="cd-title">
+                    Welcome, {{ user.username }}
+                </h1>
+
+                <p class="cd-subtitle">
+                    Manage your jobs, applications, and hiring activity.
+                </p>
+            </div>
+
+            <div class="cd-actions">
+
+                <a href="{% url 'post_job' %}" class="cd-btn cd-btn--primary">
+                    Post a Job
+                </a>
+
+                <a href="{% url 'client_profile' %}" class="cd-btn cd-btn--secondary">
+                    My Profile
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <div class="cd-stats">
+
+            <div class="cd-stat">
+                <span class="cd-stat__label">Jobs Posted</span>
+
+                <strong class="cd-stat__value">
+                    {{ jobs_posted }}
+                </strong>
+
+                <span class="cd-stat__meta">
+                    Total jobs created
+                </span>
+            </div>
+
+
+            <div class="cd-stat">
+                <span class="cd-stat__label">Open Jobs</span>
+
+                <strong class="cd-stat__value">
+                    {{ open_jobs }}
+                </strong>
+
+                <span class="cd-stat__meta">
+                    Currently accepting applications
+                </span>
+            </div>
+
+
+            <div class="cd-stat">
+                <span class="cd-stat__label">Applications</span>
+
+                <strong class="cd-stat__value">
+                    {{ applications_received }}
+                </strong>
+
+                <span class="cd-stat__meta">
+                    Applications received
+                </span>
+            </div>
+
+
+            <div class="cd-stat">
+                <span class="cd-stat__label">Pending</span>
+
+                <strong class="cd-stat__value">
+                    {{ pending_applications }}
+                </strong>
+
+                <span class="cd-stat__meta">
+                    Waiting for review
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="cd-grid">
+
+
+            <div class="cd-card">
+
+                <div class="cd-card__head">
+
+                    <h2>Hiring Activity</h2>
+
+                    <span>Application status</span>
+
+                </div>
+
+
+                <div class="cd-status">
+
+                    <div class="cd-row">
+
+                        <div class="cd-row__left">
+                            <span class="cd-dot cd-yellow"></span>
+                            Pending Applications
+                        </div>
+
+                        <strong>
+                            {{ pending_applications }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="cd-row">
+
+                        <div class="cd-row__left">
+                            <span class="cd-dot cd-green"></span>
+                            Accepted Applications
+                        </div>
+
+                        <strong>
+                            {{ accepted_applications }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="cd-row">
+
+                        <div class="cd-row__left">
+                            <span class="cd-dot cd-red"></span>
+                            Rejected Applications
+                        </div>
+
+                        <strong>
+                            {{ rejected_applications }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="cd-card">
+
+                <div class="cd-card__head">
+
+                    <h2>Job Overview</h2>
+
+                    <span>Your marketplace</span>
+
+                </div>
+
+
+                <div class="cd-status">
+
+                    <div class="cd-row">
+
+                        <div class="cd-row__left">
+                            <span class="cd-dot cd-blue"></span>
+                            Open Jobs
+                        </div>
+
+                        <strong>
+                            {{ open_jobs }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="cd-row">
+
+                        <div class="cd-row__left">
+                            <span class="cd-dot cd-green"></span>
+                            Closed Jobs
+                        </div>
+
+                        <strong>
+                            {{ closed_jobs }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="cd-card cd-wide">
+
+                <div class="cd-card__head">
+
+                    <h2>Quick Actions</h2>
+
+                    <span>Manage your work</span>
+
+                </div>
+
+
+                <div class="cd-action-grid">
+
+                    <a href="{% url 'post_job' %}" class="cd-action">
+                        Post a Job
+                    </a>
+
+                    <a href="{% url 'browse_jobs' %}" class="cd-action">
+                        Browse Jobs
+                    </a>
+
+                    <a href="{% url 'freelancers' %}" class="cd-action">
+                        Find Freelancers
+                    </a>
+
+                    <a href="{% url 'notifications' %}" class="cd-action">
+                        Notifications
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

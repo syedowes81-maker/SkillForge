@@ -83,7 +83,7 @@ def login_view(request):
 
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
-            role = form.cleaned_data["role"]
+            role = form.cleaned_data["login_role"]
 
             user = authenticate(
                 request,
@@ -93,42 +93,31 @@ def login_view(request):
 
             if user is not None:
 
-                # Check whether the user is allowed
-                # to enter the selected workspace.
-
+                # Check whether the selected role is allowed
                 if role == "freelancer" and not user.can_freelance:
-
                     form.add_error(
                         None,
-                        "This account cannot be used as a freelancer."
+                        "This account is not registered as a freelancer."
                     )
 
                 elif role == "client" and not user.can_hire:
-
                     form.add_error(
                         None,
-                        "This account cannot be used as a client."
+                        "This account is not registered as a client."
                     )
 
                 else:
-
                     login(request, user)
 
-                    # Remember the active workspace
-                    # for this login session.
+                    # Remember the selected workspace
                     request.session["active_role"] = role
 
                     return redirect("dashboard")
 
-            else:
-
-                form.add_error(
-                    None,
-                    "Invalid username or password."
-                )
+        else:
+            pass
 
     else:
-
         form = LoginForm()
 
     return render(
@@ -138,91 +127,131 @@ def login_view(request):
             "form": form
         }
     )
+
+@login_required
 @login_required
 def dashboard(request):
 
-    # Jobs posted by this client
-    jobs_posted = Job.objects.filter(
-        client=request.user
-    )
+    active_role = request.session.get("active_role")
 
-    # Applications received for this client's jobs
-    applications_received = Application.objects.filter(
-        job__client=request.user
-    )
+    # ==============================
+    # FREELANCER DASHBOARD
+    # ==============================
 
-    # Job statistics
-    total_jobs = jobs_posted.count()
+    if active_role == "freelancer":
 
-    open_jobs = jobs_posted.filter(
-        status="Open"
-    ).count()
+        freelancer_projects = Application.objects.filter(
+            freelancer=request.user
+        )
 
-    closed_jobs = jobs_posted.filter(
-        status="Closed"
-    ).count()
+        total_projects = freelancer_projects.count()
 
-    # Application statistics
-    total_applications = applications_received.count()
+        active_projects = freelancer_projects.filter(
+            status="Accepted"
+        ).count()
 
-    pending_applications = applications_received.filter(
-        status="Pending"
-    ).count()
+        completed_projects = freelancer_projects.filter(
+            status="Completed"
+        ).count()
 
-    accepted_applications = applications_received.filter(
-        status="Accepted"
-    ).count()
-
-    rejected_applications = applications_received.filter(
-        status="Rejected"
-    ).count()
-
-    # Freelancer project statistics
-    freelancer_projects = Application.objects.filter(
-        freelancer=request.user
-    )
-
-    total_projects = freelancer_projects.count()
-
-    active_projects = freelancer_projects.filter(
-        status="Accepted"
-    ).count()
-
-    completed_projects = freelancer_projects.filter(
-        status="Completed"
-    ).count()
-
-    confirmed_projects = freelancer_projects.filter(
-        status="Confirmed"
-    ).count()
-
-    total_earnings = sum(
-        project.job.budget
-        for project in freelancer_projects.filter(
+        confirmed_projects = freelancer_projects.filter(
             status="Confirmed"
-        ).select_related("job")
-    )
+        ).count()
 
-    return render(
-        request,
-        "accounts/dashboard.html",
-        {
-            "jobs_posted": total_jobs,
-            "open_jobs": open_jobs,
-            "closed_jobs": closed_jobs,
+        pending_applications = freelancer_projects.filter(
+            status="Pending"
+        ).count()
 
-            "applications_received": total_applications,
-            "pending_applications": pending_applications,
-            "accepted_applications": accepted_applications,
-            "rejected_applications": rejected_applications,
+        rejected_applications = freelancer_projects.filter(
+            status="Rejected"
+        ).count()
 
-            "total_projects": total_projects,
-            "active_projects": active_projects,
-            "completed_projects": completed_projects,
-            "confirmed_projects": confirmed_projects,
-            "total_earnings": total_earnings,
-        }
-    )
+        total_earnings = sum(
+            project.job.budget
+            for project in freelancer_projects.filter(
+                status="Confirmed"
+            ).select_related("job")
+        )
+
+        return render(
+            request,
+            "accounts/freelancer_dashboard.html",
+            {
+                "total_projects": total_projects,
+                "active_projects": active_projects,
+                "completed_projects": completed_projects,
+                "confirmed_projects": confirmed_projects,
+                "pending_applications": pending_applications,
+                "rejected_applications": rejected_applications,
+                "total_earnings": total_earnings,
+            }
+        )
+
+
+    # ==============================
+    # CLIENT DASHBOARD
+    # ==============================
+
+    elif active_role == "client":
+
+        jobs_posted = Job.objects.filter(
+            client=request.user
+        )
+
+        applications_received = Application.objects.filter(
+            job__client=request.user
+        )
+
+        total_jobs = jobs_posted.count()
+
+        open_jobs = jobs_posted.filter(
+            status="Open"
+        ).count()
+
+        closed_jobs = jobs_posted.filter(
+            status="Closed"
+        ).count()
+
+        total_applications = applications_received.count()
+
+        pending_applications = applications_received.filter(
+            status="Pending"
+        ).count()
+
+        accepted_applications = applications_received.filter(
+            status="Accepted"
+        ).count()
+
+        rejected_applications = applications_received.filter(
+            status="Rejected"
+        ).count()
+
+        return render(
+            request,
+            "accounts/client_dashboard.html",
+            {
+                "jobs_posted": total_jobs,
+                "open_jobs": open_jobs,
+                "closed_jobs": closed_jobs,
+
+                "applications_received": total_applications,
+                "pending_applications": pending_applications,
+                "accepted_applications": accepted_applications,
+                "rejected_applications": rejected_applications,
+
+                "closed_jobs": closed_jobs,
+            }
+        )
+
+
+    # ==============================
+    # BOTH
+    # ==============================
+
+    else:
+
+        return redirect("login")
+
 def logout_view(request):
   logout(request)
   return redirect("/login/")
@@ -526,5 +555,37 @@ def edit_client_profile(request):
         "accounts/edit_client_profile.html",
         {
             "form": form,
+        }
+    )
+
+
+@login_required
+def client_profile_edit(request):
+
+    profile = request.user.clientprofile
+
+    if request.method == "POST":
+
+        form = ClientProfileForm(
+            request.POST,
+            request.FILES,
+            instance=profile
+        )
+
+        if form.is_valid():
+            form.save()
+            return redirect("client_profile")
+
+    else:
+
+        form = ClientProfileForm(
+            instance=profile
+        )
+
+    return render(
+        request,
+        "accounts/client_profile_edit.html",
+        {
+            "form": form
         }
     )

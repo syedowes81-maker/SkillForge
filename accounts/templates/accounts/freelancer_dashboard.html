@@ -1,0 +1,715 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Freelancer Dashboard — SkillForge{% endblock %}
+
+{% block content %}
+
+<style>
+    /* =========================================================
+       SKILLFORGE — FREELANCER DASHBOARD
+       Page-specific CSS
+       ========================================================= */
+
+    .fd-page {
+        min-height: calc(100vh - 72px);
+        padding: 55px 24px 70px;
+    }
+
+    .fd-container {
+        width: 100%;
+        max-width: 1160px;
+        margin: 0 auto;
+    }
+
+    /* HEADER */
+
+    .fd-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 25px;
+        margin-bottom: 35px;
+    }
+
+    .fd-eyebrow {
+        display: block;
+        margin-bottom: 8px;
+
+        color: #5b8def;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .fd-title {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 34px;
+        line-height: 1.15;
+        letter-spacing: -0.8px;
+    }
+
+    .fd-subtitle {
+        margin: 10px 0 0;
+
+        color: #8d96a8;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .fd-header-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .fd-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 44px;
+        padding: 0 18px;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+
+        transition:
+            transform .15s ease,
+            background .2s ease,
+            border-color .2s ease;
+    }
+
+    .fd-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .fd-btn--primary {
+        background: #5b8def;
+        color: #ffffff;
+    }
+
+    .fd-btn--primary:hover {
+        background: #6b9af2;
+    }
+
+    .fd-btn--secondary {
+        border: 1px solid rgba(255,255,255,.09);
+        background: #151a22;
+        color: #dce1ea;
+    }
+
+    .fd-btn--secondary:hover {
+        border-color: rgba(91,141,239,.5);
+    }
+
+    /* STATS */
+
+    .fd-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+
+        margin-bottom: 20px;
+    }
+
+    .fd-stat {
+        padding: 21px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 15px;
+
+        background: rgba(20,24,32,.92);
+
+        box-shadow: 0 12px 35px rgba(0,0,0,.12);
+    }
+
+    .fd-stat__label {
+        display: block;
+
+        color: #858fa1;
+        font-size: 12px;
+    }
+
+    .fd-stat__value {
+        display: block;
+
+        margin-top: 9px;
+
+        color: #ffffff;
+        font-size: 27px;
+        font-weight: 700;
+    }
+
+    .fd-stat__meta {
+        display: block;
+
+        margin-top: 5px;
+
+        color: #626d7f;
+        font-size: 11px;
+    }
+
+    /* MAIN GRID */
+
+    .fd-grid {
+        display: grid;
+        grid-template-columns: 1.25fr .75fr;
+        gap: 20px;
+    }
+
+    .fd-card {
+        padding: 24px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 16px;
+
+        background: rgba(20,24,32,.92);
+    }
+
+    .fd-card--wide {
+        grid-column: 1 / -1;
+    }
+
+    .fd-card__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 22px;
+    }
+
+    .fd-card__head h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 650;
+    }
+
+    .fd-card__head span {
+        color: #697487;
+        font-size: 11px;
+    }
+
+    /* PROJECT STATUS */
+
+    .fd-status-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .fd-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 14px 0;
+
+        border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .fd-status:last-child {
+        border-bottom: 0;
+    }
+
+    .fd-status__left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        color: #cbd1dc;
+        font-size: 13px;
+    }
+
+    .fd-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .fd-dot--blue {
+        background: #5b8def;
+    }
+
+    .fd-dot--yellow {
+        background: #e6b65c;
+    }
+
+    .fd-dot--green {
+        background: #56c596;
+    }
+
+    .fd-dot--red {
+        background: #e66b73;
+    }
+
+    .fd-status strong {
+        color: #ffffff;
+        font-size: 14px;
+    }
+
+    /* EARNINGS */
+
+    .fd-earnings {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        padding: 20px 0 12px;
+    }
+
+    .fd-earnings__label {
+        color: #7f899b;
+        font-size: 12px;
+    }
+
+    .fd-earnings__value {
+        margin-top: 8px;
+
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 700;
+    }
+
+    .fd-earnings__note {
+        margin-top: 7px;
+
+        color: #596476;
+        font-size: 11px;
+    }
+
+    /* QUICK ACTIONS */
+
+    .fd-actions {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .fd-action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 62px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 11px;
+
+        background: #11151c;
+        color: #cbd1dc;
+
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+
+        transition:
+            border-color .2s ease,
+            background .2s ease,
+            color .2s ease,
+            transform .15s ease;
+    }
+
+    .fd-action:hover {
+        transform: translateY(-2px);
+
+        border-color: rgba(91,141,239,.55);
+        background: rgba(91,141,239,.07);
+        color: #ffffff;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 900px) {
+
+        .fd-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .fd-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .fd-card--wide {
+            grid-column: auto;
+        }
+
+        .fd-actions {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .fd-page {
+            padding: 35px 16px 50px;
+        }
+
+        .fd-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .fd-title {
+            font-size: 28px;
+        }
+
+        .fd-header-actions {
+            width: 100%;
+        }
+
+        .fd-btn {
+            flex: 1;
+        }
+
+        .fd-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .fd-actions {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+
+<section class="fd-page">
+
+    <div class="fd-container">
+
+
+        <!-- HEADER -->
+
+        <header class="fd-header">
+
+            <div>
+
+                <span class="fd-eyebrow">
+                    Freelancer Workspace
+                </span>
+
+                <h1 class="fd-title">
+                    Welcome, {{ user.username }}
+                </h1>
+
+                <p class="fd-subtitle">
+                    Track your projects, applications, and earnings.
+                </p>
+
+            </div>
+
+
+            <div class="fd-header-actions">
+
+                <a
+                    href="{% url 'browse_jobs' %}"
+                    class="fd-btn fd-btn--primary"
+                >
+                    Browse Jobs
+                </a>
+
+                <a
+                    href="{% url 'profile' %}"
+                    class="fd-btn fd-btn--secondary"
+                >
+                    My Profile
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- STATS -->
+
+        <div class="fd-stats">
+
+            <div class="fd-stat">
+
+                <span class="fd-stat__label">
+                    Total Projects
+                </span>
+
+                <strong class="fd-stat__value">
+                    {{ total_projects }}
+                </strong>
+
+                <span class="fd-stat__meta">
+                    Projects you've applied to
+                </span>
+
+            </div>
+
+
+            <div class="fd-stat">
+
+                <span class="fd-stat__label">
+                    Active Projects
+                </span>
+
+                <strong class="fd-stat__value">
+                    {{ active_projects }}
+                </strong>
+
+                <span class="fd-stat__meta">
+                    Currently in progress
+                </span>
+
+            </div>
+
+
+            <div class="fd-stat">
+
+                <span class="fd-stat__label">
+                    Completed
+                </span>
+
+                <strong class="fd-stat__value">
+                    {{ completed_projects }}
+                </strong>
+
+                <span class="fd-stat__meta">
+                    Successfully completed
+                </span>
+
+            </div>
+
+
+            <div class="fd-stat">
+
+                <span class="fd-stat__label">
+                    Applications
+                </span>
+
+                <strong class="fd-stat__value">
+                    {{ pending_applications }}
+                </strong>
+
+                <span class="fd-stat__meta">
+                    Currently pending
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- MAIN -->
+
+        <div class="fd-grid">
+
+
+            <!-- PROJECT STATUS -->
+
+            <div class="fd-card">
+
+                <div class="fd-card__head">
+
+                    <h2>
+                        Project Status
+                    </h2>
+
+                    <span>
+                        Your current activity
+                    </span>
+
+                </div>
+
+
+                <div class="fd-status-list">
+
+                    <div class="fd-status">
+
+                        <div class="fd-status__left">
+
+                            <span class="fd-dot fd-dot--yellow"></span>
+
+                            Pending Applications
+
+                        </div>
+
+                        <strong>
+                            {{ pending_applications }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fd-status">
+
+                        <div class="fd-status__left">
+
+                            <span class="fd-dot fd-dot--blue"></span>
+
+                            Active Projects
+
+                        </div>
+
+                        <strong>
+                            {{ active_projects }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fd-status">
+
+                        <div class="fd-status__left">
+
+                            <span class="fd-dot fd-dot--green"></span>
+
+                            Completed Projects
+
+                        </div>
+
+                        <strong>
+                            {{ completed_projects }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fd-status">
+
+                        <div class="fd-status__left">
+
+                            <span class="fd-dot fd-dot--green"></span>
+
+                            Confirmed Projects
+
+                        </div>
+
+                        <strong>
+                            {{ confirmed_projects }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fd-status">
+
+                        <div class="fd-status__left">
+
+                            <span class="fd-dot fd-dot--red"></span>
+
+                            Rejected Applications
+
+                        </div>
+
+                        <strong>
+                            {{ rejected_applications }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- EARNINGS -->
+
+            <div class="fd-card">
+
+                <div class="fd-card__head">
+
+                    <h2>
+                        Earnings
+                    </h2>
+
+                    <span>
+                        Confirmed work
+                    </span>
+
+                </div>
+
+
+                <div class="fd-earnings">
+
+                    <span class="fd-earnings__label">
+                        Total Earnings
+                    </span>
+
+                    <strong class="fd-earnings__value">
+                        ₹{{ total_earnings }}
+                    </strong>
+
+                    <span class="fd-earnings__note">
+                        Based on confirmed projects
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <div class="fd-card fd-card--wide">
+
+                <div class="fd-card__head">
+
+                    <h2>
+                        Quick Actions
+                    </h2>
+
+                    <span>
+                        Get things done faster
+                    </span>
+
+                </div>
+
+
+                <div class="fd-actions">
+
+                    <a
+                        href="{% url 'browse_jobs' %}"
+                        class="fd-action"
+                    >
+                        Browse Jobs
+                    </a>
+
+
+                    <a
+                        href="{% url 'saved_jobs' %}"
+                        class="fd-action"
+                    >
+                        Saved Jobs
+                    </a>
+
+
+                    <a
+                        href="{% url 'notifications' %}"
+                        class="fd-action"
+                    >
+                        Notifications
+                    </a>
+
+
+                    <a
+                        href="{% url 'messages' %}"
+                        class="fd-action"
+                    >
+                        Messages
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,255 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Edit Client Profile — SkillForge{% endblock %}
+
+{% block content %}
+
+<style>
+    .cpe-page {
+        min-height: calc(100vh - 72px);
+        padding: 55px 24px 70px;
+    }
+
+    .cpe-container {
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    .cpe-card {
+        padding: 34px;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 18px;
+        background: rgba(20,24,32,.94);
+    }
+
+    .cpe-eyebrow {
+        display: block;
+        margin-bottom: 8px;
+        color: #5b8def;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .cpe-title {
+        margin: 0;
+        color: #fff;
+        font-size: 28px;
+    }
+
+    .cpe-subtitle {
+        margin: 9px 0 30px;
+        color: #727d90;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .cpe-form {
+        display: flex;
+        flex-direction: column;
+        gap: 19px;
+    }
+
+    .cpe-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .cpe-field label {
+        color: #cdd3de;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .cpe-field input,
+    .cpe-field textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px 14px;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 10px;
+        outline: none;
+        background: #11151c;
+        color: #e8ebf1;
+        font-family: inherit;
+        font-size: 13px;
+    }
+
+    .cpe-field textarea {
+        min-height: 135px;
+        resize: vertical;
+    }
+
+    .cpe-field input:focus,
+    .cpe-field textarea:focus {
+        border-color: #5b8def;
+        box-shadow: 0 0 0 3px rgba(91,141,239,.10);
+    }
+
+    .cpe-field input[type="file"] {
+        padding: 10px;
+    }
+
+    .cpe-help {
+        color: #687386;
+        font-size: 11px;
+    }
+
+    .cpe-error {
+        color: #f29b9b;
+        font-size: 11px;
+    }
+
+    .cpe-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+    }
+
+    .cpe-btn {
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cpe-btn--primary {
+        border: none;
+        background: #5b8def;
+        color: #fff;
+    }
+
+    .cpe-btn--secondary {
+        border: 1px solid rgba(255,255,255,.08);
+        background: #151a22;
+        color: #dce1ea;
+    }
+
+    .cpe-btn--primary:hover {
+        filter: brightness(1.08);
+    }
+
+    .cpe-btn--secondary:hover {
+        border-color: rgba(255,255,255,.16);
+    }
+
+    @media (max-width: 600px) {
+        .cpe-page {
+            padding: 35px 16px 50px;
+        }
+
+        .cpe-card {
+            padding: 23px;
+        }
+
+        .cpe-actions {
+            flex-direction: column;
+        }
+
+        .cpe-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<section class="cpe-page">
+
+    <div class="cpe-container">
+
+        <div class="cpe-card">
+
+            <span class="cpe-eyebrow">
+                Client Settings
+            </span>
+
+            <h1 class="cpe-title">
+                Edit your profile
+            </h1>
+
+            <p class="cpe-subtitle">
+                Update your information so freelancers know who they
+                will be working with.
+            </p>
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                class="cpe-form"
+            >
+
+                {% csrf_token %}
+
+
+                {% for field in form %}
+
+                    <div class="cpe-field">
+
+                        {{ field.label_tag }}
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <span class="cpe-help">
+                                {{ field.help_text }}
+                            </span>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            <span class="cpe-error">
+                                {{ field.errors|striptags }}
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+
+                {% if form.non_field_errors %}
+
+                    <div class="cpe-error">
+                        {{ form.non_field_errors|striptags }}
+                    </div>
+
+                {% endif %}
+
+
+                <div class="cpe-actions">
+
+                    <button
+                        type="submit"
+                        class="cpe-btn cpe-btn--primary"
+                    >
+                        Save Changes
+                    </button>
+
+                    <a
+                        href="{% url 'client_profile' %}"
+                        class="cpe-btn cpe-btn--secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -43,7 +43,6 @@ class RegistrationForm(forms.ModelForm):
             )
 
         return cleaned_data
-
 class LoginForm(forms.Form):
 
     username = forms.CharField(
@@ -54,17 +53,14 @@ class LoginForm(forms.Form):
         widget=forms.PasswordInput
     )
 
-    ROLE_CHOICES = [
-        ("freelancer", "Freelancer — Find Work"),
-        ("client", "Client — Hire Talent"),
-    ]
-
-    role = forms.ChoiceField(
-        choices=ROLE_CHOICES,
+    login_role = forms.ChoiceField(
+        choices=[
+            ("freelancer", "Find Work"),
+            ("client", "Hire Talent"),
+        ],
         widget=forms.RadioSelect,
         required=True
     )
-
 class FreelancerProfileForm(forms.ModelForm):
 
     class Meta:

@@ -4,37 +4,392 @@
 
 {% block content %}
 
+<style>
+
+    /* =========================================================
+       SKILLFORGE FINAL LOGIN PAGE
+       Self-contained — does not depend on style.css
+       ========================================================= */
+
+    .sf-login-page {
+        min-height: calc(100vh - 72px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 24px;
+        box-sizing: border-box;
+    }
+
+    .sf-login-card {
+        width: 100%;
+        max-width: 470px;
+        box-sizing: border-box;
+
+        padding: 42px;
+
+        background: rgba(20, 24, 32, 0.96);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, 0.35);
+
+        color: #ffffff;
+    }
+
+    .sf-login-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 12px;
+
+        color: #5b8def;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .sf-login-eyebrow::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #5b8def;
+    }
+
+    .sf-login-card h1 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 32px;
+        line-height: 1.2;
+        font-weight: 700;
+        letter-spacing: -0.7px;
+    }
+
+    .sf-login-subtitle {
+        margin: 10px 0 30px;
+
+        color: #9ba4b5;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /* Fields */
+
+    .sf-login-field {
+        margin-bottom: 18px;
+    }
+
+    .sf-login-field label {
+        display: block;
+        margin-bottom: 7px;
+
+        color: #e7eaf0;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .sf-login-field input {
+        width: 100%;
+        height: 48px;
+
+        box-sizing: border-box;
+
+        padding: 0 14px;
+
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        border-radius: 10px;
+
+        outline: none;
+
+        background: #11151c;
+        color: #ffffff;
+
+        font-family: inherit;
+        font-size: 14px;
+
+        transition:
+            border-color .2s ease,
+            box-shadow .2s ease,
+            background .2s ease;
+    }
+
+    .sf-login-field input:focus {
+        border-color: #5b8def;
+        background: #151a23;
+
+        box-shadow:
+            0 0 0 3px rgba(91, 141, 239, 0.12);
+    }
+
+    .sf-login-field input::placeholder {
+        color: #687284;
+    }
+
+    /* Errors */
+
+    .sf-login-error {
+        margin: 8px 0 15px;
+        padding: 11px 13px;
+
+        border: 1px solid rgba(239, 91, 91, 0.25);
+        border-radius: 9px;
+
+        background: rgba(239, 91, 91, 0.08);
+        color: #f29b9b;
+
+        font-size: 12px;
+    }
+
+    /* Workspace */
+
+    .sf-login-workspace {
+        margin-top: 25px;
+        margin-bottom: 24px;
+    }
+
+    .sf-login-workspace-title {
+        margin-bottom: 11px;
+    }
+
+    .sf-login-workspace-title strong {
+        display: block;
+
+        color: #e7eaf0;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .sf-login-workspace-title span {
+        display: block;
+        margin-top: 3px;
+
+        color: #7f899a;
+        font-size: 12px;
+    }
+
+    .sf-login-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .sf-login-option {
+        position: relative;
+
+        min-height: 105px;
+        box-sizing: border-box;
+
+        padding: 16px;
+
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 12px;
+
+        background: #11151c;
+
+        cursor: pointer;
+
+        transition:
+            border-color .2s ease,
+            background .2s ease,
+            transform .15s ease,
+            box-shadow .2s ease;
+    }
+
+    .sf-login-option:hover {
+        transform: translateY(-2px);
+
+        border-color: rgba(91, 141, 239, 0.65);
+
+        background: #151a23;
+    }
+
+    .sf-login-option input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .sf-login-radio {
+        display: block;
+
+        width: 17px;
+        height: 17px;
+
+        margin-bottom: 12px;
+
+        box-sizing: border-box;
+
+        border: 2px solid #596273;
+        border-radius: 50%;
+    }
+
+    .sf-login-option input:checked ~ .sf-login-radio {
+        border-color: #5b8def;
+
+        background:
+            radial-gradient(
+                circle,
+                #5b8def 0 4px,
+                transparent 4.5px
+            );
+    }
+
+    .sf-login-option:has(input:checked) {
+        border-color: #5b8def;
+
+        background: rgba(91, 141, 239, 0.08);
+
+        box-shadow:
+            0 0 0 3px rgba(91, 141, 239, 0.10);
+    }
+
+    .sf-login-option strong {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .sf-login-option small {
+        display: block;
+
+        color: #818b9d;
+        font-size: 11.5px;
+        line-height: 1.5;
+    }
+
+    /* Login button */
+
+    .sf-login-button {
+        width: 100%;
+        height: 48px;
+
+        border: 0;
+        border-radius: 10px;
+
+        background: #5b8def;
+        color: #ffffff;
+
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+
+        cursor: pointer;
+
+        transition:
+            background .2s ease,
+            transform .15s ease,
+            box-shadow .2s ease;
+    }
+
+    .sf-login-button:hover {
+        background: #6c9af2;
+
+        box-shadow:
+            0 8px 25px rgba(91, 141, 239, 0.25);
+    }
+
+    .sf-login-button:active {
+        transform: scale(0.99);
+    }
+
+    /* Forgot password */
+
+    .sf-login-forgot {
+        margin: 15px 0 0;
+
+        text-align: center;
+    }
+
+    .sf-login-forgot a {
+        color: #5b8def;
+        font-size: 12.5px;
+        text-decoration: none;
+    }
+
+    .sf-login-forgot a:hover {
+        text-decoration: underline;
+    }
+
+    /* Register link */
+
+    .sf-login-register {
+        margin: 22px 0 0;
+
+        color: #7f899a;
+        font-size: 13px;
+
+        text-align: center;
+    }
+
+    .sf-login-register a {
+        color: #5b8def;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .sf-login-register a:hover {
+        text-decoration: underline;
+    }
+
+    /* Mobile */
+
+    @media (max-width: 600px) {
+
+        .sf-login-page {
+            padding: 35px 16px;
+        }
+
+        .sf-login-card {
+            padding: 30px 22px;
+        }
+
+        .sf-login-card h1 {
+            font-size: 27px;
+        }
+
+        .sf-login-options {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+
 <section class="sf-login-page">
 
     <div class="sf-login-card">
 
-        <!-- HEADER -->
-        <div class="sf-login-header">
-
-            <span class="sf-login-eyebrow">
-                WELCOME BACK
-            </span>
-
-            <h1>Welcome back</h1>
-
-            <p>
-                Log in to continue finding work or hiring talented professionals.
-            </p>
-
+        <div class="sf-login-eyebrow">
+            Welcome Back
         </div>
 
 
-        <!-- LOGIN FORM -->
-        <form
-            method="POST"
-            class="sf-login-form"
-            novalidate
-        >
+        <h1>
+            Log in to SkillForge
+        </h1>
+
+
+        <p class="sf-login-subtitle">
+            Continue finding work or hiring talented professionals.
+        </p>
+
+
+        <form method="POST" novalidate>
 
             {% csrf_token %}
 
 
             <!-- USERNAME -->
+
             <div class="sf-login-field">
 
                 <label for="{{ form.username.id_for_label }}">
@@ -44,66 +399,146 @@
                 {{ form.username }}
 
                 {% if form.username.errors %}
-                    <small class="sf-login-error">
+
+                    <div class="sf-login-error">
                         {{ form.username.errors|striptags }}
-                    </small>
+                    </div>
+
                 {% endif %}
 
             </div>
 
 
             <!-- PASSWORD -->
+
             <div class="sf-login-field">
 
-                <div class="sf-login-label-row">
-
-                    <label for="{{ form.password.id_for_label }}">
-                        Password
-                    </label>
-
-                    <a
-                        href="{% url 'password_reset' %}"
-                        class="sf-login-forgot"
-                    >
-                        Forgot password?
-                    </a>
-
-                </div>
+                <label for="{{ form.password.id_for_label }}">
+                    Password
+                </label>
 
                 {{ form.password }}
 
                 {% if form.password.errors %}
-                    <small class="sf-login-error">
+
+                    <div class="sf-login-error">
                         {{ form.password.errors|striptags }}
-                    </small>
+                    </div>
+
                 {% endif %}
 
             </div>
 
 
-            <!-- GENERAL LOGIN ERROR -->
+            <!-- FORM ERROR -->
+
             {% if form.non_field_errors %}
 
-                <div class="sf-login-error-box">
+                <div class="sf-login-error">
                     Invalid username or password.
                 </div>
 
             {% endif %}
 
 
-            <!-- LOGIN BUTTON -->
+            <!-- WORKSPACE -->
+
+            <div class="sf-login-workspace">
+
+                <div class="sf-login-workspace-title">
+
+                    <strong>
+                        Continue as
+                    </strong>
+
+                    <span>
+                        Choose your workspace
+                    </span>
+
+                </div>
+
+
+                <div class="sf-login-options">
+
+
+                    <!-- FIND WORK -->
+
+                    <label class="sf-login-option">
+
+                        <input
+                            type="radio"
+                            name="login_role"
+                            value="freelancer"
+                            required
+                        >
+
+                        <span class="sf-login-radio"></span>
+
+                        <strong>
+                            Find Work
+                        </strong>
+
+                        <small>
+                            Find projects and work as a freelancer.
+                        </small>
+
+                    </label>
+
+
+                    <!-- HIRE TALENT -->
+
+                    <label class="sf-login-option">
+
+                        <input
+                            type="radio"
+                            name="login_role"
+                            value="client"
+                        >
+
+                        <span class="sf-login-radio"></span>
+
+                        <strong>
+                            Hire Talent
+                        </strong>
+
+                        <small>
+                            Post jobs and hire skilled professionals.
+                        </small>
+
+                    </label>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- LOGIN -->
+
             <button
                 type="submit"
-                class="sf-login-submit"
+                class="sf-login-button"
             >
                 Log In
-                <span>→</span>
             </button>
+
 
         </form>
 
 
-        <!-- REGISTER LINK -->
+        <!-- FORGOT PASSWORD -->
+
+        <div class="sf-login-forgot">
+
+            <a href="{% url 'password_reset' %}">
+                Forgot your password?
+            </a>
+
+        </div>
+
+
+        <!-- REGISTER -->
+
         <p class="sf-login-register">
 
             Don't have an account?
@@ -113,35 +548,6 @@
             </a>
 
         </p>
-
-
-        <!-- ROLE INFORMATION -->
-        <div class="sf-login-divider">
-            <span>SKILLFORGE</span>
-        </div>
-
-        <div class="sf-login-role-hint">
-
-            <div class="sf-login-role-item">
-                <span class="sf-login-role-icon">↗</span>
-
-                <div>
-                    <strong>Find Work</strong>
-                    <small>Work as a freelancer</small>
-                </div>
-            </div>
-
-
-            <div class="sf-login-role-item">
-                <span class="sf-login-role-icon">◈</span>
-
-                <div>
-                    <strong>Hire Talent</strong>
-                    <small>Work as a client</small>
-                </div>
-            </div>
-
-        </div>
 
     </div>
 
