@@ -1,167 +1,626 @@
-{% extends "accounts/base.html" %}
-
-{% block title %}{{ job.title }} — SkillForge{% endblock %}
-
-{% block content %}
-
-<section class="sf-job-detail">
-
-  <div class="container">
-
-    <a href="{% url 'browse_jobs' %}" class="sf-job-detail__back">
-      ← Back to Jobs
-    </a>
-
-
-    <div class="sf-job-detail__layout">
-
-      <!-- MAIN CONTENT -->
-      <main class="sf-job-detail__main">
-
-        <div class="sf-job-detail__category">
-          {{ job.category }}
-        </div>
-
-        <h1 class="sf-job-detail__title">
-          {{ job.title }}
-        </h1>
-
-        <div class="sf-job-detail__client">
-          <span class="sf-job-detail__avatar">
-            {{ job.client.username|first|upper }}
-          </span>
-
-          <div>
-            <span class="sf-job-detail__client-label">Posted by</span>
-            <strong>{{ job.client.username }}</strong>
-          </div>
-        </div>
-
-
-        <div class="sf-job-detail__divider"></div>
-
-
-        <section class="sf-job-detail__section">
-          <h2>About this project</h2>
-
-          <p>
-            {{ job.description }}
-          </p>
-        </section>
-
-
-        <section class="sf-job-detail__section">
-          <h2>Project details</h2>
-
-          <div class="sf-job-detail__details">
-
-            <div class="sf-job-detail__detail">
-              <span>Category</span>
-              <strong>{{ job.category }}</strong>
-            </div>
-
-            <div class="sf-job-detail__detail">
-              <span>Location</span>
-              <strong>{{ job.location }}</strong>
-            </div>
-
-            <div class="sf-job-detail__detail">
-              <span>Status</span>
-              <strong>{{ job.status }}</strong>
-            </div>
-
-          </div>
-        </section>
-
-      </main>
-
-
-      <!-- SIDEBAR -->
-      <aside class="sf-job-detail__sidebar">
-
-        <div class="sf-job-detail__card">
-
-          <span class="sf-job-detail__budget-label">
-            Project budget
-          </span>
-
-          <strong class="sf-job-detail__budget">
-            ₹{{ job.budget }}
-          </strong>
-
-
-          <div class="sf-job-detail__card-divider"></div>
-
-
-          {% if job.client == user %}
-
-            <div class="sf-job-detail__notice">
-              <span>✓</span>
-              <div>
-                <strong>Your job</strong>
-                <p>You posted this project.</p>
-              </div>
-            </div>
-
-          {% elif job.status == "Open" %}
-
-            <a
-              href="{% url 'apply_job' job.id %}"
-              class="sf-job-detail__apply"
-            >
-              Apply Now
-              <span>→</span>
-            </a>
-
-          {% else %}
-
-            <div class="sf-job-detail__notice sf-job-detail__notice--closed">
-              <span>!</span>
-              <div>
-                <strong>Applications closed</strong>
-                <p>This project is no longer accepting applications.</p>
-              </div>
-            </div>
-
-          {% endif %}
-
-
-          <a
-            href="{% url 'save_job' job.id %}"
-            class="sf-job-detail__save"
-          >
-            ☆ &nbsp; Save Job
-          </a>
-
-
-          <a
-            href="{% url 'view_applicants' job.id %}"
-            class="sf-job-detail__applicants"
-          >
-            View Applicants
-          </a>
-
-        </div>
-
-
-        <div class="sf-job-detail__side-note">
-          <span class="sf-job-detail__side-note-dot"></span>
-
-          <div>
-            <strong>Work with confidence</strong>
-            <p>
-              Review the project details carefully before applying.
-            </p>
-          </div>
-        </div>
-
-      </aside>
-
-    </div>
-
-  </div>
-
-</section>
-
+{% extends "accounts/base.html" %}  
+  
+{% block title %}{{ job.title }} — SkillForge{% endblock %}  
+  
+{% block content %}  
+  
+<style>  
+    .job-page {  
+        min-height: calc(100vh - 72px);  
+        padding: 48px 24px 70px;  
+    }  
+  
+    .job-container {  
+        width: 100%;  
+        max-width: 1160px;  
+        margin: 0 auto;  
+    }  
+  
+    .job-back {  
+        display: inline-flex;  
+        align-items: center;  
+        gap: 7px;  
+        margin-bottom: 25px;  
+        color: #7f899b;  
+        font-size: 13px;  
+        text-decoration: none;  
+        transition: .2s ease;  
+    }  
+  
+    .job-back:hover {  
+        color: #fff;  
+        transform: translateX(-2px);  
+    }  
+  
+    .job-layout {  
+        display: grid;  
+        grid-template-columns: minmax(0, 1fr) 340px;  
+        gap: 22px;  
+        align-items: start;  
+    }  
+  
+    /* MAIN */  
+  
+    .job-main {  
+        padding: 30px;  
+        border: 1px solid rgba(255,255,255,.07);  
+        border-radius: 18px;  
+        background: rgba(20,24,32,.94);  
+        box-shadow: 0 18px 45px rgba(0,0,0,.12);  
+    }  
+  
+    .job-category {  
+        display: inline-flex;  
+        align-items: center;  
+        padding: 6px 10px;  
+        border-radius: 7px;  
+        background: rgba(91,141,239,.10);  
+        color: #76a0f2;  
+        font-size: 11px;  
+        font-weight: 700;  
+        letter-spacing: .4px;  
+        text-transform: uppercase;  
+    }  
+  
+    .job-title {  
+        margin: 15px 0 20px;  
+        color: #fff;  
+        font-size: 34px;  
+        line-height: 1.18;  
+        letter-spacing: -.8px;  
+    }  
+  
+    .job-client {  
+        display: flex;  
+        align-items: center;  
+        gap: 11px;  
+    }  
+  
+    .job-avatar {  
+        display: flex;  
+        align-items: center;  
+        justify-content: center;  
+        width: 42px;  
+        height: 42px;  
+        border-radius: 12px;  
+        background: rgba(91,141,239,.13);  
+        border: 1px solid rgba(91,141,239,.22);  
+        color: #78a1f1;  
+        font-size: 15px;  
+        font-weight: 700;  
+    }  
+  
+    .job-client-label {  
+        display: block;  
+        margin-bottom: 3px;  
+        color: #697487;  
+        font-size: 11px;  
+    }  
+  
+    .job-client strong {  
+        color: #dce2ec;  
+        font-size: 13px;  
+    }  
+  
+    .job-divider {  
+        height: 1px;  
+        margin: 28px 0;  
+        background: rgba(255,255,255,.06);  
+    }  
+  
+    .job-section {  
+        margin-bottom: 32px;  
+    }  
+  
+    .job-section:last-child {  
+        margin-bottom: 0;  
+    }  
+  
+    .job-section h2 {  
+        margin: 0 0 13px;  
+        color: #fff;  
+        font-size: 17px;  
+        font-weight: 650;  
+    }  
+  
+    .job-description {  
+        margin: 0;  
+        color: #9aa3b3;  
+        font-size: 14px;  
+        line-height: 1.8;  
+        white-space: pre-line;  
+    }  
+  
+    /* DETAILS */  
+  
+    .job-details {  
+        display: grid;  
+        grid-template-columns: repeat(3, 1fr);  
+        gap: 11px;  
+    }  
+  
+    .job-detail-item {  
+        padding: 16px;  
+        border: 1px solid rgba(255,255,255,.06);  
+        border-radius: 12px;  
+        background: #11151c;  
+    }  
+  
+    .job-detail-item span {  
+        display: block;  
+        margin-bottom: 7px;  
+        color: #687386;  
+        font-size: 11px;  
+    }  
+  
+    .job-detail-item strong {  
+        color: #dce2ec;  
+        font-size: 13px;  
+    }  
+  
+    /* SIDEBAR */  
+  
+    .job-sidebar {  
+        display: flex;  
+        flex-direction: column;  
+        gap: 15px;  
+    }  
+  
+    .job-card {  
+        padding: 24px;  
+        border: 1px solid rgba(255,255,255,.07);  
+        border-radius: 18px;  
+        background: rgba(20,24,32,.96);  
+        box-shadow: 0 18px 45px rgba(0,0,0,.12);  
+    }  
+  
+    .job-budget-label {  
+        color: #727d90;  
+        font-size: 12px;  
+    }  
+  
+    .job-budget {  
+        display: block;  
+        margin-top: 6px;  
+        color: #fff;  
+        font-size: 32px;  
+        font-weight: 750;  
+        letter-spacing: -.6px;  
+    }  
+  
+    .job-card-divider {  
+        height: 1px;  
+        margin: 22px 0;  
+        background: rgba(255,255,255,.06);  
+    }  
+  
+    /* APPLY */  
+  
+    .job-apply {  
+        display: flex;  
+        align-items: center;  
+        justify-content: space-between;  
+        min-height: 50px;  
+        padding: 0 17px;  
+        border-radius: 11px;  
+        background: #5b8def;  
+        color: #fff;  
+        font-size: 13px;  
+        font-weight: 650;  
+        text-decoration: none;  
+        transition: .2s ease;  
+    }  
+  
+    .job-apply:hover {  
+        background: #6d9cf3;  
+        transform: translateY(-1px);  
+    }  
+  
+    .job-apply span {  
+        font-size: 17px;  
+    }  
+  
+    /* NOTICE */  
+  
+    .job-notice {  
+        display: flex;  
+        gap: 11px;  
+        padding: 14px;  
+        border: 1px solid rgba(86,197,150,.18);  
+        border-radius: 11px;  
+        background: rgba(86,197,150,.06);  
+    }  
+  
+    .job-notice > span {  
+        color: #56c596;  
+        font-weight: 700;  
+    }  
+  
+    .job-notice strong {  
+        display: block;  
+        margin-bottom: 3px;  
+        color: #dce2ec;  
+        font-size: 13px;  
+    }  
+  
+    .job-notice p {  
+        margin: 0;  
+        color: #718096;  
+        font-size: 11px;  
+        line-height: 1.5;  
+    }  
+  
+    .job-notice--closed {  
+        border-color: rgba(230,107,115,.18);  
+        background: rgba(230,107,115,.06);  
+    }  
+  
+    .job-notice--closed > span {  
+        color: #e66b73;  
+    }  
+  
+    /* SAVE */  
+  
+    .job-save {  
+        display: flex;  
+        align-items: center;  
+        justify-content: center;  
+        min-height: 45px;  
+        margin-top: 11px;  
+        border: 1px solid rgba(255,255,255,.08);  
+        border-radius: 11px;  
+        background: #11151c;  
+        color: #cbd2dd;  
+        font-size: 12px;  
+        font-weight: 600;  
+        text-decoration: none;  
+        transition: .2s ease;  
+    }  
+  
+    .job-save:hover {  
+        border-color: rgba(91,141,239,.45);  
+        color: #fff;  
+        background: rgba(91,141,239,.06);  
+    }  
+  
+    .job-applicants {  
+        display: block;  
+        margin-top: 15px;  
+        color: #6f9bf5;  
+        text-align: center;  
+        font-size: 12px;  
+        text-decoration: none;  
+    }  
+  
+    .job-applicants:hover {  
+        text-decoration: underline;  
+    }  
+  
+    /* SIDE NOTE */  
+  
+    .job-side-note {  
+        display: flex;  
+        gap: 11px;  
+        padding: 17px;  
+        border: 1px solid rgba(255,255,255,.06);  
+        border-radius: 14px;  
+        background: rgba(17,21,28,.72);  
+    }  
+  
+    .job-side-note-dot {  
+        width: 7px;  
+        height: 7px;  
+        flex: 0 0 7px;  
+        margin-top: 5px;  
+        border-radius: 50%;  
+        background: #5b8def;  
+        box-shadow: 0 0 10px rgba(91,141,239,.4);  
+    }  
+  
+    .job-side-note strong {  
+        display: block;  
+        margin-bottom: 4px;  
+        color: #dce2ec;  
+        font-size: 12px;  
+    }  
+  
+    .job-side-note p {  
+        margin: 0;  
+        color: #687386;  
+        font-size: 11px;  
+        line-height: 1.55;  
+    }  
+  
+    /* RESPONSIVE */  
+  
+    @media (max-width: 900px) {  
+  
+        .job-layout {  
+            grid-template-columns: 1fr;  
+        }  
+  
+        .job-sidebar {  
+            display: grid;  
+            grid-template-columns: 1fr 1fr;  
+            align-items: start;  
+        }  
+  
+        .job-card {  
+            grid-row: span 2;  
+        }  
+    }  
+  
+    @media (max-width: 650px) {  
+  
+        .job-page {  
+            padding: 34px 16px 50px;  
+        }  
+  
+        .job-main {  
+            padding: 21px;  
+        }  
+  
+        .job-title {  
+            font-size: 28px;  
+        }  
+  
+        .job-details {  
+            grid-template-columns: 1fr;  
+        }  
+  
+        .job-sidebar {  
+            display: flex;  
+        }  
+  
+        .job-budget {  
+            font-size: 29px;  
+        }  
+    }  
+</style>  
+  
+  
+<section class="job-page">  
+  
+    <div class="job-container">  
+  
+        <a  
+            href="{% url 'browse_jobs' %}"  
+            class="job-back"  
+        >  
+            ← Back to Jobs  
+        </a>  
+  
+  
+        <div class="job-layout">  
+  
+            <!-- MAIN CONTENT -->  
+  
+            <main class="job-main">  
+  
+                <span class="job-category">  
+                    {{ job.category }}  
+                </span>  
+  
+                <h1 class="job-title">  
+                    {{ job.title }}  
+                </h1>  
+  
+  
+                <div class="job-client">  
+  
+                    <span class="job-avatar">  
+                        {{ job.client.username|first|upper }}  
+                    </span>  
+  
+                    <div>  
+  
+                        <span class="job-client-label">  
+                            Posted by  
+                        </span>  
+  
+                        <strong>  
+                            {{ job.client.username }}  
+                        </strong>  
+  
+                    </div>  
+  
+                </div>  
+  
+  
+                <div class="job-divider"></div>  
+  
+  
+                <section class="job-section">  
+  
+                    <h2>  
+                        About this project  
+                    </h2>  
+  
+                    <p class="job-description">  
+                        {{ job.description }}  
+                    </p>  
+  
+                </section>  
+  
+  
+                <section class="job-section">  
+  
+                    <h2>  
+                        Project details  
+                    </h2>  
+  
+  
+                    <div class="job-details">  
+  
+                        <div class="job-detail-item">  
+  
+                            <span>  
+                                Category  
+                            </span>  
+  
+                            <strong>  
+                                {{ job.category }}  
+                            </strong>  
+  
+                        </div>  
+  
+  
+                        <div class="job-detail-item">  
+  
+                            <span>  
+                                Location  
+                            </span>  
+  
+                            <strong>  
+                                {{ job.location }}  
+                            </strong>  
+  
+                        </div>  
+  
+  
+                        <div class="job-detail-item">  
+  
+                            <span>  
+                                Status  
+                            </span>  
+  
+                            <strong>  
+                                {{ job.status }}  
+                            </strong>  
+  
+                        </div>  
+  
+                    </div>  
+  
+                </section>  
+  
+            </main>  
+  
+  
+            <!-- SIDEBAR -->  
+  
+            <aside class="job-sidebar">  
+  
+                <div class="job-card">  
+  
+                    <span class="job-budget-label">  
+                        Project budget  
+                    </span>  
+  
+                    <strong class="job-budget">  
+                        ₹{{ job.budget }}  
+                    </strong>  
+  
+  
+                    <div class="job-card-divider"></div>  
+  
+  
+                    {% if job.client == user %}  
+  
+                        <div class="job-notice">  
+  
+                            <span>✓</span>  
+  
+                            <div>  
+  
+                                <strong>  
+                                    Your job  
+                                </strong>  
+  
+                                <p>  
+                                    You posted this project.  
+                                </p>  
+  
+                            </div>  
+  
+                        </div>  
+  
+  
+                    {% elif job.status == "Open" %}  
+  
+                        <a  
+                            href="{% url 'apply_job' job.id %}"  
+                            class="job-apply"  
+                        >  
+                            <span>  
+                                Apply Now  
+                            </span>  
+  
+                            <span>  
+                                →  
+                            </span>  
+                        </a>  
+  
+  
+                    {% else %}  
+  
+                        <div class="job-notice job-notice--closed">  
+  
+                            <span>!</span>  
+  
+                            <div>  
+  
+                                <strong>  
+                                    Applications closed  
+                                </strong>  
+  
+                                <p>  
+                                    This project is no longer accepting applications.  
+                                </p>  
+  
+                            </div>  
+  
+                        </div>  
+  
+                    {% endif %}  
+  
+  
+                    <a  
+                        href="{% url 'save_job' job.id %}"  
+                        class="job-save"  
+                    >  
+                        ☆ &nbsp; Save Job  
+                    </a>  
+  
+  
+                    {% if job.client == user %}  
+  
+                        <a  
+                            href="{% url 'view_applicants' job.id %}"  
+                            class="job-applicants"  
+                        >  
+                            View Applicants →  
+                        </a>  
+  
+                    {% endif %}  
+  
+                </div>  
+  
+  
+                <div class="job-side-note">  
+  
+                    <span class="job-side-note-dot"></span>  
+  
+                    <div>  
+  
+                        <strong>  
+                            Work with confidence  
+                        </strong>  
+  
+                        <p>  
+                            Review the project details carefully before applying.  
+                        </p>  
+  
+                    </div>  
+  
+                </div>  
+  
+            </aside>  
+  
+        </div>  
+  
+    </div>  
+  
+</section>  
+  
 {% endblock %}
-

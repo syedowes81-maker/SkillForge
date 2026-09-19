@@ -62,7 +62,7 @@ def apply_job(request, id):
             id=job.id
         )
 
-    # Prevent the client from applying to their own job
+    # Client cannot apply to their own job
     if job.client == request.user:
         return redirect(
             "job_detail",
@@ -80,29 +80,34 @@ def apply_job(request, id):
 
     if request.method == "POST":
 
-        cover_letter = request.POST.get(
-            "cover_letter"
-        )
+        form = ApplicationForm(request.POST)
 
-        if cover_letter:
+        if form.is_valid():
 
-            Application.objects.create(
-                job=job,
-                freelancer=request.user,
-                cover_letter=cover_letter
-            )
+            application = form.save(commit=False)
+
+            application.job = job
+            application.freelancer = request.user
+
+            application.save()
 
             return redirect(
                 "my_applications"
             )
 
+    else:
+
+        form = ApplicationForm()
+
     return render(
         request,
         "jobs/apply_job.html",
         {
-            "job": job
+            "job": job,
+            "form": form,
         }
     )
+
 @login_required
 def my_applications(request):
     status = request.GET.get("status")
@@ -603,20 +608,3 @@ def confirm_completion(request, id):
             )
 
     return redirect("my_projects")
-@login_required
-def withdraw_application(request, id):
-
-    application = get_object_or_404(
-    Application,
-    id=id
-)
-    # Only the freelancer who submitted the application
-    # can withdraw it
-    if application.freelancer != request.user:
-        return redirect("my_applications")
-
-    # Only pending applications can be withdrawn
-    if application.status == "Pending":
-        application.delete()
-
-    return redirect("my_applications")

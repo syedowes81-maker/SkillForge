@@ -5,14 +5,9 @@
 {% block content %}
 
 <style>
-    /* =========================================================
-       SKILLFORGE — FREELANCER DASHBOARD
-       Page-specific CSS
-       ========================================================= */
-
     .fd-page {
         min-height: calc(100vh - 72px);
-        padding: 55px 24px 70px;
+        padding: 48px 24px 70px;
     }
 
     .fd-container {
@@ -27,34 +22,31 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        gap: 25px;
-        margin-bottom: 35px;
+        gap: 24px;
+        margin-bottom: 30px;
     }
 
     .fd-eyebrow {
         display: block;
         margin-bottom: 8px;
-
-        color: #5b8def;
-        font-size: 12px;
+        color: #6f9bf5;
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: 1px;
+        letter-spacing: 1.4px;
         text-transform: uppercase;
     }
 
     .fd-title {
         margin: 0;
-
-        color: #ffffff;
+        color: #fff;
         font-size: 34px;
         line-height: 1.15;
-        letter-spacing: -0.8px;
+        letter-spacing: -.8px;
     }
 
     .fd-subtitle {
         margin: 10px 0 0;
-
-        color: #8d96a8;
+        color: #8b95a7;
         font-size: 14px;
         line-height: 1.6;
     }
@@ -68,20 +60,13 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-
         min-height: 44px;
         padding: 0 18px;
-
-        border-radius: 10px;
-
+        border-radius: 11px;
         font-size: 13px;
         font-weight: 600;
         text-decoration: none;
-
-        transition:
-            transform .15s ease,
-            background .2s ease,
-            border-color .2s ease;
+        transition: .2s ease;
     }
 
     .fd-btn:hover {
@@ -90,17 +75,17 @@
 
     .fd-btn--primary {
         background: #5b8def;
-        color: #ffffff;
+        color: #fff;
     }
 
     .fd-btn--primary:hover {
-        background: #6b9af2;
+        background: #6d9cf3;
     }
 
     .fd-btn--secondary {
-        border: 1px solid rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.08);
         background: #151a22;
-        color: #dce1ea;
+        color: #dce2ec;
     }
 
     .fd-btn--secondary:hover {
@@ -112,45 +97,51 @@
     .fd-stats {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-
-        margin-bottom: 20px;
+        gap: 14px;
+        margin-bottom: 18px;
     }
 
     .fd-stat {
+        position: relative;
+        overflow: hidden;
         padding: 21px;
-
         border: 1px solid rgba(255,255,255,.07);
-        border-radius: 15px;
+        border-radius: 16px;
+        background: linear-gradient(
+            145deg,
+            rgba(24,29,39,.98),
+            rgba(17,21,28,.98)
+        );
+    }
 
-        background: rgba(20,24,32,.92);
-
-        box-shadow: 0 12px 35px rgba(0,0,0,.12);
+    .fd-stat::after {
+        content: "";
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        right: -45px;
+        top: -45px;
+        border-radius: 50%;
+        background: rgba(91,141,239,.08);
     }
 
     .fd-stat__label {
-        display: block;
-
         color: #858fa1;
         font-size: 12px;
     }
 
     .fd-stat__value {
         display: block;
-
         margin-top: 9px;
-
-        color: #ffffff;
-        font-size: 27px;
+        color: #fff;
+        font-size: 28px;
         font-weight: 700;
     }
 
     .fd-stat__meta {
         display: block;
-
         margin-top: 5px;
-
-        color: #626d7f;
+        color: #5f6a7d;
         font-size: 11px;
     }
 
@@ -158,17 +149,16 @@
 
     .fd-grid {
         display: grid;
-        grid-template-columns: 1.25fr .75fr;
-        gap: 20px;
+        grid-template-columns: 1.2fr .8fr;
+        gap: 18px;
     }
 
     .fd-card {
-        padding: 24px;
-
+        padding: 23px;
         border: 1px solid rgba(255,255,255,.07);
         border-radius: 16px;
-
-        background: rgba(20,24,32,.92);
+        background: rgba(20,24,32,.94);
+        box-shadow: 0 15px 40px rgba(0,0,0,.10);
     }
 
     .fd-card--wide {
@@ -179,38 +169,34 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-
-        margin-bottom: 22px;
+        gap: 15px;
+        margin-bottom: 20px;
     }
 
     .fd-card__head h2 {
         margin: 0;
-
-        color: #ffffff;
+        color: #fff;
         font-size: 17px;
         font-weight: 650;
     }
 
     .fd-card__head span {
-        color: #697487;
+        color: #667185;
         font-size: 11px;
     }
 
-    /* PROJECT STATUS */
+    /* STATUS */
 
     .fd-status-list {
         display: flex;
         flex-direction: column;
-        gap: 4px;
     }
 
     .fd-status {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-
+        justify-content: space-between;
         padding: 14px 0;
-
         border-bottom: 1px solid rgba(255,255,255,.05);
     }
 
@@ -222,46 +208,51 @@
         display: flex;
         align-items: center;
         gap: 10px;
-
-        color: #cbd1dc;
+        color: #cbd2dd;
         font-size: 13px;
     }
 
     .fd-dot {
         width: 8px;
         height: 8px;
+        flex: 0 0 8px;
         border-radius: 50%;
     }
 
     .fd-dot--blue {
         background: #5b8def;
+        box-shadow: 0 0 10px rgba(91,141,239,.4);
     }
 
     .fd-dot--yellow {
         background: #e6b65c;
+        box-shadow: 0 0 10px rgba(230,182,92,.35);
     }
 
     .fd-dot--green {
         background: #56c596;
+        box-shadow: 0 0 10px rgba(86,197,150,.35);
     }
 
     .fd-dot--red {
         background: #e66b73;
+        box-shadow: 0 0 10px rgba(230,107,115,.35);
     }
 
     .fd-status strong {
-        color: #ffffff;
+        color: #fff;
         font-size: 14px;
     }
 
     /* EARNINGS */
 
     .fd-earnings {
+        min-height: 190px;
         display: flex;
         flex-direction: column;
         align-items: center;
-
-        padding: 20px 0 12px;
+        justify-content: center;
+        text-align: center;
     }
 
     .fd-earnings__label {
@@ -271,15 +262,14 @@
 
     .fd-earnings__value {
         margin-top: 8px;
-
-        color: #ffffff;
-        font-size: 34px;
-        font-weight: 700;
+        color: #fff;
+        font-size: 36px;
+        font-weight: 750;
+        letter-spacing: -.8px;
     }
 
     .fd-earnings__note {
-        margin-top: 7px;
-
+        margin-top: 8px;
         color: #596476;
         font-size: 11px;
     }
@@ -289,42 +279,33 @@
     .fd-actions {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
+        gap: 11px;
     }
 
     .fd-action {
         display: flex;
         align-items: center;
         justify-content: center;
-
-        min-height: 62px;
-
+        min-height: 58px;
+        padding: 10px;
         border: 1px solid rgba(255,255,255,.07);
         border-radius: 11px;
-
         background: #11151c;
-        color: #cbd1dc;
-
+        color: #cbd2dd;
         font-size: 12px;
         font-weight: 600;
         text-decoration: none;
-
-        transition:
-            border-color .2s ease,
-            background .2s ease,
-            color .2s ease,
-            transform .15s ease;
+        transition: .2s ease;
     }
 
     .fd-action:hover {
         transform: translateY(-2px);
-
-        border-color: rgba(91,141,239,.55);
+        border-color: rgba(91,141,239,.5);
         background: rgba(91,141,239,.07);
-        color: #ffffff;
+        color: #fff;
     }
 
-    /* MOBILE */
+    /* RESPONSIVE */
 
     @media (max-width: 900px) {
 
@@ -343,13 +324,12 @@
         .fd-actions {
             grid-template-columns: repeat(2, 1fr);
         }
-
     }
 
     @media (max-width: 600px) {
 
         .fd-page {
-            padding: 35px 16px 50px;
+            padding: 34px 16px 50px;
         }
 
         .fd-header {
@@ -377,15 +357,20 @@
             grid-template-columns: 1fr;
         }
 
-    }
+        .fd-card {
+            padding: 19px;
+        }
 
+        .fd-earnings__value {
+            font-size: 30px;
+        }
+    }
 </style>
 
 
 <section class="fd-page">
 
     <div class="fd-container">
-
 
         <!-- HEADER -->
 
@@ -402,11 +387,10 @@
                 </h1>
 
                 <p class="fd-subtitle">
-                    Track your projects, applications, and earnings.
+                    Track your projects, applications, and earnings from one place.
                 </p>
 
             </div>
-
 
             <div class="fd-header-actions">
 
@@ -444,7 +428,7 @@
                 </strong>
 
                 <span class="fd-stat__meta">
-                    Projects you've applied to
+                    Applications you've submitted
                 </span>
 
             </div>
@@ -487,7 +471,7 @@
             <div class="fd-stat">
 
                 <span class="fd-stat__label">
-                    Applications
+                    Pending Applications
                 </span>
 
                 <strong class="fd-stat__value">
@@ -495,7 +479,7 @@
                 </strong>
 
                 <span class="fd-stat__meta">
-                    Currently pending
+                    Awaiting client response
                 </span>
 
             </div>
@@ -506,7 +490,6 @@
         <!-- MAIN -->
 
         <div class="fd-grid">
-
 
             <!-- PROJECT STATUS -->
 
@@ -519,7 +502,7 @@
                     </h2>
 
                     <span>
-                        Your current activity
+                        Current activity
                     </span>
 
                 </div>
@@ -663,7 +646,7 @@
                     </h2>
 
                     <span>
-                        Get things done faster
+                        Your most-used tools
                     </span>
 
                 </div>

@@ -4,129 +4,495 @@
 
 {% block content %}
 
-<section class="sf-apply">
-  <div class="container">
+<style>
+    .apply-page {
+        min-height: calc(100vh - 72px);
+        padding: 48px 24px 70px;
+    }
 
-    <div class="sf-apply__header">
-      <span class="sf-apply__eyebrow">Project Application</span>
+    .apply-container {
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
 
-      <h1 class="sf-apply__title">
-        Apply for this project
-      </h1>
+    /* HEADER */
 
-      <p class="sf-apply__subtitle">
-        Submit your proposal for <strong>{{ job.title }}</strong>.
-      </p>
-    </div>
+    .apply-header {
+        margin-bottom: 30px;
+    }
+
+    .apply-eyebrow {
+        display: block;
+        margin-bottom: 8px;
+        color: #5b8def;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .apply-title {
+        margin: 0;
+        color: #fff;
+        font-size: 32px;
+        line-height: 1.2;
+        letter-spacing: -.7px;
+    }
+
+    .apply-subtitle {
+        margin: 10px 0 0;
+        color: #7f899b;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .apply-subtitle strong {
+        color: #cfd6e2;
+    }
+
+    /* LAYOUT */
+
+    .apply-layout {
+        display: grid;
+        grid-template-columns: .85fr 1.15fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    /* PROJECT CARD */
+
+    .apply-project {
+        padding: 25px;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 17px;
+        background: rgba(20,24,32,.94);
+        box-shadow: 0 18px 45px rgba(0,0,0,.12);
+    }
+
+    .apply-project-label {
+        display: inline-block;
+        margin-bottom: 10px;
+        color: #6f9bf5;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .7px;
+        text-transform: uppercase;
+    }
+
+    .apply-project h2 {
+        margin: 0;
+        color: #fff;
+        font-size: 22px;
+        line-height: 1.3;
+    }
+
+    .apply-description {
+        margin: 17px 0 0;
+        color: #9099aa;
+        font-size: 13px;
+        line-height: 1.75;
+        white-space: pre-line;
+    }
+
+    .apply-divider {
+        height: 1px;
+        margin: 23px 0;
+        background: rgba(255,255,255,.06);
+    }
+
+    .apply-details {
+        display: grid;
+        gap: 11px;
+    }
+
+    .apply-detail {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 13px 14px;
+        border: 1px solid rgba(255,255,255,.05);
+        border-radius: 10px;
+        background: #11151c;
+    }
+
+    .apply-detail span {
+        color: #687386;
+        font-size: 11px;
+    }
+
+    .apply-detail strong {
+        color: #dce2ec;
+        font-size: 12px;
+        text-align: right;
+    }
+
+    .apply-budget {
+        color: #62c99a !important;
+        font-size: 14px !important;
+    }
+
+    /* FORM CARD */
+
+    .apply-form-card {
+        padding: 28px;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 17px;
+        background: rgba(20,24,32,.96);
+        box-shadow: 0 18px 45px rgba(0,0,0,.12);
+    }
+
+    .apply-form-header {
+        margin-bottom: 25px;
+    }
+
+    .apply-form-header h2 {
+        margin: 0;
+        color: #fff;
+        font-size: 19px;
+        font-weight: 650;
+    }
+
+    .apply-form-header p {
+        margin: 8px 0 0;
+        color: #737e91;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    /* FIELD */
+
+    .apply-field label {
+        display: block;
+        margin-bottom: 9px;
+        color: #cfd5df;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .apply-field textarea {
+        display: block;
+        width: 100%;
+        min-height: 270px;
+        box-sizing: border-box;
+        padding: 15px;
+        resize: vertical;
+
+        border: 1px solid rgba(255,255,255,.09);
+        border-radius: 11px;
+        outline: none;
+
+        background: #11151c;
+        color: #e4e8ef;
+
+        font-family: inherit;
+        font-size: 13px;
+        line-height: 1.65;
+
+        transition:
+            border-color .2s ease,
+            box-shadow .2s ease;
+    }
+
+    .apply-field textarea::placeholder {
+        color: #505b6d;
+    }
+
+    .apply-field textarea:focus {
+        border-color: rgba(91,141,239,.7);
+        box-shadow: 0 0 0 3px rgba(91,141,239,.10);
+    }
+
+    .apply-field small {
+        display: block;
+        margin-top: 8px;
+        color: #5f6a7c;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    /* ERROR */
+
+    .apply-error {
+        margin-top: 9px;
+        padding: 10px 12px;
+        border: 1px solid rgba(230,107,115,.25);
+        border-radius: 9px;
+        background: rgba(230,107,115,.07);
+        color: #ed9299;
+        font-size: 12px;
+    }
+
+    /* ACTIONS */
+
+    .apply-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .apply-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 45px;
+        padding: 0 19px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 650;
+        text-decoration: none;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .apply-btn--cancel {
+        border: 1px solid rgba(255,255,255,.08);
+        background: #11151c;
+        color: #aab2c0;
+    }
+
+    .apply-btn--cancel:hover {
+        border-color: rgba(255,255,255,.16);
+        color: #fff;
+    }
+
+    .apply-btn--submit {
+        border: 0;
+        background: #5b8def;
+        color: #fff;
+    }
+
+    .apply-btn--submit:hover {
+        background: #6d9cf3;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(91,141,239,.18);
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 850px) {
+
+        .apply-layout {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .apply-page {
+            padding: 34px 16px 50px;
+        }
+
+        .apply-title {
+            font-size: 27px;
+        }
+
+        .apply-project,
+        .apply-form-card {
+            padding: 21px;
+        }
+
+        .apply-field textarea {
+            min-height: 230px;
+        }
+
+        .apply-actions {
+            flex-direction: column-reverse;
+        }
+
+        .apply-btn {
+            width: 100%;
+        }
+
+    }
+</style>
 
 
-    <div class="sf-apply__layout">
+<section class="apply-page">
 
-      <!-- PROJECT SUMMARY -->
-      <aside class="sf-apply__project">
+    <div class="apply-container">
 
-        <span class="sf-apply__project-label">
-          Project
-        </span>
 
-        <h2>{{ job.title }}</h2>
+        <!-- HEADER -->
 
-        <p class="sf-apply__description">
-          {{ job.description }}
-        </p>
+        <header class="apply-header">
 
-        <div class="sf-apply__details">
+            <span class="apply-eyebrow">
+                Project Application
+            </span>
 
-          <div>
-            <span>Budget</span>
-            <strong>₹{{ job.budget }}</strong>
-          </div>
+            <h1 class="apply-title">
+                Apply for this project
+            </h1>
 
-          <div>
-            <span>Category</span>
-            <strong>{{ job.category }}</strong>
-          </div>
+            <p class="apply-subtitle">
+                Submit your proposal for
+                <strong>{{ job.title }}</strong>.
+            </p>
 
-          <div>
-            <span>Location</span>
-            <strong>{{ job.location }}</strong>
-          </div>
+        </header>
+
+
+        <div class="apply-layout">
+
+
+            <!-- PROJECT SUMMARY -->
+
+            <aside class="apply-project">
+
+                <span class="apply-project-label">
+                    Project
+                </span>
+
+                <h2>
+                    {{ job.title }}
+                </h2>
+
+
+                <p class="apply-description">
+                    {{ job.description }}
+                </p>
+
+
+                <div class="apply-divider"></div>
+
+
+                <div class="apply-details">
+
+                    <div class="apply-detail">
+
+                        <span>
+                            Budget
+                        </span>
+
+                        <strong class="apply-budget">
+                            ₹{{ job.budget }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="apply-detail">
+
+                        <span>
+                            Category
+                        </span>
+
+                        <strong>
+                            {{ job.category }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="apply-detail">
+
+                        <span>
+                            Location
+                        </span>
+
+                        <strong>
+                            {{ job.location }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+
+            <!-- APPLICATION FORM -->
+
+            <main class="apply-form-card">
+
+                <div class="apply-form-header">
+
+                    <h2>
+                        Your proposal
+                    </h2>
+
+                    <p>
+                        Make your proposal specific to the project,
+                        highlight relevant skills, and explain how
+                        you would approach the work.
+                    </p>
+
+                </div>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <div class="apply-field">
+
+                        <label for="{{ form.cover_letter.id_for_label }}">
+                            Cover Letter / Proposal
+                        </label>
+
+
+                        {{ form.cover_letter }}
+
+
+                        {% if form.cover_letter.errors %}
+
+                            <div class="apply-error">
+                                {{ form.cover_letter.errors|striptags }}
+                            </div>
+
+                        {% endif %}
+
+
+                        <small>
+                            Tell the client why you're a good fit
+                            for this project.
+                        </small>
+
+                    </div>
+
+
+                    {% if form.non_field_errors %}
+
+                        <div class="apply-error">
+                            {{ form.non_field_errors|striptags }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="apply-actions">
+
+                        <a
+                            href="{% url 'job_detail' job.id %}"
+                            class="apply-btn apply-btn--cancel"
+                        >
+                            Cancel
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="apply-btn apply-btn--submit"
+                        >
+                            Submit Proposal →
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </main>
 
         </div>
 
-      </aside>
-
-
-      <!-- APPLICATION FORM -->
-      <div class="sf-apply__form-card">
-
-        <div class="sf-apply__form-header">
-          <h2>Your proposal</h2>
-
-          <p>
-            Make your proposal specific to the project, highlight relevant
-            skills, and explain how you would approach the work.
-          </p>
-        </div>
-
-
-        <form method="POST">
-
-          {% csrf_token %}
-
-          <div class="sf-apply__field">
-
-            <label for="{{ form.cover_letter.id_for_label }}">
-              Cover Letter / Proposal
-            </label>
-
-            {{ form.cover_letter }}
-
-            {% if form.cover_letter.errors %}
-              <div class="sf-apply__error">
-                {{ form.cover_letter.errors|striptags }}
-              </div>
-            {% endif %}
-
-            <small>
-              Tell the client why you're a good fit for this project.
-            </small>
-
-          </div>
-
-
-          {% if form.non_field_errors %}
-            <div class="sf-apply__error">
-              {{ form.non_field_errors|striptags }}
-            </div>
-          {% endif %}
-
-
-          <div class="sf-apply__actions">
-
-            <a
-              href="{% url 'job_detail' job.id %}"
-              class="btn btn--ghost"
-            >
-              Cancel
-            </a>
-
-            <button
-              type="submit"
-              class="btn btn--primary"
-            >
-              Submit Proposal →
-            </button>
-
-          </div>
-
-        </form>
-
-      </div>
-
     </div>
 
-  </div>
 </section>
 
 {% endblock %}
