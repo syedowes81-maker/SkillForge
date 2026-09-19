@@ -1,78 +1,602 @@
 {% extends "accounts/base.html" %}
 
+{% block title %}My Earnings — SkillForge{% endblock %}
+
 {% block content %}
 
-<h1>💰 My Earnings</h1>
+<style>
 
-<p>
-    Your earnings from confirmed projects.
-</p>
+    .earn-page {
+        min-height: calc(100vh - 72px);
+        padding: 55px 24px 80px;
+    }
 
-<hr>
+    .earn-container {
+        width: 100%;
+        max-width: 1160px;
+        margin: 0 auto;
+    }
 
-<h2>
-    Total Earnings: ₹{{ total_earnings }}
-</h2>
+    /* HEADER */
 
-<hr>
+    .earn-header {
+        margin-bottom: 32px;
+    }
 
-{% if completed_projects %}
+    .earn-eyebrow {
+        display: block;
+        margin-bottom: 8px;
 
-    <h2>Completed Projects</h2>
+        color: #5b8def;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
 
-    {% for project in completed_projects %}
+    .earn-title {
+        margin: 0;
 
-        <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+        color: #ffffff;
+        font-size: 34px;
+        line-height: 1.15;
+        letter-spacing: -.8px;
+    }
 
-            <h3>{{ project.job.title }}</h3>
+    .earn-subtitle {
+        margin: 10px 0 0;
 
-            <p>
-                <strong>Client:</strong>
-                {{ project.job.client.username }}
-            </p>
+        max-width: 620px;
 
-            <p>
-                <strong>Category:</strong>
-                {{ project.job.category }}
-            </p>
+        color: #8d96a8;
+        font-size: 14px;
+        line-height: 1.6;
+    }
 
-            <p>
-                <strong>Project Amount:</strong>
-                ₹{{ project.job.budget }}
-            </p>
+    /* SUMMARY */
 
-            <p>
-                <strong>Completed:</strong>
-                {{ project.applied_at|date:"d M Y" }}
-            </p>
+    .earn-summary {
+        display: grid;
+        grid-template-columns: 1.3fr .7fr;
+        gap: 18px;
 
-            <p>
-                <strong>Status:</strong>
-                ✅ Confirmed
-            </p>
+        margin-bottom: 22px;
+    }
+
+    .earn-total-card,
+    .earn-info-card,
+    .earn-project-card {
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 16px;
+        background: rgba(20,24,32,.92);
+        box-shadow: 0 12px 35px rgba(0,0,0,.12);
+    }
+
+    .earn-total-card {
+        padding: 30px;
+    }
+
+    .earn-total-label {
+        color: #7f899b;
+        font-size: 12px;
+    }
+
+    .earn-total-value {
+        display: block;
+        margin-top: 8px;
+
+        color: #ffffff;
+        font-size: 42px;
+        font-weight: 750;
+        letter-spacing: -1px;
+    }
+
+    .earn-total-note {
+        display: block;
+        margin-top: 8px;
+
+        color: #596476;
+        font-size: 11px;
+    }
+
+    .earn-info-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        padding: 30px;
+    }
+
+    .earn-info-label {
+        color: #7f899b;
+        font-size: 12px;
+    }
+
+    .earn-info-value {
+        margin-top: 8px;
+
+        color: #ffffff;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .earn-info-note {
+        margin-top: 6px;
+
+        color: #596476;
+        font-size: 11px;
+    }
+
+    /* SECTION */
+
+    .earn-section {
+        margin-top: 22px;
+    }
+
+    .earn-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 14px;
+    }
+
+    .earn-section-head h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 650;
+    }
+
+    .earn-section-head span {
+        color: #697487;
+        font-size: 11px;
+    }
+
+    /* PROJECTS */
+
+    .earn-projects {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .earn-project-card {
+        padding: 22px 24px;
+    }
+
+    .earn-project-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        gap: 20px;
+    }
+
+    .earn-project-category {
+        display: inline-block;
+        margin-bottom: 8px;
+
+        color: #5b8def;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .7px;
+        text-transform: uppercase;
+    }
+
+    .earn-project-title {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 650;
+    }
+
+    .earn-project-client {
+        margin-top: 7px;
+
+        color: #747f91;
+        font-size: 12px;
+    }
+
+    .earn-project-amount {
+        white-space: nowrap;
+
+        color: #56c596;
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .earn-project-divider {
+        height: 1px;
+        margin: 19px 0;
+
+        background: rgba(255,255,255,.05);
+    }
+
+    .earn-project-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .earn-meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .earn-meta-label {
+        color: #596476;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .earn-meta-value {
+        color: #cbd1dc;
+        font-size: 12px;
+    }
+
+    .earn-confirmed {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: #56c596;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .earn-confirmed-dot {
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+        background: #56c596;
+    }
+
+    /* EMPTY */
+
+    .earn-empty {
+        padding: 60px 25px;
+
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 16px;
+
+        background: rgba(20,24,32,.92);
+
+        text-align: center;
+    }
+
+    .earn-empty-icon {
+        width: 58px;
+        height: 58px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 18px;
+
+        border-radius: 50%;
+
+        background: rgba(91,141,239,.08);
+        border: 1px solid rgba(91,141,239,.15);
+
+        color: #5b8def;
+        font-size: 24px;
+    }
+
+    .earn-empty h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 20px;
+    }
+
+    .earn-empty p {
+        max-width: 430px;
+
+        margin: 10px auto 22px;
+
+        color: #747f91;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .earn-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 44px;
+        padding: 0 18px;
+
+        border-radius: 10px;
+
+        background: #5b8def;
+        color: #ffffff;
+
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+    .earn-btn:hover {
+        background: #6b9af2;
+        transform: translateY(-1px);
+    }
+
+    /* FOOTER NAV */
+
+    .earn-back {
+        margin-top: 25px;
+    }
+
+    .earn-back a {
+        color: #697487;
+        font-size: 12px;
+        text-decoration: none;
+        transition: color .2s ease;
+    }
+
+    .earn-back a:hover {
+        color: #ffffff;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 800px) {
+
+        .earn-summary {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .earn-page {
+            padding: 35px 16px 55px;
+        }
+
+        .earn-title {
+            font-size: 28px;
+        }
+
+        .earn-total-value {
+            font-size: 34px;
+        }
+
+        .earn-project-top {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .earn-project-amount {
+            font-size: 20px;
+        }
+
+        .earn-project-meta {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+    }
+
+</style><section class="earn-page"><div class="earn-container">
+
+    <!-- HEADER -->
+
+    <header class="earn-header">
+
+        <span class="earn-eyebrow">
+            Freelancer Workspace
+        </span>
+
+        <h1 class="earn-title">
+            My Earnings
+        </h1>
+
+        <p class="earn-subtitle">
+            Track the income you've earned from projects that have been
+            completed and confirmed by your clients.
+        </p>
+
+    </header>
+
+
+    <!-- SUMMARY -->
+
+    <div class="earn-summary">
+
+        <div class="earn-total-card">
+
+            <span class="earn-total-label">
+                Total Earnings
+            </span>
+
+            <strong class="earn-total-value">
+                ₹{{ total_earnings }}
+            </strong>
+
+            <span class="earn-total-note">
+                Earnings from confirmed projects
+            </span>
 
         </div>
 
-    {% endfor %}
 
-{% else %}
+        <div class="earn-info-card">
 
-    <p>
-        You don't have any confirmed projects yet.
-    </p>
+            <span class="earn-info-label">
+                Confirmed Projects
+            </span>
 
-    <a href="{% url 'my_work' %}">
-        <button type="button">
-            💼 View My Work
-        </button>
-    </a>
+            <strong class="earn-info-value">
+                {{ completed_projects|length }}
+            </strong>
 
-{% endif %}
+            <span class="earn-info-note">
+                Successfully completed and confirmed
+            </span>
 
-<br>
+        </div>
 
-<a href="{% url 'dashboard' %}">
-    ← Back to Dashboard
-</a>
+    </div>
 
-{% endblock %}
+
+    <!-- PROJECTS -->
+
+    <section class="earn-section">
+
+        <div class="earn-section-head">
+
+            <h2>
+                Earnings History
+            </h2>
+
+            <span>
+                Confirmed projects
+            </span>
+
+        </div>
+
+
+        {% if completed_projects %}
+
+            <div class="earn-projects">
+
+                {% for project in completed_projects %}
+
+                    <article class="earn-project-card">
+
+                        <div class="earn-project-top">
+
+                            <div>
+
+                                <span class="earn-project-category">
+                                    {{ project.job.category }}
+                                </span>
+
+                                <h3 class="earn-project-title">
+                                    {{ project.job.title }}
+                                </h3>
+
+                                <p class="earn-project-client">
+                                    Client · {{ project.job.client.username }}
+                                </p>
+
+                            </div>
+
+
+                            <strong class="earn-project-amount">
+                                ₹{{ project.job.budget }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="earn-project-divider"></div>
+
+
+                        <div class="earn-project-meta">
+
+                            <div class="earn-meta-item">
+
+                                <span class="earn-meta-label">
+                                    Location
+                                </span>
+
+                                <span class="earn-meta-value">
+                                    {{ project.job.location }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="earn-meta-item">
+
+                                <span class="earn-meta-label">
+                                    Completed
+                                </span>
+
+                                <span class="earn-meta-value">
+                                    {{ project.applied_at|date:"d M Y" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="earn-meta-item">
+
+                                <span class="earn-meta-label">
+                                    Status
+                                </span>
+
+                                <span class="earn-confirmed">
+
+                                    <span class="earn-confirmed-dot"></span>
+
+                                    Confirmed
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="earn-empty">
+
+                <div class="earn-empty-icon">
+                    ₹
+                </div>
+
+                <h2>
+                    No confirmed earnings yet
+                </h2>
+
+                <p>
+                    Once a client confirms one of your completed projects,
+                    your earnings will appear here.
+                </p>
+
+                <a
+                    href="{% url 'my_work' %}"
+                    class="earn-btn"
+                >
+                    View My Work →
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- BACK -->
+
+    <div class="earn-back">
+
+        <a href="{% url 'dashboard' %}">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</section>{% endblock %}
