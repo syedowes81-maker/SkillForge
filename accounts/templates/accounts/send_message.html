@@ -2,34 +2,246 @@
 
 {% block content %}
 
-<h2>Send Message</h2>
+<style>
+    .sm-page {
+        max-width: 720px;
+        margin: 50px auto;
+        padding: 0 20px;
+    }
 
-<p>
-    To: <strong>{{ receiver.username }}</strong>
-</p>
+    .sm-card {
+        background: #0f131a;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    }
 
-<form method="POST">
+    .sm-header {
+        margin-bottom: 25px;
+    }
 
-    {% csrf_token %}
+    .sm-eyebrow {
+        color: #5b8def;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+    }
 
-    <textarea
-        name="content"
-        rows="6"
-        cols="50"
-        placeholder="Write your message..."
-        required
-    ></textarea>
+    .sm-title {
+        margin: 7px 0 8px;
+        color: #ffffff;
+        font-size: 26px;
+        font-weight: 700;
+    }
 
-    <br><br>
+    .sm-subtitle {
+        margin: 0;
+        color: #8f98a8;
+        font-size: 14px;
+    }
 
-    <button type="submit">Send Message</button>
+    .sm-recipient {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 22px 0;
+        padding: 14px 16px;
+        background: #151a22;
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 12px;
+    }
 
-</form>
+    .sm-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #5b8def;
+        color: white;
+        font-weight: 700;
+    }
 
-<br>
+    .sm-recipient-label {
+        color: #7f8999;
+        font-size: 11px;
+    }
 
-<a href="{% url 'messages' %}">
-    ← Back to Messages
-</a>
+    .sm-recipient-name {
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 2px;
+    }
+
+    .sm-label {
+        display: block;
+        color: #dce1ea;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 9px;
+    }
+
+    .sm-textarea {
+        width: 100%;
+        min-height: 180px;
+        box-sizing: border-box;
+        resize: vertical;
+        padding: 14px 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,.08);
+        background: #11151c;
+        color: #ffffff;
+        font-family: inherit;
+        font-size: 14px;
+        line-height: 1.6;
+        outline: none;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .sm-textarea::placeholder {
+        color: #687282;
+    }
+
+    .sm-textarea:focus {
+        border-color: rgba(91,141,239,.65);
+        box-shadow: 0 0 0 3px rgba(91,141,239,.10);
+    }
+
+    .sm-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .sm-btn {
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 10px;
+        border: none;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform .15s ease, background .2s ease;
+    }
+
+    .sm-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .sm-btn--send {
+        background: #5b8def;
+        color: #ffffff;
+    }
+
+    .sm-btn--send:hover {
+        background: #6b9af2;
+    }
+
+    .sm-btn--cancel {
+        background: #151a22;
+        border: 1px solid rgba(255,255,255,.08);
+        color: #cbd1dc;
+    }
+
+    .sm-btn--cancel:hover {
+        background: #1a202a;
+    }
+
+    @media (max-width: 600px) {
+        .sm-page {
+            margin: 25px auto;
+        }
+
+        .sm-card {
+            padding: 22px;
+        }
+
+        .sm-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="sm-page">
+
+    <div class="sm-card">
+
+        <div class="sm-header">
+            <div class="sm-eyebrow">SkillForge Messages</div>
+
+            <h1 class="sm-title">
+                Send a message
+            </h1>
+
+            <p class="sm-subtitle">
+                Start a conversation with a freelancer.
+            </p>
+        </div>
+
+        <div class="sm-recipient">
+
+            <div class="sm-avatar">
+                {{ receiver.username|first|upper }}
+            </div>
+
+            <div>
+                <div class="sm-recipient-label">
+                    Sending message to
+                </div>
+
+                <div class="sm-recipient-name">
+                    {{ receiver.username }}
+                </div>
+            </div>
+
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <label class="sm-label" for="message-content">
+                Your message
+            </label>
+
+            <textarea
+                id="message-content"
+                name="content"
+                class="sm-textarea"
+                placeholder="Write your message..."
+                required
+            ></textarea>
+
+            <div class="sm-actions">
+
+                <button
+                    type="submit"
+                    class="sm-btn sm-btn--send"
+                >
+                    ✈️ Send Message
+                </button>
+
+                <a
+                    href="{% url 'freelancer_detail' receiver.freelancerprofile.id %}"
+                    class="sm-btn sm-btn--cancel"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}
