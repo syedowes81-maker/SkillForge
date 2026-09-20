@@ -8,7 +8,6 @@
 
     /* =========================================================
        SKILLFORGE FINAL LOGIN PAGE
-       Self-contained — does not depend on style.css
        ========================================================= */
 
     .sf-login-page {
@@ -77,7 +76,9 @@
         line-height: 1.6;
     }
 
-    /* Fields */
+    /* =========================================================
+       FIELDS
+       ========================================================= */
 
     .sf-login-field {
         margin-bottom: 18px;
@@ -129,7 +130,64 @@
         color: #687284;
     }
 
-    /* Errors */
+    /* =========================================================
+       PASSWORD FIELD + EYE BUTTON
+       ========================================================= */
+
+    .sf-password-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .sf-password-wrapper input {
+        padding-right: 48px;
+    }
+
+    .sf-password-toggle {
+        position: absolute;
+
+        top: 50%;
+        right: 10px;
+
+        width: 34px;
+        height: 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        transform: translateY(-50%);
+
+        border: 0;
+        border-radius: 8px;
+
+        background: transparent;
+        color: #7f899a;
+
+        cursor: pointer;
+
+        font-size: 18px;
+        line-height: 1;
+
+        transition:
+            color .2s ease,
+            background .2s ease;
+    }
+
+    .sf-password-toggle:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .sf-password-toggle:focus {
+        outline: none;
+        color: #5b8def;
+        background: rgba(91, 141, 239, 0.08);
+    }
+
+    /* =========================================================
+       ERRORS
+       ========================================================= */
 
     .sf-login-error {
         margin: 8px 0 15px;
@@ -144,7 +202,9 @@
         font-size: 12px;
     }
 
-    /* Workspace */
+    /* =========================================================
+       WORKSPACE
+       ========================================================= */
 
     .sf-login-workspace {
         margin-top: 25px;
@@ -265,7 +325,9 @@
         line-height: 1.5;
     }
 
-    /* Login button */
+    /* =========================================================
+       LOGIN BUTTON
+       ========================================================= */
 
     .sf-login-button {
         width: 100%;
@@ -300,7 +362,9 @@
         transform: scale(0.99);
     }
 
-    /* Forgot password */
+    /* =========================================================
+       FORGOT PASSWORD
+       ========================================================= */
 
     .sf-login-forgot {
         margin: 15px 0 0;
@@ -318,7 +382,9 @@
         text-decoration: underline;
     }
 
-    /* Register link */
+    /* =========================================================
+       REGISTER LINK
+       ========================================================= */
 
     .sf-login-register {
         margin: 22px 0 0;
@@ -339,7 +405,9 @@
         text-decoration: underline;
     }
 
-    /* Mobile */
+    /* =========================================================
+       MOBILE
+       ========================================================= */
 
     @media (max-width: 600px) {
 
@@ -361,172 +429,190 @@
 
     }
 
-</style>
+</style><section class="sf-login-page"><div class="sf-login-card">
+
+    <div class="sf-login-eyebrow">
+        Welcome Back
+    </div>
 
 
-<section class="sf-login-page">
-
-    <div class="sf-login-card">
-
-        <div class="sf-login-eyebrow">
-            Welcome Back
-        </div>
+    <h1>
+        Log in to SkillForge
+    </h1>
 
 
-        <h1>
-            Log in to SkillForge
-        </h1>
+    <p class="sf-login-subtitle">
+        Continue finding work or hiring talented professionals.
+    </p>
 
 
-        <p class="sf-login-subtitle">
-            Continue finding work or hiring talented professionals.
-        </p>
+    <form method="POST" novalidate>
+
+        {% csrf_token %}
 
 
-        <form method="POST" novalidate>
+        <!-- =================================================
+             USERNAME
+             ================================================= -->
 
-            {% csrf_token %}
+        <div class="sf-login-field">
 
+            <label for="{{ form.username.id_for_label }}">
+                Username
+            </label>
 
-            <!-- USERNAME -->
+            {{ form.username }}
 
-            <div class="sf-login-field">
-
-                <label for="{{ form.username.id_for_label }}">
-                    Username
-                </label>
-
-                {{ form.username }}
-
-                {% if form.username.errors %}
-
-                    <div class="sf-login-error">
-                        {{ form.username.errors|striptags }}
-                    </div>
-
-                {% endif %}
-
-            </div>
-
-
-            <!-- PASSWORD -->
-
-            <div class="sf-login-field">
-
-                <label for="{{ form.password.id_for_label }}">
-                    Password
-                </label>
-
-                {{ form.password }}
-
-                {% if form.password.errors %}
-
-                    <div class="sf-login-error">
-                        {{ form.password.errors|striptags }}
-                    </div>
-
-                {% endif %}
-
-            </div>
-
-
-            <!-- FORM ERROR -->
-
-            {% if form.non_field_errors %}
+            {% if form.username.errors %}
 
                 <div class="sf-login-error">
-                    Invalid username or password.
+                    {{ form.username.errors|striptags }}
                 </div>
 
             {% endif %}
 
+        </div>
 
-            <!-- WORKSPACE -->
 
-            <div class="sf-login-workspace">
+        <!-- =================================================
+             PASSWORD
+             ================================================= -->
 
-                <div class="sf-login-workspace-title">
+        <div class="sf-login-field">
 
-                    <strong>
-                        Continue as
-                    </strong>
+            <label for="{{ form.password.id_for_label }}">
+                Password
+            </label>
 
-                    <span>
-                        Choose your workspace
-                    </span>
+            <div class="sf-password-wrapper">
 
+                {{ form.password }}
+
+                <button
+                    type="button"
+                    class="sf-password-toggle"
+                    id="sfPasswordToggle"
+                    aria-label="Show password"
+                    aria-pressed="false"
+                >
+                    👁
+                </button>
+
+            </div>
+
+            {% if form.password.errors %}
+
+                <div class="sf-login-error">
+                    {{ form.password.errors|striptags }}
                 </div>
 
+            {% endif %}
 
-                <div class="sf-login-options">
-
-
-                    <!-- FIND WORK -->
-
-                    <label class="sf-login-option">
-
-                        <input
-                            type="radio"
-                            name="login_role"
-                            value="freelancer"
-                            required
-                        >
-
-                        <span class="sf-login-radio"></span>
-
-                        <strong>
-                            Find Work
-                        </strong>
-
-                        <small>
-                            Find projects and work as a freelancer.
-                        </small>
-
-                    </label>
+        </div>
 
 
-                    <!-- HIRE TALENT -->
+        <!-- =================================================
+             FORM ERROR
+             ================================================= -->
 
-                    <label class="sf-login-option">
+        {% if form.non_field_errors %}
 
-                        <input
-                            type="radio"
-                            name="login_role"
-                            value="client"
-                        >
+            <div class="sf-login-error">
+                Invalid username or password.
+            </div>
 
-                        <span class="sf-login-radio"></span>
-
-                        <strong>
-                            Hire Talent
-                        </strong>
-
-                        <small>
-                            Post jobs and hire skilled professionals.
-                        </small>
-
-                    </label>
+        {% endif %}
 
 
-                </div>
+        <!-- =================================================
+             WORKSPACE
+             ================================================= -->
+
+        <div class="sf-login-workspace">
+
+            <div class="sf-login-workspace-title">
+
+                <strong>
+                    Continue as
+                </strong>
+
+                <span>
+                    Choose your workspace
+                </span>
 
             </div>
 
 
-            <!-- LOGIN -->
-
-            <button
-                type="submit"
-                class="sf-login-button"
-            >
-                Log In
-            </button>
+            <div class="sf-login-options">
 
 
-        </form>
+                <!-- FIND WORK -->
+
+                <label class="sf-login-option">
+
+                    <input
+                        type="radio"
+                        name="login_role"
+                        value="freelancer"
+                        required
+                    >
+
+                    <span class="sf-login-radio"></span>
+
+                    <strong>
+                        Find Work
+                    </strong>
+
+                    <small>
+                        Find projects and work as a freelancer.
+                    </small>
+
+                </label>
 
 
-        <!-- FORGOT PASSWORD -->
+                <!-- HIRE TALENT -->
+
+                <label class="sf-login-option">
+
+                    <input
+                        type="radio"
+                        name="login_role"
+                        value="client"
+                    >
+
+                    <span class="sf-login-radio"></span>
+
+                    <strong>
+                        Hire Talent
+                    </strong>
+
+                    <small>
+                        Post jobs and hire skilled professionals.
+                    </small>
+
+                </label>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             LOGIN
+             ================================================= -->
+
+        <button
+            type="submit"
+            class="sf-login-button"
+        >
+            Log In
+        </button>
+
+
+        <!-- =================================================
+             FORGOT PASSWORD
+             ================================================= -->
 
         <div class="sf-login-forgot">
 
@@ -537,20 +623,85 @@
         </div>
 
 
-        <!-- REGISTER -->
+        <!-- =================================================
+             REGISTER
+             ================================================= -->
 
-        <p class="sf-login-register">
+        <div class="sf-login-register">
 
             Don't have an account?
 
             <a href="{% url 'register' %}">
-                Create an account
+                Create one
             </a>
 
-        </p>
+        </div>
 
-    </div>
 
-</section>
+    </form>
 
-{% endblock %}
+</div>
+
+</section><!-- =========================================================
+     PASSWORD SHOW / HIDE
+     ========================================================= --><script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const passwordInput =
+            document.getElementById("id_password");
+
+        const passwordToggle =
+            document.getElementById("sfPasswordToggle");
+
+
+        if (!passwordInput || !passwordToggle) {
+            return;
+        }
+
+
+        passwordToggle.addEventListener("click", function () {
+
+            const isPassword =
+                passwordInput.type === "password";
+
+
+            if (isPassword) {
+
+                passwordInput.type = "text";
+
+                passwordToggle.textContent = "🙈";
+
+                passwordToggle.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+                passwordToggle.setAttribute(
+                    "aria-pressed",
+                    "true"
+                );
+
+            } else {
+
+                passwordInput.type = "password";
+
+                passwordToggle.textContent = "👁";
+
+                passwordToggle.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+
+                passwordToggle.setAttribute(
+                    "aria-pressed",
+                    "false"
+                );
+
+            }
+
+        });
+
+    });
+
+</script>{% endblock %}
