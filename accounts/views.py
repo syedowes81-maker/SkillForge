@@ -10,7 +10,8 @@ from .forms import (FreelancerProfileForm, ClientProfileForm, ReviewForm,)
 from django.db.models import Avg, Count
 from .models import (User, FreelancerProfile,ClientProfile,Review,Notification,Message,)
 from jobs.models import Job,Application
-
+from django.views.decorators.http import require_POST
+from django.contrib import messages
 
 def register(request):
 
@@ -282,28 +283,33 @@ def freelancers(request):
     )
 
 def freelancer_detail(request, id):
-
-    freelancer = get_object_or_404(
-        FreelancerProfile,
-        id=id
-    )
+    freelancer = get_object_or_404(FreelancerProfile, id=id)
 
     reviews = Review.objects.filter(
         freelancer=freelancer
     ).order_by("-created_at")
 
-    average_rating = reviews.aggregate(
-        Avg("rating")
-    )["rating__avg"]
-
+    average_rating = reviews.aggregate(Avg("rating"))["rating__avg"]
     review_count = reviews.count()
+
     rating_distribution = {
-      5: reviews.filter(rating=5).count(),
-      4: reviews.filter(rating=4).count(),
-      3: reviews.filter(rating=3).count(),
-      2: reviews.filter(rating=2).count(),
-      1: reviews.filter(rating=1).count(),
+        star: reviews.filter(rating=star).count()
+        for star in (5, 4, 3, 2, 1)
     }
+
+    can_review = (
+        request.user.is_authenticated
+        and Application.objects.filter(
+            job__client=request.user,
+            freelancer=freelancer.user,
+            status="Confirmed",
+        ).exists()
+        and not Review.objects.filter(
+            client=request.user,
+            freelancer=freelancer
+        ).exists()
+    )
+
     return render(
         request,
         "accounts/freelancer_detail.html",
@@ -312,6 +318,9 @@ def freelancer_detail(request, id):
             "reviews": reviews,
             "average_rating": average_rating,
             "review_count": review_count,
+            "rating_distribution": rating_distribution,
+            "can_review": can_review,
+            "review_form": ReviewForm(),
         },
     )
 @login_required
@@ -349,17 +358,54 @@ def client_profile(request):
     )
 
 @login_required
+@require_POST
 def add_review(request, id):
-    print("===== REVIEW DEBUG =====")
-    print("USER:", request.user)
-    print("AUTHENTICATED:", request.user.is_authenticated)
-    print("SESSION:", dict(request.session))
-    
-    freelancer = get_object_or_404(
-        FreelancerProfile,
-        id=id
-    )
+    freelancer = get_object_or_404(FreelancerProfile, id=id)
 
+    has_confirmed = Application.objects.filter(
+        job__client=request.user,
+        freelancer=freelancer.user,
+        status="Confirmed",
+    ).exists()
+
+    if not has_confirmed:
+        messages.error(
+            request,
+            "You can only review freelancers you have a confirmed project with."
+        )
+        return redirect("freelancer_detail", id=freelancer.id)
+
+    if Review.objects.filter(
+        client=request.user,
+        freelancer=freelancer
+    ).exists():
+        messages.error(
+            request,
+            "You have already reviewed this freelancer."
+        )
+        return redirect("freelancer_detail", id=freelancer.id)
+
+    form = ReviewForm(request.POST)
+
+    if form.is_valid():
+        review = form.save(commit=False)
+        review.client = request.user
+        review.freelancer = freelancer
+        review.save()
+
+        Notification.objects.create(
+            user=freelancer.user,
+            message=f"{request.user.username} left you a {review.rating}-star review.",
+        )
+
+        messages.success(request, "Review submitted.")
+    else:
+        messages.error(
+            request,
+            "Enter a rating from 1 to 5 and a comment up to 1000 characters."
+        )
+
+    return redirect("freelancer_detail", id=freelancer.id)
 
 @login_required
 def notifications(request):

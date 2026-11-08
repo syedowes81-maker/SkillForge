@@ -585,13 +585,23 @@
                     >
                         💬 Message Freelancer
                     </a>
+                    {% if messages %}
+    {% for message in messages %}
+        <p class="message {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+{% endif %}
 
-                    <a
-                        href="{% url 'add_review' freelancer.id %}"
-                        class="fp-btn fp-btn--review"
-                    >
-                        ⭐ Leave Review
-                    </a>
+{% if can_review %}
+    <h3>Leave a review</h3>
+
+    <form method="post" action="{% url 'add_review' freelancer.id %}">
+        {% csrf_token %}
+        {{ review_form.as_p }}
+        <button type="submit">Submit review</button>
+    </form>
+{% endif %}
+
+                    
 
                 </div>
 
